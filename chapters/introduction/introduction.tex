@@ -9,7 +9,7 @@ The developments in robotics as a field has over the past years provided automat
 
 \begin{minipage}{0.45\textwidth}
 	To solve these problems this project aims to perform in-hand pose estimation through only the use of tactile sensors. Specifically this will be done on a Shadow Dexterous Hand \cite{shadow-dex-hand} with 20 \gls{dof}. Using tactile inputs rather than visual, eliminates the weaknesses mentioned above. A schematic showing the hand can be seen in \figref{fig:shadow-dex-hand-schematic}. Using this approach, the overall problem can be partitioned into 3 sub-problems labeled problem 1, 2 and 3. Problem 1 involves modeling the contact between the gripper's fingers and the object, also referred to as tactile perception. Problem 2 is to convert the collected data from problem 1 to meaningful surface data, treat these data as features and use them to estimate pose candidates. Finally problem 3 involves in-hand manipulation, such that further information is gained by probing the object. Here new desired surface points are found such that strong surface features are found to better identify the object's correct pose. 
-	The development of this project is done in the \gls{docker} provided by Shadow Robotics for simulation, control and development of the hand \cite{shadow-dex-github}. Here a hardware-simulation agnostic \gls{ros}\fakecite control\fakecite interface is provided, which provides fundamental tools to interact with the robot hand. \medskip
+	The development of this project is done in the \gls{docker} provided by Shadow Robotics for simulation, control and development of the hand \cite{shadow-dex-github}. Here a hardware-simulation agnostic \gls{ros} \cite{ros} control \cite{ros-control} interface is provided, which provides fundamental tools to interact with the robot hand. \medskip
 	\end{minipage} 
 	\hfill
 	\begin{minipage}{0.45\textwidth}
@@ -24,9 +24,43 @@ The developments in robotics as a field has over the past years provided automat
 	\end{figure}
 \end{minipage}
 
-The dynamic simulation environment Gazebo\fakecite is provided as part of the 
+The dynamic simulation environment Gazebo \cite{gazebo} is provided as part of the \gls{docker} and is thus the one used for this project. \medskip
+To solve the problems presented \gls{ros} packages are developed with the \tabref{tab:software-package-table}
 
-hello there
+
+\begin{table}
+	\begin{small}
+		\begin{center}
+			\begin{tabular}[c]{ | l r | l | } \hline
+				\cellcolor{tableheader} \textbf{Package}           & \cellcolor{tableheader} & \multicolumn{1}{l|}{\cellcolor{tableheader} \textbf{Description}} \\ \hline \hline
+				\texttt{in\_hand\_pose\_estimation}                & \meta{meta} & \textbf{Project package of the in-hand pose estimation system} \\ \hline
+				\hspace{0.3cm} \texttt{in\_hand\_pose\_estimation} &             & Integration of the full in-hand pose estimation pipeline  \\ \hline
+				\hspace{0.3cm} \texttt{sr\_tactile\_image}         & \pkg{pkg}   & Extraction of tactile perception  \\ \hline
+				\hspace{0.3cm} \texttt{sr\_pose\_estiamtion}       & \pkg{pkg}   & Estimate the pose of object based on tactile perception \\ \hline
+				\hspace{0.3cm} \texttt{sr\_hand\_manipulation}     & \pkg{pkg}   & Manipulate object in hand to probe for strong features \\ \hline \hline
+				\texttt{sr\_common}                                & \meta{meta} & \textbf{Shadow package for commonly used tools} \\ \hline
+				\hspace{0.3cm} \texttt{sr\_common}                 &             & Implements commonly used tools such as messages \\ \hline
+				\hspace{0.3cm} \texttt{sr\_robot\_msgs}            & \pkg{pkg}   & Messages used to communicate with the robot hand  \\ \hline 
+				\hspace{0.3cm} \texttt{\dots}                      &             &  \\ \hline \hline
+				\texttt{sr\_core}                                  & \meta{meta} & \textbf{Shadow package for core tools} \\ \hline
+				\hspace{0.3cm} \texttt{sr\_core}                   &             & Implements core features of the hand such as hardware interfacing \\ \hline
+				\hspace{0.3cm} \texttt{sr\_hand}                   & \pkg{pkg}   & Contains the hand commander for controlling the robot hand  \\ \hline
+				\hspace{0.3cm} \texttt{\dots}                      &             &  \\ \hline \hline
+				\texttt{ros\_utils}                                              & \pkg{pkg} & \textbf{Utilities for interfacing ROS/Gazebo/MoveIt/Eigen etc} \\ \hline
+			\end{tabular}
+		\end{center}
+		\caption{Software packages of the in hand pose estimation system.}
+		\label{tab:software-package-table}
+	\end{small}
+\end{table}
+
+
+
+
+{\fontfamily{cmr}\selectfont 
+Text in Times%
+}
+
 \begin{itemize}
 	\item work will be done in simulation provided by shadow robotics\fakecite. ROS, Gazebo, docker.
 	\item The project will be implemented as a meta-package with sub packages for each of the problems.

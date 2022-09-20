@@ -150,6 +150,8 @@
 \newcolumntype{R}[1]{>{\PreserveBackslash\raggedleft}p{#1}}
 \newcolumntype{L}[1]{>{\PreserveBackslash\raggedright}p{#1}}
 
+\setlength\doublerulesep{0.3cm} % when using a double line, make extra space
+
 % Enumeration formatting
 \newcommand{\tabitem}{~~\llap{\textbullet}~~}
 \newcommand{\sqrbulletsml}{\textcolor{black}{\raisebox{.45ex}{\rule{.6ex}{.6ex}}}}
@@ -161,7 +163,7 @@
 \renewcommand{\labelitemiv}{\sqrbulletsml}
 
 % Colors (latexcolor.com)
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
 \definecolor{cerulean}{rgb}{0.0, 0.48, 0.65}
 \definecolor{earthyellow}{rgb}{0.88, 0.66, 0.37}
 \definecolor{darkmagenta}{rgb}{0.55, 0.0, 0.55}
@@ -172,6 +174,10 @@
 
 \definecolor{light-yellow}{RGB}{255, 255, 137}
 \definecolor{light-blue}{RGB}{148, 201, 233}
+
+\definecolor{tableheader}{gray}{0.9}
+
+\definecolor{metaorange}{rgb}{0.98, 0.54, 0.13} % also known as flame orange
 
 % colored square box
 % https://tex.stackexchange.com/questions/201300/inline-boxes-alternative-to-pifonts-non-filled-but-shadowed-box
@@ -207,6 +213,11 @@
   \colorbox{gainsboro}{\texttt{\hspace{2pt}\vphantom{Ay}#1\hspace{2pt}}}%
   \endgroup
 }
+
+% package labels
+\usepackage{tikz}
+\newcommand{\meta}[1]{ \tikz[baseline=(X.base)]\node [draw=metaorange,fill=metaorange,semithick,rectangle,inner sep=2.5pt, rounded corners=2pt] (X) {  \textbf{\textcolor{white}{\textsf{#1}}}}; \hphantom}
+\newcommand{\pkg}[1] { \tikz[baseline=(X.base)]\node [draw=blue,fill=blue,semithick,rectangle,inner sep=1.3pt, rounded corners=2pt] (X)             {  \textbf{\textcolor{white}{\textsf{#1}}}}; \hphantom}
 
 % Appendices
 \usepackage[toc]{appendix}
