@@ -55,6 +55,7 @@
 \def \FigureAbbreviaition {Fig.}
 \newcommand{\figref}[1]{\FigureAbbreviaition\ \ref{#1}}
 \newcommand{\tabref}[1]{Table \ref{#1}}
+\newcommand{\chapref}[1]{Chapter \ref{#1}}
 
 % Figure caption formatting
 \AtBeginDocument{%
@@ -96,6 +97,7 @@
 \renewcommand{\secref}[1]{\hyperref[#1]{\ref*{#1}\ \nameref*{#1}}}
 % \newcommand{\tf}[3][T]{\ensuremath{\tensor[^{#2}]{\mat{#1}}{_{#3}}}}
 \newcommand{\tf}[3][T]{\ensuremath{{\mat{#1}^{#2}_{#3}}}}
+\newcommand{\highlight}[1]{\hl{#1}\xspace}
 \newcommand*\of{\qty} % $f\of(x)$
 
 % usage: \tf{from}{to} | \tf[T]{from}{to} | \tf[R]{from}{to} | \tf[t]{from}{to} etc.
