@@ -5,6 +5,8 @@
 % or the short equivalent \texttt{\textbackslash acrshort\{gls-label\}} which gives \acrshort{acronym-label}. \\
 % Subject matter terms can also be multi structure \texttt{\textbackslash gls\{glossary-multi-label\}} which gives \gls{glossary-multi-label} (see terms and acronyms above). \medskip
 
+\section{Context}\label{sec:intro-context}
+
 % historical context
 As of 2022 humanity has developed tools for unprecedented growth in wealth and technology on a global scale. In such times a great deal of consumerism and interconnection is present with people needing product produced faster and more consistently than ever. 
 % this is referred to as industry 4.0
@@ -18,16 +20,88 @@ These include for the employer: Avoid having to pay monthly salaries to unskille
 % benefits for the employee 
 This replacement of manual labor also benefits the employee, as boring and physically wearing work is automated, enabling the employees to take on different and less wearing roles. While the issue of labor unemployment becomes apparent solutions which provide support to already hired workers have been developed, such as \gls{cobot}\fakecite. \medskip
 % categories of problems in robotics for factories
-
 When implementing automation of production lines using robotics, certain categories of problems are revealed. These include: Assembly, alteration and pick-and-place, the last being the one of interest in this project. 
+\section{Problem Description}\label{sec:intro-problem-description}
 % what does a pnp robot consist of?
 For a robot to be capable of performing pick-and-place operations tasks it must consists of the following parts: The robot manipulator which is the robot arm, an end effector being the hand of the robot used to interact or manipulate objects of interest, sensors to obtain data from the environment and provide context to solve the given task and controllers to control the robot's motion.
 % applications
 Pick and place robots are used in a wide variety of different fields such as 
 sorting of waste \cite*{robotic-pick-and-toss-facilitates-urban-waste-sorting}
-handling of food \cite*{automation-of-mobile-pick-and-place-robotic-system-for-small-food-industry}\cite*{development-of-a-food-handling-soft-robot-hand-considering-a-high-speed-pick-and-place-task} and factory bin picking \cite*{real-time-industrial-bin-picking-with-a-hybrid-deep-learning-engineering-approach} \cite*{a-bin-picking-benchmark-for-systematic-evaluation-of-robotic-pick-and-place-systems} \cite{generic-development-of-bin-pick-and-place-system-based-on-robot-operating-system}. The solutions in these industries are examples of subcategories under the pick and place problem, namely sorting and bin picking. Since both of these are sub categories of the pick and place problem, they fundamentally follow the same sequential steps from start to end. 
+handling of food \cite*{automation-of-mobile-pick-and-place-robotic-system-for-small-food-industry}\cite*{development-of-a-food-handling-soft-robot-hand-considering-a-high-speed-pick-and-place-task} and factory bin picking \cite*{real-time-industrial-bin-picking-with-a-hybrid-deep-learning-engineering-approach} \cite*{a-bin-picking-benchmark-for-systematic-evaluation-of-robotic-pick-and-place-systems} \cite{generic-development-of-bin-pick-and-place-system-based-on-robot-operating-system}. The solutions in these industries are examples of subcategories under the pick and place problem, namely sorting and bin picking. Since both of these are sub categories of the pick and place problem, they fundamentally follow the same sequential four phases from start to end. 
 % All of these problems fundamentally contain the same structure as shared among all pick-and-place problems.
-These steps being 
+These steps being pre-grasping, grasping, transport, and placement \cite*{a-bin-picking-benchmark-for-systematic-evaluation-of-robotic-pick-and-place-systems}.
+% pre-grasp
+The pre-grasp phase involves localizing the object(s), potentially estimating their pose and executing the trajectory in order to move the end effectors grasp, collision free to said object(s). Here different potential grasp can be considered in order to determine the best pose for the end effector
+% grasping
+
+% transport
+
+% placement
+
+
+\section{Thesis Overview}\label{sec:intro-thesis-overview}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 % The developments in robotics as a field has over the past years provided automation solutions to execute repetitive manual tasks with high efficiency and reliability \fakecite. One of the most common tasks being pick and place tasks which involves picking un an object from one position and placing is in another. This is can be parted into the following subparts: Object localization, pose estimation, grasping and placing. In the solutions currently present for industrial use \gls{cv} is used for object localization and \gls{pe} due to the low cost of cameras and the fields maturity. However, while these solutions may be sufficient for certain tasks they fundamentally suffer from the weaknesses introduced by vision techniques. These include a great number of outliers caused by occlusions, reflecting, transparent or homogeneous surfaces, and repetitive structures when solving the \gls{corr-problem}. These problems as of the writing of this project have jet to be completely solved. Promising results have been found with the rise of \gls{dl} which in present time has proven its versatility and provides proof of concept solutions for narrow cases in pose estimation of transparent \cite{6dof-pose-estimation-of-transparent-object-from-a-single-rgb-d-image} and reflective \medskip
 
