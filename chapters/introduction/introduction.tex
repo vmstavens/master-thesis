@@ -1,44 +1,54 @@
 \chapter{Introduction}\label{ch:intro}
 
-% Subject matter terms are addressed with \texttt{\textbackslash gls\{glossary-label\}} like so \gls{glossary-label}. \\
-% Acronyms are addressed with either with their long equivalent \texttt{\textbackslash acrlong\{gls-label\}} which gives \acrlong{acronym-label}
-% or the short equivalent \texttt{\textbackslash acrshort\{gls-label\}} which gives \acrshort{acronym-label}. \\
-% Subject matter terms can also be multi structure \texttt{\textbackslash gls\{glossary-multi-label\}} which gives \gls{glossary-multi-label} (see terms and acronyms above). \medskip
-
 \section{Context}\label{sec:intro-context}
 
 % historical context
-As of 2022 humanity has developed tools for unprecedented growth in wealth and technology on a global scale. In such times a great deal of consumerism and interconnection is present with people needing product produced faster and more consistently than ever. 
-% this is referred to as industry 4.0
+As of 2022 humanity has developed tools for unprecedented growth in wealth and technology on a global scale \fakecite. In such times a great deal of consumerism and interconnection is present with people needing product produced faster and more consistently than ever \fakecite. 
 As one would expect, this creates a high demand for manufacturers to reliably and consistently being able to provide products, while also remaining flexible, as the demand for different product change rapidly. 
 % argue for why automation is better
 % https://www.fishmancorp.com/robotics-manufacturing/
 % https://www.universal-robots.com/blog/solving-complex-problems-with-innovative-concepts-and-robotic-solutions/
 In order to provide great volumes of products, manual labor has is essential as assembly, transport and manipulation processes rely on these. Due to these types of manual labor being largely done by unskilled workers, automation alternatives are being adopted which provides benefits. 
+% this is referred to as industry 4.0
 % benefits for employer
 These include for the employer: Avoid having to pay monthly salaries to unskilled labored individuals doing manual tasks, here the automation solution only requires electrical energy and potential supervision by a qualified individual. Potential risks are also involved when hiring humans as the workforce can be inconsistent due to human error\fakecite or left out due to illness etc. Considerations with regards workers rights such as working conditions and wage also needs not to be considered. These cause production limitations in the form of stand still hours, such as bathroom and lunch breaks along with after work hours and holidays. 
 % benefits for the employee 
 This replacement of manual labor also benefits the employee, as boring and physically wearing work is automated, enabling the employees to take on different and less wearing roles. While the issue of labor unemployment becomes apparent solutions which provide support to already hired workers have been developed, such as \gls{cobot}\fakecite. \medskip
+
 % categories of problems in robotics for factories
-When implementing automation of production lines using robotics, certain categories of problems are revealed. These include: Assembly, alteration and pick-and-place, the last being the one of interest in this project. 
+When implementing automation of production lines using robotics, certain categories of problems are revealed. These include: Assembly, alteration and \gls{pnp}, the last being the one of interest in this project. 
 \section{Problem Description}\label{sec:intro-problem-description}
-% what does a pnp robot consist of?
-For a robot to be capable of performing pick-and-place operations tasks it must consists of the following parts: The robot manipulator which is the robot arm, an end effector being the hand of the robot used to interact or manipulate objects of interest, sensors to obtain data from the environment and provide context to solve the given task and controllers to control the robot's motion.
 % applications
-Pick and place robots are used in a wide variety of different fields such as 
+Pick and place \gls{manipulator}s are used in a wide variety of different fields such as 
 sorting of waste \cite*{robotic-pick-and-toss-facilitates-urban-waste-sorting}
 handling of food \cite*{automation-of-mobile-pick-and-place-robotic-system-for-small-food-industry}\cite*{development-of-a-food-handling-soft-robot-hand-considering-a-high-speed-pick-and-place-task} and factory bin picking \cite*{real-time-industrial-bin-picking-with-a-hybrid-deep-learning-engineering-approach} \cite*{a-bin-picking-benchmark-for-systematic-evaluation-of-robotic-pick-and-place-systems} \cite{generic-development-of-bin-pick-and-place-system-based-on-robot-operating-system}. The solutions in these industries are examples of subcategories under the pick and place problem, namely sorting and bin picking. Since both of these are sub categories of the pick and place problem, they fundamentally follow the same sequential four phases from start to end. 
 % All of these problems fundamentally contain the same structure as shared among all pick-and-place problems.
-These steps being pre-grasping, grasping, transport, and placement \cite*{a-bin-picking-benchmark-for-systematic-evaluation-of-robotic-pick-and-place-systems}.
+These steps being pre-grasping, grasping, transport, and placement \cite*{a-bin-picking-benchmark-for-systematic-evaluation-of-robotic-pick-and-place-systems} for traditional .
 % pre-grasp
-The pre-grasp phase involves localizing the object(s), potentially estimating their pose and executing the trajectory in order to move the end effectors grasp, collision free to said object(s). Here different potential grasp can be considered in order to determine the best pose for the end effector
+The pre-grasp phase involves localizing the object(s), potentially estimating their pose and executing the trajectory to move the end effectors grasp, collision free to said object(s). Here different potential grasp can be considered in order to determine the best pose for the end effector.
 % grasping
-
+In the grasping phase the end effector gasps the object in such a manner that the object's entire weight is supported by the \gls{ee}, and ends when the object no longer is in contact with the environment, which often is the container holding the object.
 % transport
-
+The transportation phase involves the motion of the manipulator to move from the pose achieved after the grasping phase, to a pose ready for placement of the object in the desired placing area or fixture. Here considerations may be needed with regards to how much force and torque the \gls{ee} can tolerate without losing the object.
 % placement
+Finally the goal of the placing phase is to place the object within the placing area or fixture in a desired end pose. Here the constraints on the end pose might differ significantly based on the application, as the pose of greens in a crate might need less precision than if the manipulator hands a bolt to the next robotics system in the pipeline. \medskip
+
+While these phases make up a traditional \gls{pnp} systems, certain assumptions are made regarding the objects of interest in order for this pipeline to function. Specifically the localization and pose estimation of the pre-grasp phase are assumed possible due to \gls{cv} often being the sensory system for such tasks. Due to \gls{cv} techniques mimicking the human eye the field's maturity has generated a wide range solution proposals to these problems.
 
 
+solutions to computer vision: classical,old fashion, deep learning based 
+
+deep learning on transparent objects and reflective objects, shown less than ideal results
+
+classical approaches% https://ieeexplore.ieee.org/abstract/document/7860048
+
+
+vision has been used for many years \fakecite 
+
+
+% traditional pipeline makes assumptions -> 
+
+% ind end effector pose est
 \section{Thesis Overview}\label{sec:intro-thesis-overview}
 
 
