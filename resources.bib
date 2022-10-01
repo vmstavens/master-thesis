@@ -1,6 +1,7 @@
 % https://www.overleaf.com/learn/latex/Bibliography_management_in_LaTeX#Reference_guide
 % http://tug.ctan.org/info/biblatex-cheatsheet/biblatex-cheatsheet.pdf
 
+% tactile sensor technology overview
 @Article{recent-progress-in-technologies-for-tactile-sensors,
     AUTHOR         = {Chi, Cheng and Sun, Xuguang and Xue, Ning and Li, Tong and Liu, Chang},
     TITLE          = {Recent Progress in Technologies for Tactile Sensors},
@@ -15,6 +16,7 @@
     DOI            = {10.3390/s18040948}
 }
 
+% pose estimation of transparent objects
 @Article{6dof-pose-estimation-of-transparent-object-from-a-single-rgb-d-image,
     AUTHOR         = {Xu, Chi and Chen, Jiale and Yao, Mengyang and Zhou, Jun and Zhang, Lijun and Liu, Yi},
     TITLE          = {6DoF Pose Estimation of Transparent Object from a Single RGB-D Image},
@@ -29,6 +31,7 @@
     DOI            = {10.3390/s20236790}
 }
 
+% comparative study - learning vs. non-learning and 2D data vs. 3D data
 @Article{6d-pose-estimation-of-objects:-recent-technologies-and-challenges,
     AUTHOR         = {He, Zaixing and Feng, Wuxi and Zhao, Xinyue and Lv, Yongfeng},
     TITLE          = {6D Pose Estimation of Objects: Recent Technologies and Challenges},
@@ -74,6 +77,18 @@
     JOURNAL        = {ICRA Workshop on Open Source Software}
 }
 
+% pen_black 3D model for gazebo
+@misc{the-effect-of-color-space-selection-on-detectability-and-discriminability-of-colored-objects,
+    DOI            = {10.48550/ARXIV.1702.05421},
+    URL            = {https://arxiv.org/abs/1702.05421},
+    AUTHOR         = {Rasouli, Amir and Tsotsos, John K.},
+    KEYWORDS       = {Computer Vision and Pattern Recognition (cs.CV), Robotics (cs.RO), FOS: Computer and information sciences, FOS: Computer and information sciences},
+    TITLE          = {The Effect of Color Space Selection on Detectability and Discriminability of Colored Objects},
+    PUBLISHER      = {arXiv},
+    YEAR           = {2017}, 
+    COPYRIGHT      = {arXiv.org perpetual, non-exclusive license}
+}
+
 @article{gazebo, 
     AUTHOR         = {N. {Koenig} and A. {Howard}},
     BOOKTITLE      = {2004 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS) (IEEE Cat. No.04CH37566)},
@@ -100,6 +115,7 @@
     URLDATE        = {Accessed: September 19, 2022}
 }
 
+% bin-picking (ros)
 @ARTICLE{generic-development-of-bin-pick-and-place-system-based-on-robot-operating-system,
     AUTHOR           = {Wong, Ching-Chang and Tsai, Chi-Yi and Chen, Ren-Jie and Chien, Shao-Yu and Yang, Yi-He and Wong, Shang-Wen and Yeh, Chun-An},
     JOURNAL          = {IEEE Access}, 
@@ -170,3 +186,78 @@
     PAGES            = {1389-1396},
     DOI              = {10.1109/LRA.2020.2965076}
 }
+
+% stereo vision pose estimation
+@inproceedings{3d-object-pose-estimation-using-stereo-vision-for-object-manipulation-system,
+    AUTHOR           = {., Taryudi and Wang, Ming-Shyan},
+    YEAR             = {2017},
+    MONTH            = {05},
+    PAGES            = {1532-1535},
+    TITLE            = {3D object pose estimation using stereo vision for object manipulation system},
+    DOI              = {10.1109/ICASI.2017.7988217}
+}
+
+% combine stereo and dl
+@article{stereo-vision-based-single-shot-6d-object-pose-estimation-for-bin-picking-by-a-robot-manipulator,
+    author           = {Yoshihiro Nakano},
+    title            = {Stereo Vision Based Single-Shot 6D Object Pose Estimation for Bin-Picking by a Robot Manipulator},
+    journal          = {CoRR},
+    volume           = {abs/2005.13759},
+    year             = {2020},
+    url              = {https://arxiv.org/abs/2005.13759},
+    eprinttype       = {arXiv},
+    eprint           = {2005.13759},
+    timestamp        = {Wed, 03 Jun 2020 11:36:54 +0200},
+    biburl           = {https://dblp.org/rec/journals/corr/abs-2005-13759.bib},
+    bibsource        = {dblp computer science bibliography, https://dblp.org}
+}
+
+% stereo vision pose estimation + geometric pattern matching (GPM)
+﻿@Article{stereo-vision-based-automation-for-a-bin-picking-solution,
+    AUTHOR           = {Oh, Jong-Kyu and Lee, Sukhan and Lee, Chan-Ho},
+    TITLE            = {Stereo vision based automation for a bin-picking solution},
+    JOURNAL          = {International Journal of Control, Automation and Systems},
+    YEAR             = {2012},
+    MONTH            = {Apr},
+    DAY              = {01},
+    VOLUME           = {10},
+    NUMBER           = {2},
+    PAGES            = {362-373},
+    ABSTRACT         = {As flexibility becomes an important factor in factory automation, the bin-picking system, where a robot performs pick-and-place tasks for randomly piled parts in a bin through measuring the 3D pose of an object by a 3D vision sensor, has been actively studied. However, conventional bin-picking systems that are employed for particular tasks are limited by such things as the FOV (Field of View), the shape of landmark features, and computation time. This paper proposes a general-purpose stereo vision based bin-picking system. To detect the workpiece to be picked, a geometric pattern matching (GPM) method with respect to the 2D image with a wide FOV is applied. The accurate 3D pose of a selected workpiece among the pick-up candidates is acquired by measuring the 3D positions of three features in the workpiece using the stereo camera. In order to improve the 3D position estimation performance, the GPM method is also used instead of the stereo matching method. The multiple pattern registration and ellipse fitting techniques are additionally applied to increase the reliability. The grasp position of a workpiece without collision is determined using the pose of the object and the bin information. By using these methods a practical bin-picking strategy is established to operate robustly with minimum help from the human workers in the factory. Through experiments on commercial industrial workpieces and industrial robot, we validated that the proposed vision system accurately measures the 3D pose of part and the robot successfully manipulates the workpiece among randomly stacked parts.},
+    ISSN             = {2005-4092},
+    DOI              = {10.1007/s12555-012-0216-9},
+    URL              = {https://doi.org/10.1007/s12555-012-0216-9}
+}
+
+% dl (cnn) pose estimation
+@article{uncalibrated-stereo-vision-with-deep-learning-for-6-dof-pose-estimation-for-a-robot-arm-system,
+    TITLE            = {Uncalibrated stereo vision with deep learning for 6-DOF pose estimation for a robot arm system},
+    JOURNAL          = {Robotics and Autonomous Systems},
+    VOLUME           = {145},
+    PAGES            = {103847},
+    YEAR             = {2021},
+    ISSN             = {0921-8890},
+    DOI              = {https://doi.org/10.1016/j.robot.2021.103847},
+    URL              = {https://www.sciencedirect.com/science/article/pii/S0921889021001329},
+    AUTHOR           = {Mahmoud Abdelaal and Ramy M.A. Farag and Mohamed S. Saad and Ahmed Bahgat and Hassan M. Emara and Ayman El-Dessouki},
+    KEYWORDS         = {Deep learning, Pose estimation, Robot vision, Stereo vision, Optimization techniques, Levenberg–Marquardt algorithm},
+    ABSTRACT         = {This paper proposes a novel method for six degrees of freedom pose estimation of objects for the application of robot arm pick and place. It is based on the use of a stereo vision system, which does not require calibration. Using both cameras, four corner points of the object are detected. A deep-neural-network (DNN) is trained for the prediction of the 6 DOF pose of the object from the four detected corner points’ coordinates in each image of both cameras. The stereo vision used is a low-end vision system placed in a custom-made setup. Before the training phase of the DNN, the robot is set to auto collect data in a predefined workspace. This workspace is defined dependently on the spatial feasibility of the robot arm and the shared field of view of the stereo vision system. The collected data represent images of a 2D marker attached to the robot arm gripper. The 2D marker is used for data collection to ease the detection of the four corner points. The proposed method succeeds in estimating the six degrees of freedom pose of the object, without the need for the determination of neither the intrinsic nor the extrinsic parameters of the stereo vision system. The optimum design of the proposed DNN is obtained after comparing different activation functions and optimizers associated with the DNN. The proposed uncalibrated DNN-based method performance is compared to that of the traditional calibration-based method. In the calibration-based method, the rotational matrix relating the robot coordinates to the stereo vision coordinates is computed using two approaches. The first approach uses Singular Value Decomposition (SVD) while the second approach uses a novel proposed modification of particle swarm optimization (PSO) called Hyper particle Scouts optimization (HPSO). HPSO outperforms other metaheuristic optimization algorithms such as PSO and genetic algorithm (GA). Exhaustive tests are performed, and the proposed DNN-based method is shown to outperform all tested alternatives.}
+}
+
+% reflective object pose estimation (dl)
+@Article{data-driven-object-pose-estimation-in-a-practical-bin-picking-application,
+    AUTHOR           = {Kozák, Viktor and Sushkov, Roman and Kulich, Miroslav and Přeučil, Libor},
+    TITLE            = {Data-Driven Object Pose Estimation in a Practical Bin-Picking Application},
+    JOURNAL          = {Sensors},
+    VOLUME           = {21},
+    YEAR             = {2021},
+    NUMBER           = {18},
+    ARTICLE-NUMBER   = {6093},
+    URL              = {https://www.mdpi.com/1424-8220/21/18/6093},
+    PubMedID         = {34577303},
+    ISSN             = {1424-8220},
+    ABSTRACT         = {This paper addresses the problem of pose estimation from 2D images for textureless industrial metallic parts for a semistructured bin-picking task. The appearance of metallic reflective parts is highly dependent on the camera viewing direction, as well as the distribution of light on the object, making conventional vision-based methods unsuitable for the task. We propose a solution using direct light at a fixed position to the camera, mounted directly on the robot’s gripper, that allows us to take advantage of the reflective properties of the manipulated object. We propose a data-driven approach based on convolutional neural networks (CNN), without the need for a hard-coded geometry of the manipulated object. The solution was modified for an industrial application and extensively tested in a real factory. Our solution uses a cheap 2D camera and allows for a semi-automatic data-gathering process on-site.},
+    DOI              = {10.3390/s21186093}
+}
+
+
