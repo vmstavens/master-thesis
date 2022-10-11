@@ -41,7 +41,10 @@ Problem 2 is to convert the collected data from problem 1 to estimated pose cand
 % problem 3
 Finally problem 3 involves in-hand manipulation. Since the initial grasp of the object might not be oriented in a manner where the recognizable features make context with the tactile sensors, manipulating the object within the \gls{ee}'s grasp will enable further information gathering. Thus the final problem is to control the \gls{ee} in such a manner that the tactile sensors make context with the object in intelligently decided areas for a better pose estimate. \medskip
 
-To test if the developed system successfully solves the \gls{pe} problem, it is hypothesized that the intelligent probing provides more accurate estimate of the pose and does so in a shorter time span than simply sensing the object's surface in random locations $\text{H}_1$. This is compared to the null hypothesis, that there is no statistically significant difference in the methods' \gls{pe} performance $\text{H}_0$.
+To test if the developed system successfully solves the \gls{pe} problem, it is hypothesized that the intelligent probing method provides a statistically significant faster average \gls{pe} convergence, along with a statistically significant greater success rate when determining the correct pose. A correct pose is here defined as the pose being greater than or equal to 95\% of the ground truth pose, and statistically significant is defined by an $\alpha$-level of 95\%. This hypothesis will be referred to as $\text{H}_1$, while the null hypothesis $\text{H}_0$ being that there is no statistically significant difference between intelligent and random probing's \gls{pe} performance as described above.
+
+% more accurate estimates of the pose and does so in a shorter time span than simply sensing the object's surface in random locations $\text{H}_1$. 
+% This is compared to the null hypothesis, that there is no statistically significant difference in the methods' \gls{pe} performance $\text{H}_0$.
 
 % such that further information is gained by probing the object. Here new desired surface points are found through intelligent probing such that strong surface features are found to better identify the object's correct pose. \medskip
 
