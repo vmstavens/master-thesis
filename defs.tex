@@ -71,6 +71,11 @@
 
 % Math and symbols
 % \usepackage{amsmath, amssymb, bm} % newtxmath has same defines as amssymb
+
+\usepackage{amsmath}
+\newtheorem{problem}{Problem}
+% \theoremstyle{remark}
+
 \usepackage{amsmath, bm}
 \usepackage{mathtools}
 \usepackage{verbatim}
@@ -220,6 +225,9 @@
 \usepackage{tikz}
 \newcommand{\meta}[1]{ \tikz[baseline=(X.base)]\node [draw=metaorange,fill=metaorange,semithick,rectangle,inner sep=2.5pt, rounded corners=2pt] (X) {  \textbf{\textcolor{white}{\textsf{#1}}}}; \hphantom}
 \newcommand{\pkg}[1] { \tikz[baseline=(X.base)]\node [draw=blue,fill=blue,semithick,rectangle,inner sep=1.3pt, rounded corners=2pt] (X)             {  \textbf{\textcolor{white}{\textsf{#1}}}}; \hphantom}
+
+
+
 
 % Appendices
 \usepackage[toc]{appendix}

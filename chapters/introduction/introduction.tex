@@ -40,7 +40,7 @@ This project suggests a different \gls{pnp} pipeline for cases where the object'
 \begin{figure}[h]
 	\begin{small}
 		\begin{center}
-			\includegraphics[width=0.95\textwidth]{img/placeholder.png}
+			\includegraphics[width=0.5\textwidth]{img/placeholder.png}
 		\end{center}
 		\caption{Cartoon of suggested pnp vs. traditional pnp.}
 		\label{fig:cartoon-of-suggested-pnp-vs-traditional-pnp}
@@ -50,11 +50,19 @@ This project suggests a different \gls{pnp} pipeline for cases where the object'
 
 In order to solve this \gls{pe} problem, three sub problems are identified and labeled problem 1, 2 and 3.
 % problem 1
-Problem 1 involves modeling the contact between the gripper's tactile sensors and the object, also referred to as tactile perception. 
+\begin{problem} \label{prob:1}
+	\normalfont involves modeling the contact between the gripper's tactile sensors and the object, also referred to as tactile perception. 
+\end{problem}
+
 % problem 2
-Problem 2 is to convert the collected data from problem 1 to estimated pose candidates.
+\begin{problem} \label{prob:2}
+	\normalfont is to convert the collected data from problem 1 to estimated pose candidates.
+\end{problem}
+
 % problem 3
-Finally problem 3 involves in-hand manipulation. Since the initial grasp of the object might not be oriented in a manner where the recognizable features make context with the tactile sensors, manipulating the object within the \gls{ee}'s grasp will enable further information gathering. Thus the final problem is to control the \gls{ee} in such a manner that the tactile sensors make context with the object in intelligently decided areas for a better pose estimate. \medskip
+\begin{problem} \label{prob:3}
+	\normalfont involves in-hand manipulation. Since the initial grasp of the object might not be oriented in a manner where the recognizable features make context with the tactile sensors, manipulating the object within the \gls{ee}'s grasp will enable further information gathering. Thus the final problem is to control the \gls{ee} in such a manner that the tactile sensors make context with the object in intelligently decided areas for a better pose estimate.
+\end{problem}
 
 To test if the developed system successfully solves the \gls{pe} problem, it is hypothesized that the intelligent probing method provides a statistically significant faster average \gls{pe} convergence, along with a statistically significant greater success rate when determining the correct pose. A correct pose is here defined as the pose being greater than or equal to 95\% of the ground truth pose, and statistically significant is defined by an $\alpha$-level of 95\%. This hypothesis will be referred to as $\text{H}_1$, while the null hypothesis $\text{H}_0$ being that there is no statistically significant difference between intelligent and random probing's \gls{pe} performance as described above.
 
