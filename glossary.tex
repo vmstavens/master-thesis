@@ -11,8 +11,7 @@
 }
 
 \newglossaryentry{manipulator} {
-    name={manipulator},
-    description={, [a manipulator description]}
+    name={manipulator}, description={: A serial robot mechanisms. The robot manipulator is represented by a serial chain of rigid bodies, called robot segments, connected by joints\cite*{robotics-manipulator}}
 }
 
 % \newglossaryentry{dof}{ name={DOF}, description={degrees of freedom} }
@@ -22,7 +21,24 @@
 \newacronym{acronym-label}{acronym-abbr}{actorym-description}
 
 \newacronym{dof}{DOF}{degrees of freedom}
+
 \newacronym{sota}{SOTA}{state of the art}
+
+\newacronym{aebm}{AEBM}{analytical elasticity-based models}
+
+\newacronym{efm}{EFM}{elastic foundation models}
+
+\newacronym{fem}{FEM}{finite element models}
+
+\newacronym{pnp}{PNP}{pick-and-place}
+
+\newacronym{hf}{HF}{hard finger}
+
+\newacronym{sf}{SF}{soft finger}
+
+\newacronym{pwof}{PwoF}{point-contact-without-friction}
+
+\newacronym{iep}{IEP}{inverse elasticity problem}
 
 % \newacronym{cv}{CV}{computer vision}
 
@@ -30,32 +46,17 @@
 
 \newdualentry{glossary-multi-label}{glossary-multi-abbr}{glossary-multi-long}{glossary-multi-description}
 
-\newdualentry{cv}{CV}{computer vision}{is a scientific field which deals with how computers can gain a high-level understanding from digital inputs in the form of images or videos}
+\newdualentry{cv}{CV}{computer vision}{ is a field of artificial intelligence (AI) that enables computers and systems to derive meaningful information from digital images, videos and other visual inputs - and take actions or make recommendations based on that information\cite*{what-is-computer-vision}}
 
-\newdualentry{pe}{PE}{pose estimation}{is a scientific picipline which deals with how computers can gain a high-level understanding from digital inputs in the form of images or videos}
+\newdualentry{pe}{PE}{pose estimation}{ A particular instance of feature-based alignment, which occurs very often, is estimating an object’s 3D pose from a set of 2D point projections. This pose estimation problem is also known as extrinsic calibration\cite*{what-is-pose-estimation}}
 
-\newdualentry{corr-problem}{CP}{correspondence problem}{the problem within \gls{cv} to localize the projection of the same object in 3D space in 2 or more images}
+\newdualentry{corr-problem}{CP}{correspondence problem}{is the problem where one aims at finding correspondences between the pixels in two (or more) images\cite{correspondence-problems-in-computer-vision}}
 
-\newdualentry{dl}{DL}{deep learning}{is a technique for data driven pattern recognition}
+\newdualentry{dl}{DL}{deep learning}{ are methods which allow computational models that are composed of multiple processing layers to learn representations of data with multiple levels of abstraction\cite{deep-learning}}
 
 \newdualentry{ros}{ROS}{Robot Operating System}{some description}
 
-\newdualentry{cobot}{cobots}{collaborative robots}{[some description]}
+\newdualentry{cobot}{cobots}{collaborative robots}{ are robots which facilitate human-robot collaboration\cite*{cobot-programming-for-collaborative-industrial-tasks-an-overview}}
 
-\newdualentry{pnp}{PNP}{pick-and-place}{[some description]}
+\newdualentry{ee}{EE}{end effector}{ is a generic term for all functional units involved in direct interaction of the robot system with the environment or with a given object\cite*{robot-grippers}} 
 
-\newdualentry{ee}{EE}{end effector}{[some description]}
-
-\newdualentry{iep}{IEP}{Inverse Elasticity Problem}{the problem of computing the resulting displacement of a surafce when some force is applied}
-
-\newdualentry{pwof}{PwoF}{point-contact-without-friction}{ A point contact model without friction \cite[Chapter 37]{handbook-of-robotics}}
-
-\newdualentry{hf}{HF}{hard finger}{ A point contact model with friction \cite[Chapter 38]{handbook-of-robotics}}
-
-\newdualentry{sf}{SF}{soft finger}{ A point contact model with friction \cite[Chapter 38]{handbook-of-robotics}}
-
-\newdualentry{aebm}{AEBM}{analytical elasticity-based models}{[some description]\fakecite}
-
-\newdualentry{efm}{EFM}{elastic foundation models}{[some description]\fakecite}
-
-\newdualentry{fem}{FEM}{finite element models}{[some description]\fakecite}
