@@ -550,7 +550,21 @@
     ABSTRACT         = {In this paper the contact problem between a rigid indenter of arbitrary shape and a viscoelastic half-space is considered. Under the action of a normal force the penetration of the indenter and the distribution of contact pressure change. We wish to find the relations which link the pressure distribution, the resultant force on the indenter and the penetration on the assumption that the surfaces are frictionless. For indenters of arbitrary shape the problem may be solved numerically by using the Matrix Inversion Method (MIM), extended to viscoelastic case. In this method the boundary conditions are satisfied exactly at specified “matching points” (the mid-points of the boundary elements). It can be validated by comparing the numerical results to the analytic solutions in cases of a spherical asperity (loading and unloading) and a conical asperity (loading only). Finally, the method was implemented for a finite cylindrical shape with its curved face indenting the surface of the half-space. This last example shows the efficiency of the method in case of a prescribed penetration as well as a given normal load history.}
 }
 
-% AEBM more advanced model 3 - Contact Modelling and Tactile Data Processing for Robot Skins
+Kalkers MIM method for - a new algorithm...
+@InProceedings{on-the-contact-problem-in-elastostatics,
+    AUTHOR           = {Kalker, J. J.},
+    EDITOR           = {Del Piero, Gianpietro AND Maceri, Franco},
+    TITLE            = {On the Contact Problem in Elastostatics},
+    BOOKTITLE        = {Unilateral Problems in Structural Analysis},
+    YEAR             = {1985},
+    PUBLISHER        = {Springer Vienna},
+    ADDRESS          = {Vienna},
+    PAGES            = {81-85},
+    ABSTRACT         = {Some aspects of the contact between elastic bodies are presented. Starting with the formulation of the contact problem we proceed to give algorithms for contact formation and frictional contact, with emphasis on rolling, which is the most general form of contact with friction. Numerical results are shown, and a comparison with experiments is made.},
+    ISBN             = {978-3-7091-2632-}
+}
+
+% AEBM more advanced model 3 - Contact Modelling and Tactile Data Processing for Robot Skins - Love's and CB's formulations
 @Article{contact-modelling-and-tactile-data-processing-for-robot-skins,
     AUTHOR           = {Wasko, Wojciech and Albini, Alessandro and Maiolino, Perla and Mastrogiovanni, Fulvio and Cannata, Giorgio},
     TITLE            = {Contact Modelling and Tactile Data Processing for Robot Skins},
@@ -563,6 +577,49 @@
     ISSN             = {1424-8220},
     ABSTRACT         = {Tactile sensing is a key enabling technology to develop complex behaviours for robots interacting with humans or the environment. This paper discusses computational aspects playing a significant role when extracting information about contact events. Considering a large-scale, capacitance-based robot skin technology we developed in the past few years, we analyse the classical Boussinesq&ndash;Cerruti&rsquo;s solution and the Love&rsquo;s approach for solving a distributed inverse contact problem, both from a qualitative and a computational perspective. Our contribution is the characterisation of the algorithms&rsquo; performance using a freely available dataset and data originating from surfaces provided with robot skin.},
     DOI              = {10.3390/s19040814}
+}
+
+% AEBM more advanced model 3 - B solutions
+@Article{a-general-approach-to-the-solution-of-boussinesqs-problem-for-polynomial-pressures-acting-over-polygonal-domains,
+    AUTHOR           = {Marmo, Francesco and Rosati, Luciano},
+    TITLE            = {A General Approach to the Solution of Boussinesq's Problem for Polynomial Pressures Acting over Polygonal Domains},
+    JOURNAL          = {Journal of Elasticity},
+    YEAR             = {2016},
+    MONTH            = {Jan},
+    DAY              = {01},
+    VOLUME           = {122},
+    NUMBER           = {1},
+    ABSTRACT         = {We outline a general approach for extending the classical Boussinesq's solution to the case of pressures distributed according to a polynomial law of arbitrary order over a polygonal domain. To this end we exploit a generalized version of the Gauss theorem and recent results of potential theory which consistently take into account the singularities affecting the expressions of the fields of interest, an issue which seems to have been overlooked in the existing literature. For linearly varying pressures we derive analytical expressions of displacements, strains and stresses at an arbitrary point of the half-space as a function of the loading function and of the position vectors which define the boundary of the loaded region. We briefly discuss how bilinear and more general pressure distributions can be accommodated in our formulation since the paper is mainly motivated by the interest in developing efficient computational tools for solving 3D problems in foundation engineering and contact mechanics. Finally, comparisons with existing solutions and numerical examples are discussed.},
+    PAGES            = {75-112},
+    ISSN             = {1573-2681},
+    DOI              = {10.1007/s10659-015-9534-5},
+    URL              = {https://doi.org/10.1007/s10659-015-9534-5}
+}
+
+% AEBM more advanced model 3 - C + B solutions
+﻿@Article{a-boussinesq-cerruti-solution-set-for-constant-and-linear-distribution-of-normal-and-tangential-load-over-a-triangular-area,
+    AUTHOR           = {Li, Junshan and Berger, Edward J.},
+    TITLE            = {A Boussinesq--Cerruti Solution Set for Constant and Linear Distribution of Normal and Tangential Load over a Triangular Area},
+    JOURNAL          = {Journal of elasticity and the physical science of solids},
+    YEAR             = {2001},
+    MONTH            = {May},
+    DAY              = {01},
+    VOLUME           = {63},
+    NUMBER           = {2},
+    PAGES            = {137-151},
+    ABSTRACT         = {Starting from the elastic solution to a concentrated load on an elastic half space, this paper derives all the required Boussinesq--Cerruti equations for constant, linear and bilinear distributions of normal and tangential load over a triangle area, and presents a solution set to the equations. The surface displacement field in both the normal and tangential direction is obtained. The evaluations of Boussinesq--Cerruti equations are achieved by using various integration techniques. This paper also suggests a composition methodology to construct the solution due to more complicated loading profiles using the principle of superposition.},
+    ISSN             = {1573-2681},
+    DOI              = {10.1023/A:1014013425423},
+    URL              = {https://doi.org/10.1023/A:1014013425423}
+}
+
+% book about linear elasticity assumptions (Love's formulation argument)
+@book{the-linearized-theory-of-elasticity,
+    author         = { William S. Slaughter },
+    editor         = {},
+    publisher      = {Springer},
+    title          = {The Linearized Theory of Elasticity},
+    year           = {2012}
 }
 
 
