@@ -36,17 +36,82 @@ While these phases make up a traditional \gls{pnp} systems, certain assumptions 
 This project suggests a different \gls{pnp} pipeline for cases where the object's starting pose is unknown. In this \gls{pnp} pipeline the \gls{pe} is moved from the pre-grasping phase to a new phase between the grasping and transportation phase, called the \gls{pe} phase. The specific goal of this project is to develope a solution to this phase using tactile sensors in the \gls{ee} to determine the object's pose. By using the tactile sensing rather than visual the problems presented above will be eliminated. This will be done using a humanoid gripper as the \gls{ee} with tactile sensors in each finger, more specifically a Shadow Dexterous Hand \cite{shadow-dex-hand} with 20 \gls{dof}. \medskip
 
 \textcolor{red}{In depth explanation of traditional vs. suggested manipulator pipeline}
+% pre-grasping, grasping, transport, and placement
+
+The alternative pipeline this project will enable can be seen in the upper row of \figref{fig:pnp-pipeline} compared to the traditional pipeline in the lower row.\medskip 
+
+% pre grasping phase
+In \figref{fig:pre-grasp-phase} the pre-grasping phase can be seen for both pipelines. Here the traditional pipeline in cases of multiple objects often will employ custom finger tips or grippers entirely to facilitate form closure grasps, due to the grippers not having the flexibility to perform reliable force closure. On the contrary force closure can be performed with a humanoid gripper on a wide range of object with no need for changing gripper equipment. \medskip
+
+% grasping phase
+In \figref{fig:grasping-phase} the grasping phase can be seen which introduces a greater level of complexity when using the suggested pipeline due to the humanoid gripper being a more complex physical system to represent and control. This is compared to the simplicity of executing potential binary commands in the traditional pipeline e.g.open and close. \medskip
+
+% transportation phase
+In \figref{fig:transportation-phase} the transportation phase can be seen, which introduces one of the benefits with using the suggested pipeline. Here manipulations can be performed to change the objects pose such that easier placement can be performed in the following phase. This form of object manipulation is not feasible for the simple pneumatic grippers used in a traditional pipeline. \medskip
+
+% placement
+In \figref{fig:placement-phase} the the placement phase can be seen, which  \medskip
+
 
 \begin{figure}[h]
-	\begin{small}
-		\begin{center}
-			\includegraphics[width=0.5\textwidth]{img/placeholder.png}
-		\end{center}
-		\caption{Cartoon of suggested pnp vs. traditional pnp.}
-		\label{fig:cartoon-of-suggested-pnp-vs-traditional-pnp}
-	\end{small}
+	\begin{center}
+		\renewcommand{\arraystretch}{1.2}
+		\begin{minipage}{.24\linewidth}
+			\vspace{0pt}
+			\centering
+			\includegraphics[width=.95\textwidth]{chapters/introduction/fig/pipeline-1.pdf}
+		\end{minipage}%
+		\hfill%
+		\begin{minipage}{.24\linewidth}
+			\vspace{0pt}
+			\centering
+			\includegraphics[width=.95\textwidth]{chapters/introduction/fig/pipeline-2.pdf}
+		\end{minipage}%
+		\hfill%
+		\begin{minipage}{.24\linewidth}
+			\vspace{0pt}
+			\centering
+			\includegraphics[width=.95\textwidth]{chapters/introduction/fig/pipeline-3.pdf}%
+		\end{minipage}%
+		\hfill%
+		\begin{minipage}{.24\linewidth}
+			\vspace{0pt}
+			\centering
+			\includegraphics[width=.95\textwidth]{chapters/introduction/fig/pipeline-4.pdf}
+		\end{minipage}%
+		%    
+		\vspace{15pt}
+		%
+		\begin{minipage}[t]{.24\linewidth}
+			\vspace{0pt}
+			\captionsetup{type=figure}
+			\captionof{figure}{Pre grasp phase.}
+			\label{fig:pre-grasp-phase}
+		\end{minipage}%
+		\hfill%
+		\begin{minipage}[t]{.24\linewidth}
+			\vspace{0pt}
+			\captionsetup{type=figure}
+			\captionof{figure}{Grasping phase.}
+			\label{fig:grasping-phase}
+		\end{minipage}%
+		\begin{minipage}[t]{.24\linewidth}
+			\vspace{0pt}
+			\captionsetup{type=figure}
+			\captionof{figure}{Transportation phase.}
+			\label{fig:transportation-phase}
+		\end{minipage}%
+		\hfill%
+		\begin{minipage}[t]{.24\linewidth}
+			\vspace{0pt}
+			\captionsetup{type=figure}
+			\captionof{figure}{Placement phase.}
+			\label{fig:placement-phase}
+		\end{minipage}%
+	\end{center}
+	\caption{The different phases making up a \gls{pnp} process.}
+	\label{fig:pnp-pipeline}
 \end{figure}
-
 
 In order to solve this \gls{pe} problem, three sub problems are identified and labeled problem 1, 2 and 3.
 % problem 1

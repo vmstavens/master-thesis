@@ -32,8 +32,16 @@ In order to model the contact between the \gls{ee}'s tactile sensors, eight diff
 % no friction
 The \gls{pwof} model, as shown in \figref{fig:pwof}, can only represent forces along with the normal of the object's surface at the point of contact and thus the model does not support surface deformations between the two contacting objects. This model is applied in cases where very little deformation is present, along with the contact being slippery\cite[Chapter 38]{handbook-of-robotics}.\medskip
 
+% \begin{equation} \label{eq:pwof}
+% 	test
+% \end{equation}
+
 % Hard finger
 The \gls{hf} model, as shown in \figref{fig:hf}, is representative when the friction between objects is great enough to be significant, while the contact deformation is small enough to ignore friction moments and deformations\cite[Chapter 38]{handbook-of-robotics}. To model the friction acting on the contact point a great number of methods exist, a very common one being the Column friction with different modifications depending on the use case\cite*{modelling-of-joint-friction-in-robotic-manipulators-with-gear-transmissions}. \medskip
+%
+% \begin{equation} \label{eq:pwof}
+% 	test
+% \end{equation}
 
 % Soft finger
 The \gls{sf} model, as shown in \figref{fig:sf}, is used to represent scenarios where both friction and surface deformations are great enough to be impactful in the systems behavior. Due to deformations of the finger an additional torsional moment about the contact normal will be present\cite[Chapter 38]{handbook-of-robotics}. \medskip
