@@ -1,28 +1,28 @@
 
 \chapter{Modeling} \label{ch:modeling}
 
-In order to model the contact between the \gls{ee}'s tactile sensors, eight different model categories are present\cite*{articulated-hands-force-control-and-kinematic-issues} whereas three most common ones within the field of robotics\cite[Chapter 37]{handbook-of-robotics} are \gls{pwof}, \gls{hf} and the \gls{sf} model as shown in \figref{fig:contact-models}. \medskip
+In order to model the contact between the \gls{ee}'s tactile sensors, eight different model categories are present~\cite{articulated-hands-force-control-and-kinematic-issues} whereas three most common ones within the field of robotics~\cite[Chapter 37]{handbook-of-robotics} are \gls{pwof}, \gls{hf} and the \gls{sf} model as shown in \figref{fig:contact-models}. \medskip
 
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{chapters/modeling/fig/contact-no-friction.pdf}
-		\caption{Point contact model without friction.}
+		\includegraphics[width=\textwidth]{chapters/modeling/fig/contact-no-friction-crop.pdf}
+		\caption{\gls{pwof} in point $\bm{c}$ with normal $\bm{n}$. \\\hspace{\textwidth} }
 		\label{fig:pwof}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{chapters/modeling/fig/hf.pdf}
-		\caption{Point contact model with friction.}
+		\includegraphics[width=\textwidth]{chapters/modeling/fig/hf-crop.pdf}
+		\caption{\gls{hf} in point $\bm{c}$ with normal $\bm{n}$ and contact force $\bm{f}_c$.}
 		\label{fig:hf}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{chapters/modeling/fig/sf.pdf}
-		\caption{Soft-finger model.}
+		\includegraphics[width=\textwidth]{chapters/modeling/fig/sf-crop.pdf}
+		\caption{\gls{sf} in point $\bm{c}$ with normal $\bm{n}$, contact force $\bm{f}_c$ and friction moment $\bm{m}_n$.}
 		\label{fig:sf}
 	\end{subfigure}
 	   \caption{The three most commonly used contact models.}
@@ -30,23 +30,43 @@ In order to model the contact between the \gls{ee}'s tactile sensors, eight diff
 \end{figure}
 
 % no friction
-The \gls{pwof} model, as shown in \figref{fig:pwof}, can only represent forces along with the normal of the object's surface at the point of contact and thus the model does not support surface deformations between the two contacting objects. This model is applied in cases where very little deformation is present, along with the contact being slippery\cite[Chapter 38]{handbook-of-robotics}.\medskip
-
-% \begin{equation} \label{eq:pwof}
-% 	test
-% \end{equation}
+The \gls{pwof} model, as shown in \figref{fig:pwof}, can only represent forces along with the normal of the object's surface at the point of contact and thus the model does not support surface deformations between the two contacting objects. This model is applied in cases where very little deformation is present, along with the contact having a friction coefficient approximately equal to zero~\cite[Chapter 38]{handbook-of-robotics}.\medskip
 
 % Hard finger
-The \gls{hf} model, as shown in \figref{fig:hf}, is representative when the friction between objects is great enough to be significant, while the contact deformation is small enough to ignore friction moments and deformations\cite[Chapter 38]{handbook-of-robotics}. To model the friction acting on the contact point a great number of methods exist, a very common one being the Column friction with different modifications depending on the use case\cite*{modelling-of-joint-friction-in-robotic-manipulators-with-gear-transmissions}. \medskip
+The \gls{hf} model, as shown in \figref{fig:hf}, is representative when the friction between objects is great enough to be significant, while the contact deformation is small enough to ignore friction moments and deformations~\cite[Chapter 38]{handbook-of-robotics}. To model the friction acting on the contact point a great number of methods exist, a very common one being the Column friction with different modifications depending on the use case~\cite{modelling-of-joint-friction-in-robotic-manipulators-with-gear-transmissions}. Since this model is described in terms of a Coulomb friction, the friction cone $\mathcal{C}_{f,\text{HF}}$ can be mathematically formulated as
 %
-% \begin{equation} \label{eq:pwof}
-% 	test
-% \end{equation}
+\begin{equation} 
+	\mathcal{C}_{f,\text{HF}} = \left\{ \; f_c\; \middle|\; f_{t} \le \mu f_z,\; \mu f_z \ge 0 \; \right\} \qquad , \qquad f_t = \sqrt{f_x^2 + f_y^2},
+	\label{eq:hf}
+\end{equation}
+where $f_c$ is the magnitude of the contact force, $f_t$ is the magnitude of the tangential force, $f_x$, $f_y$ and $f_z$ are the magnitudes of the $x$, $y$ and $z$ components of the contact force and $\mu$ is the friction coefficient~\cite[Chapter 37]{handbook-of-robotics}. The angle of the cone $\beta$ can be computed based on $\mu$ as
+%
+\begin{equation} 
+	\beta = \tan^{-1} (\mu).
+	\label{eq:hf-cone-angle}
+\end{equation}
 
 % Soft finger
-The \gls{sf} model, as shown in \figref{fig:sf}, is used to represent scenarios where both friction and surface deformations are great enough to be impactful in the systems behavior. Due to deformations of the finger an additional torsional moment about the contact normal will be present\cite[Chapter 38]{handbook-of-robotics}. \medskip
+The \gls{sf} model, as shown in \figref{fig:sf}, is used to represent scenarios where both friction and surface deformations are great enough to be impactful in the systems behavior. Due to deformations of the finger an additional torsional moment about the contact normal will be present~\cite[Chapter 38]{handbook-of-robotics}. While an analytical formulation for the \gls{sf} relation depends on the pressure distribution inside the contact, and
+can only be derived for a limited number of special cases, the general case is approximated using 
+%
+\begin{equation} 
+	\mathcal{C}_{f,\text{SF}} = \left\{ \; f_c \; \middle| \; f_t^2 + \frac{m_n^2}{e_n^2} \le \mu^2 P^2 \right\} \qquad , \qquad f_t = \sqrt{f_x^2 + f_y^2}.
+	\label{eq:sf}
+\end{equation}
+This formulation forms an ellipsoid $\mathcal{C}_{f,\text{SF}}$ describing the relation between the tangential force $\bm{f}_t$ and friction moment $\bm{m}_n$. Here $f_c$ is the magnitude of the contact force, $f_t$ is the magnitude of the of the tangential force, $m_n$ is the magnitude of the frictional moment, $e_n$ is the eccentricity parameter i.e. the height of the aforementioned ellipsoid, $\mu$ is the friction coefficient and $P$ is the magnitude of the load applied from the contact point along the contact normal $\bm{n}$~\cite{practical-force-motion-models-for-sliding-manipulation}~\cite{soft-finger-model-with-adaptive-contact-geometry-for-grasping-and-manipulation-tasks}. \medskip
 
-Based on the contact model categories described above, the most representative is \gls{sf} since these models can provide descriptions of the contact surface topology, and thus enable the solving of the \gls{iep} by deriving surface features for pose estimation. Furthermore in order to manipulate objects in-hand and ensuring force closure modeling friction is crucial, which is also provided by these models. An illustration of the system as a \gls{sf} with friction cone and pressure distribution can be seen in \figref{fig:friction-contact-distribution}, while \figref{fig:force-closure-model} shows the model enabling force closure about the object $\{O\}$, where the external force is represented as gravity which is a common occurrence.
+Based on the contact model categories described above, the most representative is the \gls{sf} models since these can provide descriptions of the contact surface topology, and thus enable the solving of the 
+
+\colorbox{red}{Insert reference to IEP definition along with description}
+
+\gls{iep} by deriving surface features for pose estimation. Furthermore in order to manipulate objects in-hand and ensuring force closure modeling friction is crucial, which is also provided by these models. An illustration of the system as a \gls{sf} with friction cone and pressure distribution can be seen in \figref{fig:friction-contact-distribution}, 
+
+while \figref{fig:force-closure-model} shows the model enabling force closure 
+
+\colorbox{red}{Insert reference to IEP force closure along with description}
+
+about the object $\{O\}$, where the external force is represented as gravity which is a common occurrence.
 
 \begin{center}
     \renewcommand{\arraystretch}{1.2}
@@ -55,13 +75,13 @@ Based on the contact model categories described above, the most representative i
         \centering
         \includegraphics[width=.95\textwidth]{chapters/modeling/fig/contact-surface.pdf}%
         \vspace{0.6cm}
-        \includegraphics[width=.95\textwidth]{chapters/modeling/fig/friction-cone-schematic.pdf}%
+        \includegraphics[width=.95\textwidth]{chapters/modeling/fig/friction-cone-schematic-crop.pdf}%
     \end{minipage}%
     \hfill%
     \begin{minipage}{.48\linewidth}
         \vspace{0pt}
         \centering
-        \includegraphics[width=.95\textwidth]{chapters/modeling/fig/force-closure-contact.pdf}
+        \includegraphics[width=.95\textwidth]{chapters/modeling/fig/force-closure-schematic-crop.pdf}
     \end{minipage}%
     %    
     \vspace{15pt}
@@ -81,7 +101,7 @@ Based on the contact model categories described above, the most representative i
     \end{minipage}%
 \end{center}
 
-Within these figures $p(r)$ is the pressure distribution often as a function of the contact surface's radius $r$ assuming a non-conforming contact case. $\mathbf{f}_N$ is the normal force of the object acting on the \gls{ee} in the contact point $\mathbf{c}$, $\mathbf{f}_f$ is the friction force opposing the external force $\mathbf{f}_{\text{ext}}$ which often comes in the form of gravity $\mathbf{f}_g$ as see in \figref{fig:force-closure-model}.
+Within these figures $p(r)$ is the pressure distribution often as a function of the contact surface's radius $r$ assuming a non-conforming contact case. $\bm{f}_N$ is the normal force of the object acting on the \gls{ee} in the contact point $\bm{c}$, $\bm{f}_f$ is the friction force opposing the external force $\bm{f}_{\text{ext}}$ which often comes in the form of gravity $\bm{f}_g$ as see in \figref{fig:force-closure-model}.
 
 % make the object identical to the one in the previous figure + finger tip contour from contact models
 
@@ -95,7 +115,9 @@ Within these figures $p(r)$ is the pressure distribution often as a function of 
 	\end{small}
 \end{figure}
 
-With the contact model described, a segment of the kinematic tree of the \gls{ee} can be seen in \figref{fig:full-system-model}. Here $q_{thi}$ is the angle of the $i$'th joint in the thumb which here is the only finger depicted, $\boldsymbol{\tau}_{thi}$ is the torque exerted by said joint, $\{W\}$ is the world frame, $\{O\}$ is the object's frame and $\{H\}$ is the robotic hand's frame. While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.
-
+With the contact model described, a segment of the kinematic tree of the \gls{ee} can be seen in \figref{fig:full-system-model}. Here $q_{thi}$ is the angle of the $i$'th joint in the thumb which here is the only finger depicted, $\boldsymbol{\tau}_{thi}$ is the torque exerted by said joint, $\{W\}$ is the world frame, $\{O\}$ is the object's frame and $\{H\}$ is the robotic hand's frame. While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.\medskip
 
 To determine which methods best describe the models presented above for this project, the \gls{sota} will be presented in \chapref{ch:state-of-the-art}.
+
+% grasp calculus
+	% The hand-book-of-robotics chapter 38
