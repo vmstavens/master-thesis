@@ -2,10 +2,8 @@
 % \documentclass{article}
 \include{defs}
 
-% generate word count text file wc.tex
+% generate word count text file wc.tex - This is only applied after compiling the document : i.e. $ pdflatex main.tex
 \immediate\write18{bash wc.sh}
-
-% \newtheorem{problem}{Problem}
 
 \begin{document}
 

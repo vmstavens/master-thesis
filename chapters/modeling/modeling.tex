@@ -8,21 +8,21 @@ In order to model the contact between the \gls{ee}'s tactile sensors, eight diff
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/modeling/fig/contact-no-friction-crop.pdf}
-		\caption{\gls{pwof} in point $\bm{c}$ with normal $\bm{n}$. \\\hspace{\textwidth} }
+		\caption{\gls{pwof} in point $\vec{c}$ with normal $\vec{n}$. \\\hspace{\textwidth} }
 		\label{fig:pwof}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/modeling/fig/hf-crop.pdf}
-		\caption{\gls{hf} in point $\bm{c}$ with normal $\bm{n}$ and contact force $\bm{f}_c$.}
+		\caption{\gls{hf} in point $\vec{c}$ with normal $\vec{n}$ and contact force $\vec{f}_c$.}
 		\label{fig:hf}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/modeling/fig/sf-crop.pdf}
-		\caption{\gls{sf} in point $\bm{c}$ with normal $\bm{n}$, contact force $\bm{f}_c$ and friction moment $\bm{m}_n$.}
+		\caption{\gls{sf} in point $\vec{c}$ with normal $\vec{n}$, contact force $\vec{f}_c$ and friction moment $\vec{m}_n$.}
 		\label{fig:sf}
 	\end{subfigure}
 	   \caption{The three most commonly used contact models.}
@@ -42,7 +42,7 @@ The \gls{hf} model, as shown in \figref{fig:hf}, is representative when the fric
 where $f_c$ is the magnitude of the contact force, $f_t$ is the magnitude of the tangential force, $f_x$, $f_y$ and $f_z$ are the magnitudes of the $x$, $y$ and $z$ components of the contact force and $\mu$ is the friction coefficient~\cite[Chapter 37]{handbook-of-robotics}. The angle of the cone $\beta$ can be computed based on $\mu$ as
 %
 \begin{equation} 
-	\beta = \tan^{-1} (\mu).
+	\beta = \tan\inv (\mu).
 	\label{eq:hf-cone-angle}
 \end{equation}
 
@@ -54,17 +54,19 @@ can only be derived for a limited number of special cases, the general case is a
 	\mathcal{C}_{f,\text{SF}} = \left\{ \; f_c \; \middle| \; f_t^2 + \frac{m_n^2}{e_n^2} \le \mu^2 P^2 \right\} \qquad , \qquad f_t = \sqrt{f_x^2 + f_y^2}.
 	\label{eq:sf}
 \end{equation}
-This formulation forms an ellipsoid $\mathcal{C}_{f,\text{SF}}$ describing the relation between the tangential force $\bm{f}_t$ and friction moment $\bm{m}_n$. Here $f_c$ is the magnitude of the contact force, $f_t$ is the magnitude of the of the tangential force, $m_n$ is the magnitude of the frictional moment, $e_n$ is the eccentricity parameter i.e. the height of the aforementioned ellipsoid, $\mu$ is the friction coefficient and $P$ is the magnitude of the load applied from the contact point along the contact normal $\bm{n}$~\cite{practical-force-motion-models-for-sliding-manipulation}~\cite{soft-finger-model-with-adaptive-contact-geometry-for-grasping-and-manipulation-tasks}. \medskip
+This formulation forms an ellipsoid $\mathcal{C}_{f,\text{SF}}$ describing the relation between the tangential force $\vec{f}_t$ and friction moment $\vec{m}_n$. Here $f_c$ is the magnitude of the contact force, $f_t$ is the magnitude of the of the tangential force, $m_n$ is the magnitude of the frictional moment, $e_n$ is the eccentricity parameter i.e. the height of the aforementioned ellipsoid, $\mu$ is the friction coefficient and $P$ is the magnitude of the load applied from the contact point along the contact normal $\vec{n}$~\cite{practical-force-motion-models-for-sliding-manipulation}~\cite{soft-finger-model-with-adaptive-contact-geometry-for-grasping-and-manipulation-tasks}. \medskip
 
-Based on the contact model categories described above, the most representative is the \gls{sf} models since these can provide descriptions of the contact surface topology, and thus enable the solving of the 
+Based on the contact model categories described above, the most representative is the \gls{sf} models since these can provide descriptions of the contact surface topology, and thus enable the reconstruction of the contact shape from the application of a force distribution~\cite{contact-mechanics} i.e. the \gls{iep}. Furthermore friction is crucial in order to manipulate objects in-hand, which is also provided by these models.
 
-\colorbox{red}{Insert reference to IEP definition along with description}
+% modeling of the robot hand and contact
 
-\gls{iep} by deriving surface features for pose estimation. Furthermore in order to manipulate objects in-hand and ensuring force closure modeling friction is crucial, which is also provided by these models. An illustration of the system as a \gls{sf} with friction cone and pressure distribution can be seen in \figref{fig:friction-contact-distribution}, 
 
-while \figref{fig:force-closure-model} shows the model enabling force closure 
+ An illustration of the system as a \gls{sf} with friction cone and pressure distribution can be seen in \figref{fig:friction-contact-distribution}, while \figref{fig:force-closure-model} shows the model enabling force closure if the composite wrench cone contains the entire wrench space, so that any external wrench F ext on the body can be balanced by contact forces."~\cite{modern-robotics-mechanics-planning-and-control}
 
-\colorbox{red}{Insert reference to IEP force closure along with description}
+force closure 
+
+form-closed, if it is impossible to move the object, even infinitesimally. Under the same conditions, the grasp has force closure, or the object is force-closed, if for any non-contact wrench experienced by the object, contact wrench intensities exist that satisfy the dynamics of the and are consistent with the constraints imposed by the friction models applicable at the contact points~\cite{handbook-of-robotics}
+
 
 about the object $\{O\}$, where the external force is represented as gravity which is a common occurrence.
 
@@ -101,14 +103,15 @@ about the object $\{O\}$, where the external force is represented as gravity whi
     \end{minipage}%
 \end{center}
 
-Within these figures $p(r)$ is the pressure distribution often as a function of the contact surface's radius $r$ assuming a non-conforming contact case. $\bm{f}_N$ is the normal force of the object acting on the \gls{ee} in the contact point $\bm{c}$, $\bm{f}_f$ is the friction force opposing the external force $\bm{f}_{\text{ext}}$ which often comes in the form of gravity $\bm{f}_g$ as see in \figref{fig:force-closure-model}.
+Within these figures $p(r)$ is the pressure distribution often as a function of the contact surface's radius $r$ assuming a non-conforming contact case. $\vec{f}_N$ is the normal force of the object acting on the \gls{ee} in the contact point $\vec{c}$, $\vec{f}_f$ is the friction force opposing the external force $\vec{f}_{\text{ext}}$ which often comes in the form of gravity $\vec{f}_g$ as see in \figref{fig:force-closure-model}.
 
 % make the object identical to the one in the previous figure + finger tip contour from contact models
+% see notion page
 
 \begin{figure}[h]
 	\begin{small}
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{chapters/modeling/fig/kinematic-tree-manipulator.pdf}
+			\includegraphics[width=0.8\textwidth]{chapters/modeling/fig/kinematic-tree-manipulator-crop.pdf}
 		\end{center}
 		\caption{The model of the world representation for this project.}
 		\label{fig:full-system-model}

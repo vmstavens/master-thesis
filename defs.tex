@@ -74,6 +74,7 @@
 
 \usepackage{amsmath}
 \newtheorem{problem}{Problem}
+
 % \theoremstyle{remark}
 
 \usepackage{amsmath, bm}
@@ -89,9 +90,11 @@
 \usepackage{xstring}
 \usepackage{xspace}
 
+
+
+
 \newcommand{\fakecite}[0]{\hl{\textbackslash cite}\xspace}
-% \renewcommand{\vec}[1]{\ensuremath{\bm{#1}}} % vector [amsmath, bm]
-\renewcommand{\vec}[1]{\ensuremath{\bm{\mathrm{#1}}}} % matrix [amsmath, bm]
+\renewcommand{\vec}[1]{\ensuremath{\bm{#1}}} % vector [amsmath, bm]
 \newcommand{\mat}[1]{\ensuremath{\bm{\mathrm{#1}}}} % matrix [amsmath, bm]
 \newcommand{\T}[0]{\ensuremath{^\mathsf{T}}} % transpose ^T
 \newcommand{\inv}[0]{\ensuremath{^{-1}}} % inverse ^{-1}
@@ -245,14 +248,23 @@
 \usepackage{hyperref}
 
 % Label counter formatting (e.g. Figure 1 or Figure 2.1)
-% used for continuous numbering (1, 2, 3 ..) through all chapters
+% In case you want the numbering to to start with the chapter number e.g. 1.1 1.2 1.3 for chapter 1 figures, use this instead of the one below
 \usepackage{chngcntr} 
 \AtBeginDocument{%
-    \counterwithout{figure}{section}
-    \counterwithout{table}{section}
-    \counterwithout{equation}{section}
-    \counterwithout{lstlisting}{section}
+    \counterwithin{figure}{chapter}
+    \counterwithin{table}{chapter}
+    \counterwithin{equation}{chapter}
+    \counterwithin{lstlisting}{chapter}
 }
+
+% In case you want the numbering to continue between chapters e.g. 1 2 3 4 5, use this instead of the one above
+% \usepackage{chngcntr} 
+% \AtBeginDocument{%
+%     \counterwithout{figure}{chapter}
+%     \counterwithout{table}{chapter}
+%     \counterwithout{equation}{chapter}
+%     \counterwithout{lstlisting}{chapter}
+% }
 
 % Glossaries and acronyms
 % must be loaded last + no empty includes in main document.
