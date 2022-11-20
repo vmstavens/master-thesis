@@ -9,7 +9,9 @@
 
 % Font, line height, paragraph indentation
 % \usepackage{mathptmx} % Times New Roman
-\usepackage{newtxtext, newtxmath} % Times New Roman (Modern + Math symbols)
+\usepackage{newtxtext} % Times New Roman (Modern + Math symbols)
+\usepackage[varvw]{newtxmath} % Times New Roman (Modern + Math symbols)
+
 \linespread{1.2}
 \setlength{\parindent}{0pt}
 % \usepackage{setspace}
@@ -96,7 +98,7 @@
 \newcommand{\fakecite}[0]{\hl{\textbackslash cite}\xspace}
 \renewcommand{\vec}[1]{\ensuremath{\bm{#1}}} % vector [amsmath, bm]
 \newcommand{\mat}[1]{\ensuremath{\bm{\mathrm{#1}}}} % matrix [amsmath, bm]
-\newcommand{\T}[0]{\ensuremath{^\mathsf{T}}} % transpose ^T
+\newcommand{\T}[0]{\top} % transpose ^T
 \newcommand{\inv}[0]{\ensuremath{^{-1}}} % inverse ^{-1}
 \newcommand{\pinv}[0]{\ensuremath{^{\dagger}}} % pseudo-inverse ^{-1}
 \newcommand{\rvec}[1]{\ensuremath{\renewcommand{\arraystretch}{0.6}\begin{bmatrix} #1 \end{bmatrix}}}
@@ -107,6 +109,7 @@
 \newcommand{\tf}[3][T]{\ensuremath{{\mat{#1}^{#2}_{#3}}}}
 \newcommand{\highlight}[1]{\hl{#1}\xspace}
 \newcommand*\of{\qty} % $f\of(x)$
+\newcommand{\R}[0]{\mathbb{R}} % real number R
 
 % usage: \tf{from}{to} | \tf[T]{from}{to} | \tf[R]{from}{to} | \tf[t]{from}{to} etc.
 % \newcommand{\tf}[3][T]{%
