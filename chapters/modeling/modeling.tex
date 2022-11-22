@@ -56,7 +56,7 @@ can only be derived for a limited number of special cases, the general case is a
 \end{equation}
 This formulation forms an ellipsoid $\mathcal{C}_{f,\text{SF}}$ describing the relation between the tangential force $\vec{f}_t$ and friction moment $\vec{m}_n$. Here $f_c$ is the magnitude of the contact force, $f_t$ is the magnitude of the of the tangential force, $m_n$ is the magnitude of the frictional moment, $e_n$ is the eccentricity parameter i.e. the height of the aforementioned ellipsoid, $\mu$ is the friction coefficient and $P$ is the magnitude of the load applied from the contact point along the contact normal $\vec{n}$~\cite{practical-force-motion-models-for-sliding-manipulation}~\cite{soft-finger-model-with-adaptive-contact-geometry-for-grasping-and-manipulation-tasks}. \medskip
 
-Based on the contact model categories described above, the most representative is the \gls{sf} models since these can provide descriptions of the contact surface topology, and thus enable the reconstruction of the contact shape from the application of a force distribution~\cite{contact-mechanics} i.e. the \gls{iep}. Furthermore friction is crucial in order to manipulate objects in-hand, which is also provided by these models. An illustration of the system as a \gls{sf} with friction cone and pressure distribution can be seen in \figref{fig:friction-contact-distribution}, while \figref{fig:force-closure-model} shows the model enabling force closure i.e. the composite wrench cone contains the entire wrench space, so that any external wrench $\vec{w}_{\text{ext}}$ on the body can be balanced by contact forces~\cite{modern-robotics-mechanics-planning-and-control}.
+Based on the contact model categories described above, the most representative is the \gls{sf} models since these can provide descriptions of the contact surface shape, and thus enable the reconstruction of the contact shape from the application of a force distribution~\cite{contact-mechanics} i.e. the \gls{iep}. Furthermore friction is crucial in order to manipulate objects in-hand, which is also provided by these models. An illustration of the system as a \gls{sf} with friction cone and pressure distribution can be seen in \figref{fig:friction-contact-distribution}, while \figref{fig:force-closure-model} shows the model enabling force closure i.e. the composite wrench cone contains the entire wrench space, so that any external wrench $\vec{w}_{\text{ext}}$ on the body can be balanced by contact forces~\cite{modern-robotics-mechanics-planning-and-control}.
 
 \begin{center}
     \renewcommand{\arraystretch}{1.2}
@@ -91,13 +91,17 @@ Based on the contact model categories described above, the most representative i
     \end{minipage}%
 \end{center}
 
-When modeling the kinematics of a humanoid gripper with frame $\{H\}$ in world frame $\{W\}$ interacting with an object with frame $\{O\}$ the different parameters and modeling is necessary. In this system the object with position $\vec{p}\in\R^3$ and pose $\vec{u}\in\R^6$, with the orientation either being represented as a four dimensional quaternion or a three dimensional Euler angle, makes contact with the gripper in points $\vec{c}_i$. Said contact points has have frames $\{C\}_i$ with axes $\{\vec{n}_i,\vec{t}_i,\vec{o}_i\}$, where $\vec{n}_i$ points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of $\{O\}$ described in $\{W\}$ is denoted $\vec{\nu} = \rvec{\vec{v}^\T\; \vec{\omega}^\T}^\T $ while the wrench is $\vec{w} = \rvec{\vec{f}^\T\; \vec{m}^\T}^\T$
+When modeling the kinematics of a humanoid gripper with frame $\{H\}$ in world frame $\{W\}$ interacting with an object with frame $\{O\}$ the different parameters and modeling is necessary. In this system the object with position $\vec{p}\in\R^3$ and pose $\vec{u}\in\R^6$, with the orientation either being represented as a four dimensional quaternion or a three dimensional Euler angle, makes contact with the gripper in points $\vec{c}_i$. Said contact points has have frames $\{C\}_i$ with axes $\{\vec{n}_i,\vec{t}_i,\vec{o}_i\}$, where $\vec{n}_i$ points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of $\{O\}$ described in $\{W\}$ is denoted $\vec{\nu} = \rvec{\vec{v}^\T\; \vec{\omega}^\T}^\T\in\R^6 $ while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is $\vec{w} = \rvec{\vec{f}^\T\; \vec{m}^\T}^\T\in\R^6$. \medskip
 
-The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1,\;\tau_2,\;\dots,\;\tau_{n_q},\;}^\T\in\R^{n_q}$
+The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1,\;\tau_2,\;\dots,\;\tau_{n_q}\;}^\T\in\R^{n_q}$
 
-About the object $\{O\}$, where the external force is represented as gravity which is a common occurrence.
+% 
 
-Within these figures $p(r)$ is the pressure distribution often as a function of the contact surface's radius $r$ assuming a non-conforming contact case. $\vec{f}_N$ is the normal force of the object acting on the \gls{ee} in the contact point $\vec{c}$, $\vec{f}_f$ is the friction force opposing the external force $\vec{f}_{\text{ext}}$ which often comes in the form of gravity $\vec{f}_g$ as see in \figref{fig:force-closure-model}.
+
+
+% About the object $\{O\}$, where the external force is represented as gravity which is a common occurrence.
+
+% Within these figures $p(r)$ is the pressure distribution often as a function of the contact surface's radius $r$ assuming a non-conforming contact case. $\vec{f}_N$ is the normal force of the object acting on the \gls{ee} in the contact point $\vec{c}$, $\vec{f}_f$ is the friction force opposing the external force $\vec{f}_{\text{ext}}$ which often comes in the form of gravity $\vec{f}_g$ as see in \figref{fig:force-closure-model}.
 
 % make the object identical to the one in the previous figure + finger tip contour from contact models
 % see notion page
@@ -112,7 +116,9 @@ Within these figures $p(r)$ is the pressure distribution often as a function of 
 	\end{small}
 \end{figure}
 
-With the contact model described, a segment of the kinematic tree of the \gls{ee} can be seen in \figref{fig:full-system-model}. Here $q_{thi}$ is the angle of the $i$'th joint in the thumb which here is the only finger depicted, $\boldsymbol{\tau}_{thi}$ is the torque exerted by said joint, $\{W\}$ is the world frame, $\{O\}$ is the object's frame and $\{H\}$ is the robotic hand's frame. While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.\medskip
+% With the contact model described, a segment of the kinematic tree of the \gls{ee} can be seen in \figref{fig:full-system-model}. Here $q_{thi}$ is the angle of the $i$'th joint in the thumb which here is the only finger depicted, $\boldsymbol{\tau}_{thi}$ is the torque exerted by said joint, $\{W\}$ is the world frame, $\{O\}$ is the object's frame and $\{H\}$ is the robotic hand's frame. 
+
+While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.\medskip
 
 To determine which methods best describe the models presented above for this project, the \gls{sota} will be presented in \chapref{ch:state-of-the-art}.
 

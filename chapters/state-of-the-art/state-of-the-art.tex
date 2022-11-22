@@ -2,45 +2,10 @@
 
 \section{Problem 1 - Tactile Perception}\label{sec:lit-rev-problem-1}
 
-Based on the contact model categories described above, the most representative is \gls{sf} since these can provide descriptions of the contact surface topology, and thus enable the solving of the \gls{iep} by deriving surface features for pose estimation. Furthermore these represent friction forces and moments which in needed in order to manipulate objects in-hand and ensuring force closure.\medskip
-
-% \begin{center}
-%     \renewcommand{\arraystretch}{1.2}
-%     \begin{minipage}{.48\linewidth}
-%         \vspace{0pt}
-%         \centering
-%         \includegraphics[width=.95\textwidth]{chapters/modeling/fig/friction-cone-schematic.pdf}
-%     \end{minipage}%
-%     \hfill%
-%     \begin{minipage}{.48\linewidth}
-%         \vspace{0pt}
-%         \centering
-%         \includegraphics[width=.95\textwidth]{chapters/modeling/fig/contact-surface.pdf}
-%     \end{minipage}%
-%     %    
-%     \vspace{15pt}
-%     %
-%     \begin{minipage}[t]{.48\linewidth}
-%         \vspace{0pt}
-%         \captionsetup{type=figure}
-%         \captionof{figure}{Single point contact model between compliant manipulator surface and object surface.}
-%         \label{fig:contact-single-point}
-%     \end{minipage}%
-%     \hfill%
-%     \begin{minipage}[t]{.48\linewidth}
-%         \vspace{0pt}
-%         \captionsetup{type=figure}
-%         \captionof{figure}{Contact model of the pressure distribution $p(r)$ caused by the increased force applied from the \gls{ee}'s finger to the object.}
-%         \label{fig:contact-surface}
-%     \end{minipage}%
-% \end{center}
-
-
-% subcategories of sf models
-Within the category of \gls{sf} models a method fit for this project's use case is to be chosen to solve problem \ref{prob:1}. \gls{sf} models can furthermore be divided up into three different categories: \gls{aebm}, \gls{efm} and \gls{fem}~\cite{a-modified-elastic-foundation-contact-model-for-application-in-3d-models-of-the-prosthetic-knee}. \medskip
-
-% reformulate
-\gls{aebm} are theoretical formulations of elastic contact areas and the stresses on both the surfaces and the sub-surfaces of the contacting bodies. These types of formulations however are often restricted to describing simple contact geometries. The first of such models was introduced by Heinrich Rudolf Hertz in 1882~\cite{on-the-contact-of-rigid-elastic-solids-and-on-hardness} and is still used for simple contact cases. In the formulation of the Hertzian contact model two assumptions are made: Objects in contact are made of linear elastic materials and only small contact deformations occur compared to the dimension of object. However, robotic \gls{ee} fingertips are often made of nonlinear elastic materials and for that reason the Hertzian contact model does not represent the type of contact in this project~\cite[Chapter 37]{handbook-of-robotics}. To improve on the Hertzian model, a more generic formulation can be made which extends the model from linear to nonlinear elastic contacts~\cite{modeling-of-contact-mechanics-and-friction-limit-surfaces-for-soft-fingers-in-robotics-with-experimental-results}~\cite{the-haptic-and-perceptional-characteristics-of-an-anthropomorphic-curved-soft-finger-structure}. This power-law formulation subsumes the Hertzian contact theory while assuming a circular contact area. Other models have been purposed which combine the descriptions of both friction-contact and the shear-torsion as experienced by the bodies~\cite{the-sliding-of-robot-fingers-under-combined-torsion-and-shear-loading}. \medskip
+Based on the contact model categories described in \chapref{ch:modeling}, the most representative was chosen to be \gls{sf} models. 
+% since these can provide descriptions of the contact surface shape, and thus enable the solving of the \gls{iep} by deriving surface features for pose estimation. Furthermore these represent friction forces and moments which in needed in order to manipulate objects in-hand and ensuring force closure. 
+Within the category of \gls{sf} models, a method fit for this project's use case is to be chosen to solve problem \ref{prob:1}. \gls{sf} models can furthermore be divided up into three different categories: \gls{aebm}, \gls{efm} and \gls{fem}~\cite{a-modified-elastic-foundation-contact-model-for-application-in-3d-models-of-the-prosthetic-knee}. \medskip
+\gls{aebm} are theoretical formulations of elastic contact areas and the stresses on both the surfaces and the sub-surfaces of the contacting bodies. The first of such models was introduced by Heinrich Rudolf Hertz in 1882~\cite{on-the-contact-of-rigid-elastic-solids-and-on-hardness} and is still used for simple contact cases. In the formulation of the Hertzian contact model two assumptions are made: Objects in contact are made of linear elastic materials and only small contact deformations occur compared to the dimension of object. However, robotic \gls{ee} fingertips are often made of nonlinear elastic materials and for that reason the Hertzian contact model does not represent the type of contact in this project~\cite[Chapter 37]{handbook-of-robotics}. To improve on the Hertzian model, a more generic formulation can be made which extends the model from linear to nonlinear elastic contacts~\cite{modeling-of-contact-mechanics-and-friction-limit-surfaces-for-soft-fingers-in-robotics-with-experimental-results}~\cite{the-haptic-and-perceptional-characteristics-of-an-anthropomorphic-curved-soft-finger-structure}. This power-law formulation subsumes the Hertzian contact theory while assuming a circular contact area. Other models have been purposed which combine the descriptions of both friction-contact and the shear-torsion as experienced by the bodies~\cite{the-sliding-of-robot-fingers-under-combined-torsion-and-shear-loading}. \medskip
 
 However, in order to more accurately describe the contacts involving robot fingers, viscoelastic soft contact model appear more relevant due to such fingers often being made of materials which show viscoelastic properties e.g., rubber, silicone and polymers. Simple models such as  Kelvin-Voigt's~\cite{viscoelasticity} and Maxwell's~\cite{on-the-dynamical-theory-of-gases} models describe the interaction between strain and stress as a spring damper system in a serial or in a parallel configuration respectively. Models which expand on this idea describe the reacting force as the product of the temporal and the elastic response, while incorporating previous stress responses~\cite{mechanical-properties-and-active-remodeling-of-blood-vessels}. To simplify this formulation alternatives have been developed to assume no past stress~\cite{modeling-of-viscoelastic-contacts-and-evolution-of-limit-surface-for-robotic-contact-interface}~\cite{characteristics-of-contact-and-limit-surface-for-viscoelastic-fingers}~\cite{effect-of-layer-compliance-on-frictional-behavior-of-soft-robotic-fingers}. Upon these, more modern techniques have been developed which has seen use in similar use cases as the ones of interest in this project. 
 % AEBM modern method 2 - A new algorithm for computing the indentation of a rigid body - reformulate - are frictionless MIM (matrix inversion).
