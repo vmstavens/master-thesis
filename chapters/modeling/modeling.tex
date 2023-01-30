@@ -32,6 +32,7 @@ In order to model the contact between the \gls{ee}'s tactile sensors, eight diff
 % no friction
 The \gls{pwof} model, as shown in \figref{fig:pwof}, can only represent forces along with the normal of the object's surface at the point of contact and thus the model does not support surface deformations between the two contacting objects. This model is applied in cases where very little deformation is present, along with the contact having a friction coefficient approximately equal to zero~\cite[Chapter 38]{handbook-of-robotics}.\medskip
 
+
 % Hard finger
 The \gls{hf} model, as shown in \figref{fig:hf}, is representative when the friction between objects is great enough to be significant, while the contact deformation is small enough to ignore friction moments and deformations~\cite[Chapter 38]{handbook-of-robotics}. To model the friction acting on the contact point a great number of methods exist, a very common one being the Column friction with different modifications depending on the use case~\cite{modelling-of-joint-friction-in-robotic-manipulators-with-gear-transmissions}. Since this model is described in terms of a Coulomb friction, the friction cone $\mathcal{C}_{f,\text{HF}}$ can be mathematically formulated as
 %
@@ -93,9 +94,8 @@ Based on the contact model categories described above, the most representative i
 
 When modeling the kinematics of a humanoid gripper with frame $\{H\}$ in world frame $\{W\}$ interacting with an object with frame $\{O\}$ the different parameters and modeling is necessary. In this system the object with position $\vec{p}\in\R^3$ and pose $\vec{u}\in\R^6$, with the orientation either being represented as a four dimensional quaternion or a three dimensional Euler angle, makes contact with the gripper in points $\vec{c}_i$. Said contact points has have frames $\{C\}_i$ with axes $\{\vec{n}_i,\vec{t}_i,\vec{o}_i\}$, where $\vec{n}_i$ points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of $\{O\}$ described in $\{W\}$ is denoted $\vec{\nu} = \rvec{\vec{v}^\T\; \vec{\omega}^\T}^\T\in\R^6 $ while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is $\vec{w} = \rvec{\vec{f}^\T\; \vec{m}^\T}^\T\in\R^6$. \medskip
 
-The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1,\;\tau_2,\;\dots,\;\tau_{n_q}\;}^\T\in\R^{n_q}$
+The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1,\;\tau_2,\;\dots,\;\tau_{n_q}\;}^\T\in\R^{n_q}$.
 
-% 
 
 
 
@@ -120,7 +120,12 @@ The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q
 
 While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.\medskip
 
+To model the interaction between the 
+
+\textcolor{red}{Describe the grasp matrix and hand jacobian and how these can be used to transform from between frames both related to twist and wrench.}
+
 To determine which methods best describe the models presented above for this project, the \gls{sota} will be presented in \chapref{ch:state-of-the-art}.
+
 
 % grasp calculus
 	% The hand-book-of-robotics chapter 38

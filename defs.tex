@@ -67,6 +67,8 @@
 % \captionsetup[subtable]{aboveskip=10pt,belowskip=0pt}
 }
 
+
+
 % Array
 \usepackage{array}
 \usepackage{textpos}
@@ -232,9 +234,6 @@
 \newcommand{\meta}[1]{ \tikz[baseline=(X.base)]\node [draw=metaorange,fill=metaorange,semithick,rectangle,inner sep=2.5pt, rounded corners=2pt] (X) {  \textbf{\textcolor{white}{\textsf{#1}}}}; \hphantom}
 \newcommand{\pkg}[1] { \tikz[baseline=(X.base)]\node [draw=blue,fill=blue,semithick,rectangle,inner sep=1.3pt, rounded corners=2pt] (X)             {  \textbf{\textcolor{white}{\textsf{#1}}}}; \hphantom}
 
-
-
-
 % Appendices
 \usepackage[toc]{appendix}
 
@@ -259,6 +258,9 @@
     \counterwithin{equation}{chapter}
     \counterwithin{lstlisting}{chapter}
 }
+
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
 
 % In case you want the numbering to continue between chapters e.g. 1 2 3 4 5, use this instead of the one above
 % \usepackage{chngcntr} 
