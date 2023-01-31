@@ -94,17 +94,18 @@
 \usepackage{xstring}
 \usepackage{xspace}
 
-
-
-
 \newcommand{\fakecite}[0]{\hl{\textbackslash cite}\xspace}
 \renewcommand{\vec}[1]{\ensuremath{\bm{#1}}} % vector [amsmath, bm]
+
 \newcommand{\mat}[1]{\ensuremath{\bm{\mathrm{#1}}}} % matrix [amsmath, bm]
 \newcommand{\T}[0]{\top} % transpose ^T
 \newcommand{\inv}[0]{\ensuremath{^{-1}}} % inverse ^{-1}
 \newcommand{\pinv}[0]{\ensuremath{^{\dagger}}} % pseudo-inverse ^{-1}
+
 \newcommand{\rvec}[1]{\ensuremath{\renewcommand{\arraystretch}{0.6}\begin{bmatrix} #1 \end{bmatrix}}}
+\newcommand{\rlist}[1]{\ensuremath{\renewcommand{\arraystretch}{0.6}\begin{Bmatrix} #1 \end{Bmatrix}}}
 \newcommand{\cvec}[1]{\ensuremath{\renewcommand{\arraystretch}{1.0}\begin{bmatrix} #1 \end{bmatrix}}}
+
 \newcommand{\twodots}{\mathinner {\ldotp \ldotp}} % .. (two dots)
 \renewcommand{\secref}[1]{\hyperref[#1]{\ref*{#1}\ \nameref*{#1}}}
 % \newcommand{\tf}[3][T]{\ensuremath{\tensor[^{#2}]{\mat{#1}}{_{#3}}}}
@@ -112,6 +113,14 @@
 \newcommand{\highlight}[1]{\hl{#1}\xspace}
 \newcommand*\of{\qty} % $f\of(x)$
 \newcommand{\R}[0]{\mathbb{R}} % real number R
+
+\newcommand{\mvar}[1]{$#1$} % environment for mathematical variable $f(x)$ => \mvar{f(x)}
+\newcommand{\robframe}[1]{\mvar{\{#1\} }}
+\newcommand{\inR}[1]{ \mvar{\in\R^{#1} }}
+
+\newcommand{\Csf}{\mathcal{C}_{f,\text{SF}} }
+\newcommand{\Chf}{\mathcal{C}_{f,\text{HF}} }
+
 
 % usage: \tf{from}{to} | \tf[T]{from}{to} | \tf[R]{from}{to} | \tf[t]{from}{to} etc.
 % \newcommand{\tf}[3][T]{%
@@ -205,7 +214,7 @@
 
 % Code snippets formatting
 \lstset{
-    backgroundcolor=\color{black!5},        % set backgroundcolor
+    backgroundcolor=\color{black!5},        % set background color
     basicstyle=\footnotesize\ttfamily,      % basic font setting
     captionpos=b,                           % caption position
     frame=single,                           % draw a frame at the top and bottom of the code block
@@ -243,14 +252,21 @@
 \DeclareNameAlias{sortname}{family-given}
 \DeclareNameAlias{default}{family-given}
 
-\addbibresource{resources.bib}
+% resources
+% \addbibresource{../resources/resources.bib}
+\addbibresource{resources/resources-words.bib}
+\addbibresource{resources/resources-introduction.bib}
+\addbibresource{resources/resources-modeling.bib}
+\addbibresource{resources/resources-sota-tactile-perception.bib}
+\addbibresource{resources/resources-sota-pose-estimation.bib}
+\addbibresource{resources/resources-sota-in-hand-manipulation.bib}
 
 % Section cross-referencing
 \usepackage{nameref}
 \usepackage{hyperref}
 
 % Label counter formatting (e.g. Figure 1 or Figure 2.1)
-% In case you want the numbering to to start with the chapter number e.g. 1.1 1.2 1.3 for chapter 1 figures, use this instead of the one below
+% In case you want the numbering to start with the chapter number e.g. 1.1 1.2 1.3 for chapter 1 figures, use this instead of the one below
 \usepackage{chngcntr} 
 \AtBeginDocument{%
     \counterwithin{figure}{chapter}

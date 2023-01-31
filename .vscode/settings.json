@@ -1,3 +1,9 @@
 {
-	"ros.distro": "noetic"
+	"ros.distro": "noetic",
+	"grammarly.selectors": [
+		{
+			"language": "latex",
+			"scheme": "file"
+		}
+	]
 }
