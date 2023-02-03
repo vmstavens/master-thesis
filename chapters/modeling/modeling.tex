@@ -30,23 +30,33 @@ To model the contact between the \gls{ee}'s tactile sensors, eight different mod
 \end{figure}
 
 % no friction
-The \gls{pwof} model, as shown in \figref{fig:pwof}, can only represent forces along with the normal of the object's surface at the point of contact and thus the model does not support surface deformations between the two contacting objects. This model is applied in cases where very little deformation is present, along with the contact having a friction coefficient approximately equal to zero~\cite[Chapter 38]{handbook-of-robotics}.\medskip
+The \gls{pwof} model, as shown in \figref{fig:pwof}, can only represent forces along with the normal \mvar{\vec{n}\inR{3}} of the object's surface at the point of contact and thus the model does not support surface deformations between the two contacting objects. This model is applied in cases where very little deformation is present, along with the contact having a friction coefficient approximately equal to zero~\cite[Chapter 38]{handbook-of-robotics}.\medskip
 
 
 % Hard finger
-The \gls{hf} model, as shown in \figref{fig:hf}, is representative when the friction between objects is great enough to be significant, while the contact deformation is small enough to ignore friction moments and deformations~\cite[Chapter 38]{handbook-of-robotics}. To model the friction acting on the contact point a great number of methods exist, a very common one being the Column friction with different modifications depending on the use case~\cite{modelling-of-joint-friction-in-robotic-manipulators-with-gear-transmissions}. Since this model is described in terms of Coulomb friction, the friction cone $\Chf$ can be mathematically formulated as
+The \gls{hf} model, as shown in \figref{fig:hf}, is representative when the friction between objects is great enough to be significant, while the contact deformation is small enough to ignore friction moments and deformations~\cite[Chapter 38]{handbook-of-robotics}. To model the friction acting on the contact point a great number of methods exist, a common one being the Coulomb friction with different modifications depending on the use case~\cite{modelling-of-joint-friction-in-robotic-manipulators-with-gear-transmissions}. 
+This model states that the frictional force acting on an object can be formulated as
 %
-\begin{equation} 
-	\Chf = \left\{ \; f_c\; \middle|\; f_{t} \le \mu f_z,\; \mu f_z \ge 0 \; \right\} \qquad , \qquad f_t = \sqrt{f_x^2 + f_y^2},
-	\label{eq:hf}
-\end{equation}
-where \mvar{f_c} is the magnitude of the contact force, \mvar{f_t} is the magnitude of the tangential force, \mvar{f_x}, \mvar{f_y} and \mvar{f_z} are the magnitudes of the \mvar{x}, \mvar{y} and \mvar{z} components of the contact force ($\vec{f}_c$) and \mvar{\mu} is the friction coefficient~\cite[Chapter 37]{handbook-of-robotics}. The angle of the cone \mvar{\beta} can be computed based on \mvar{\mu} as
-%
-\begin{equation} 
-	\beta = \tan\inv (\mu).
-	\label{eq:hf-cone-angle}
+\begin{equation}
+	f_f = f_N \mu,
+	\label{eq:coulomb-friction}
 \end{equation}
 
+with \mvar{f_f} being the Coulomb friction, \mvar{f_N} being the normal force in the point of contact and \mvar{\mu\in[0,1]} being the friction coefficient. One visualization of this linear relationship can be seen in the cones illustrated in \figref{fig:hf} and \figref{fig:sf}. These cones are referred to as friction cones, which for a hard finger model can be formulated as
+%
+\begin{equation} 
+	\Chf = \left\{ \; f_c\; \middle|\; f_{t} \le \mu f_z,\; \mu f_z \ge 0 \; \right\} \qquad , \qquad f_t = \sqrt{f_x^2 + f_y^2}.
+	\label{eq:hf}
+\end{equation}
+Here \mvar{f_c} is the magnitude of the contact force, \mvar{f_t} is the magnitude of the tangential force, \mvar{f_x}, \mvar{f_y} and \mvar{f_z} are the magnitudes of the \mvar{x}, \mvar{y} and \mvar{z} components of the contact force (\mvar{\vec{f}_c\inR{3}}) and \mvar{\mu} is the friction coefficient~\cite[Chapter 37]{handbook-of-robotics}. 
+Thus by applying a contact force with a normal component i.e. \mvar{f_z} such that \mvar{f_z\mu} stays greater than the magnitude of the tangential component \mvar{f_t}, the friction force will remain great enough to ensure neither object slips. Visually this is the case when the contact force \mvar{\vec{f}_c} stays within the friction cone, which is a grasp type referred to as force closure. A force that commonly contributes significantly to the tangential force is gravity when the object is held purely through friction. \medskip
+
+% The angle of the friction cone \mvar{\beta} can be computed based on \mvar{\mu} as
+% %
+% \begin{equation} 
+% 	\beta = \tan\inv (\mu).
+% 	\label{eq:hf-cone-angle}
+% \end{equation}
 % Soft finger
 The \gls{sf} model, as shown in \figref{fig:sf}, is used to represent scenarios where both friction and surface deformations are great enough to be impactful in the behavior of the system. Due to deformations of the finger, an additional torsional moment about the contact normal will be present~\cite[Chapter 38]{handbook-of-robotics}. While an analytical formulation for the \gls{sf} relation depends on the pressure distribution inside the contact, and can only be derived for a limited number of special cases, the general case is approximated using 
 %
@@ -54,7 +64,7 @@ The \gls{sf} model, as shown in \figref{fig:sf}, is used to represent scenarios 
 	\Csf = \left\{ \; f_c \; \middle| \; f_t^2 + \frac{m_n^2}{e_n^2} \le \mu^2 P^2 \right\} \qquad , \qquad f_t = \sqrt{f_x^2 + f_y^2}.
 	\label{eq:sf}
 \end{equation}
-This formulation forms an ellipsoid $\Csf$ describing the relation between the tangential force \vec{f_t} and friction moment $\vec{m}_n$. Here \mvar{f_c} is the magnitude of the contact force, \mvar{f_t} is the magnitude of the tangential force, \mvar{m_n} is the magnitude of the frictional moment, \mvar{e_n} is the eccentricity parameter i.e. the height of the aforementioned ellipsoid, \mvar{\mu} is the friction coefficient and \mvar{P} is the magnitude of the load applied from the contact point along the contact normal \vec{n}~\cite{practical-force-motion-models-for-sliding-manipulation, soft-finger-model-with-adaptive-contact-geometry-for-grasping-and-manipulation-tasks}. \medskip
+This formulation forms an ellipsoid $\Csf$ describing the relation between the tangential force \mvar{\vec{f}_t\inR{3}} and friction moment \mvar{\vec{m}_n \inR{3}}. Here \mvar{f_c} is the magnitude of the contact force, \mvar{f_t} is the magnitude of the tangential force, \mvar{m_n} is the magnitude of the frictional moment, \mvar{e_n} is the eccentricity parameter i.e. the height of the aforementioned ellipsoid, \mvar{\mu} is the friction coefficient and \mvar{P} is the magnitude of the pressure applied from the contact point along the contact normal \vec{n}~\cite{practical-force-motion-models-for-sliding-manipulation, soft-finger-model-with-adaptive-contact-geometry-for-grasping-and-manipulation-tasks}. \medskip
 
 Based on the contact model categories described above, the most representative is the \gls{sf} models since these can provide descriptions of the contact surface shape, and thus enable the reconstruction of the contact shape from the application of a force distribution~\cite{contact-mechanics} i.e. the \gls{iep}. Furthermore, friction is crucial to manipulate objects in hand, which is also provided by these models. An illustration of the system as a \gls{sf} with friction cone and pressure distribution can be seen in \figref{fig:friction-contact-distribution}, while \figref{fig:force-closure-model} shows the model enabling force closure i.e. the composite wrench cone contains the entire wrench space so that any external wrench \vec{w_{\text{ext}}} on the body can be balanced by contact forces~\cite{modern-robotics-mechanics-planning-and-control}.
 %
@@ -90,7 +100,7 @@ Based on the contact model categories described above, the most representative i
         \label{fig:force-closure-model}
     \end{minipage}%
 \end{center}
-When modeling the kinematics of a humanoid gripper with frame \robframe{H} in world frame \robframe{W} interacting with an object with frame \robframe{O} the different parameters and modeling are necessary. In this system the object with position \vec{p}\inR{3} and pose \vec{u}\inR{6}, with the orientation either being represented as a four-dimensional quaternion or a three-dimensional Euler angle, makes contact with the gripper in points $\vec{c}_i$. Said contact points have frames \robframe{C} with axes \rlist{\vec{n}_i,\vec{t}_i,\vec{o}_i}, where $\vec{n}_i$ points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of \robframe{O} described in \robframe{W} is denoted $\vec{\nu} = \rvec{\vec{v}^\T\; \vec{\omega}^\T}^\T\in\R^{6} $ while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is $\vec{w} = \rvec{\vec{f}^\T\; \vec{m}^\T}^\T\in\R^6$. \medskip
+When modeling the kinematics of a humanoid gripper with frame \robframe{H} in world frame \robframe{W} interacting with an object with frame \robframe{O} the different parameters and modeling are necessary. In this system the object with position \mvar{\vec{p}\inR{3}} and pose \mvar{\vec{u}\inR{6}}, with the orientation either being represented as a four-dimensional quaternion or a three-dimensional Euler angle, makes contact with the gripper in points \mvar{\vec{c}_i}. Said contact points have frames \robframe{C} with axes \rlist{\vec{n}_i,\vec{t}_i,\vec{o}_i}, where \mvar{\vec{n}_i} points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of \robframe{O} described in \robframe{W} is denoted $\vec{\nu} = \rvec{\vec{v}^\T\; \vec{\omega}^\T}^\T\inR{6} $ while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is $\vec{w} = \rvec{\vec{f}^\T\; \vec{m}^\T}^\T\inR{6}$. \medskip
 
 The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1,\;\tau_2,\;\dots,\;\tau_{n_q}\;}^\T\in\R^{n_q}$.
 
@@ -118,7 +128,10 @@ The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q
 
 While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.\medskip
 
-To model the interaction between the 
+To model the interaction between the object and hand, grasp kinematics 
+
+The grasp matrix which relates the object's twist \vec{\nu} to the twist of each contact point
+
 
 \textcolor{red}{Describe the grasp matrix and hand jacobian and how these can be used to transform from between frames both related to twist and wrench.}
 
