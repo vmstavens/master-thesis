@@ -15,14 +15,14 @@ To model the contact between the \gls{ee}'s tactile sensors, eight different mod
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/modeling/fig/hf-crop.pdf}
-		\caption{\gls{hf} in point \vec{c} with normal \vec{n} and contact force \vec{f_c}.}
+		\caption{\gls{hf} in point \vec{c} with normal \vec{n} and contact force \mvar{\vec{f}_c}.}
 		\label{fig:hf}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/modeling/fig/sf-crop.pdf}
-		\caption{\gls{sf} in point \vec{c} with normal \vec{n}, contact force \vec{f_c} and friction moment \vec{m_n}.}
+		\caption{\gls{sf} in point \vec{c} with normal \vec{n}, contact force \mvar{\vec{f}_c} and friction moment \mvar{\vec{m}_n}.}
 		\label{fig:sf}
 	\end{subfigure}
 	   \caption{The three most commonly used contact models.}
@@ -30,7 +30,7 @@ To model the contact between the \gls{ee}'s tactile sensors, eight different mod
 \end{figure}
 
 % no friction
-The \gls{pwof} model, as shown in \figref{fig:pwof}, can only represent forces along with the normal \mvar{\vec{n}\inR{3}} of the object's surface at the point of contact and thus the model does not support surface deformations between the two contacting objects. This model is applied in cases where very little deformation is present, along with the contact having a friction coefficient approximately equal to zero~\cite[Chapter 38]{handbook-of-robotics}.\medskip
+The \gls{pwof} model, as shown in \figref{fig:pwof}, can only represent forces along with the normal \mvar{\vec{n}\inR{3}} of the object's surface at the point of contact \mvar{\vec{c}\inR{3}} and thus the model does not support surface deformations between the two contacting objects. This model is applied in cases where very little deformation is present, along with the contact having a friction coefficient approximately equal to zero~\cite[Chapter 38]{handbook-of-robotics}.\medskip
 
 
 % Hard finger
@@ -100,9 +100,9 @@ Based on the contact model categories described above, the most representative i
         \label{fig:force-closure-model}
     \end{minipage}%
 \end{center}
-When modeling the kinematics of a humanoid gripper with frame \robframe{H} in world frame \robframe{W} interacting with an object with frame \robframe{O} the different parameters and modeling are necessary. In this system the object with position \mvar{\vec{p}\inR{3}} and pose \mvar{\vec{u}\inR{6}}, with the orientation either being represented as a four-dimensional quaternion or a three-dimensional Euler angle, makes contact with the gripper in points \mvar{\vec{c}_i}. Said contact points have frames \robframe{C} with axes \rlist{\vec{n}_i,\vec{t}_i,\vec{o}_i}, where \mvar{\vec{n}_i} points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of \robframe{O} described in \robframe{W} is denoted $\vec{\nu} = \rvec{\vec{v}^\T\; \vec{\omega}^\T}^\T\inR{6} $ while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is $\vec{w} = \rvec{\vec{f}^\T\; \vec{m}^\T}^\T\inR{6}$. \medskip
+When modeling the kinematics of a humanoid gripper with frame \mvar{\robframe{H}\inR{4\times 4}} in world frame \mvar{\robframe{W}\inR{4\times 4}} interacting with an object with frame \mvar{\robframe{O}\inR{4\times 4}} the different parameters and modeling are necessary. In this system the object with position \mvar{\vec{p}\inR{3}} and pose \mvar{\vec{u}\inR{6}}, with the orientation either being represented as a four-dimensional quaternion or a three-dimensional Euler angle, makes contact with the gripper in points \mvar{\vec{c}_i\inR{3}}. Said contact points have frames \mvar{\robframe{C}_i\inR{4 \times 4}} with axes \mvar{\rlist{\vec{n}_i,\vec{t}_i,\vec{o}_i}\inR{3}}, where \mvar{\vec{n}_i\inR{3}} points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of \robframe{O} described in \robframe{W} is denoted $\vec{\nu} = \rvec{\vec{v}^\T\; \vec{\omega}^\T}^\T\inR{6} $ while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is $\vec{w} = \rvec{\vec{f}^\T\; \vec{m}^\T}^\T\inR{6}$. \medskip
 
-The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1,\;\tau_2,\;\dots,\;\tau_{n_q}\;}^\T\in\R^{n_q}$.
+The gripper has $n_q$ joints named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1,\;\tau_2,\;\dots,\;\tau_{n_q}\;}^\T\in\R^{n_q}$.
 
 
 
@@ -128,10 +128,36 @@ The gripper has $n_q$ joint named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q
 
 While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.\medskip
 
-To model the interaction between the object and hand, grasp kinematics 
+In this system, the twists and wrenches of contact point \mvar{\vec{c}_i\inR{3}} on the object and hand, given in contact frame \mvar{\robframe{C}_i} is referred to as \mvar{\vec{\nu}_{i,\xi}\inR{6}} and \mvar{\vec{w}_{i,\xi}\inR{6}}, with \mvar{\xi = \rlist{\text{obj}, \text{hnd}}}, respectively. Given multiple \gls{ee}s multiple contact points will exist, each with its twist and wrench. By concatenating these, two vectors can be expressed containing all twists and wrenches of the grasp, one for the object and one for the hand. These vectors are referred to as 
+%
+\begin{equation}
+	\vec{\nu}_{c,\xi} = \rvec{\vec{\nu}_{1,\xi}^\T, \vec{\nu}_{2,\xi}^\T, \ldots , \vec{\nu}_{n_c,\xi}^\T}^\T \inR{6\cdot n_c}
+	\label{eq:all-twists}
+\end{equation}
+%
+and
+\begin{equation}
+	\vec{w}_{c,\xi} = \rvec{\vec{w}_{1,\xi}^\T, \vec{w}_{2,\xi}^\T, \ldots , \vec{w}_{n_c,\xi}^\T}^\T \inR{6\cdot n_c}
+	\label{eq:all-wrenches}
+\end{equation}
+%
+respectively. \medskip
+
+These definitions are used to describe and analyze the kinematics of grasping and the forces involved in holding an object, also referred to as \gls{gk}. Within \gls{gk} two matrices are of special interest: the grasping matrix \mat{G} and the hand Jacobian \mat{J}. The grasping matrix describes the transformation between a twist or wrench 
+%
+\begin{equation}
+	\vec{\nu}_{c,\text{obj}} =  \mat{G}^\T \vec{\nu}
+	\label{eq:grasp-matrix}
+\end{equation}
+% 
+\begin{equation}
+	\vec{\nu}_{c,\text{hnd}} = \mat{J} \dot{\vec{q}}
+	\label{eq:hand-jacobian}
+\end{equation}
 
 The grasp matrix which relates the object's twist \vec{\nu} to the twist of each contact point
 
+see the robotics handbook and make sure to fully grasp partial, complete and grasp matrix
 
 \textcolor{red}{Describe the grasp matrix and hand jacobian and how these can be used to transform from between frames both related to twist and wrench.}
 
