@@ -4,7 +4,17 @@
 
 Based on the contact model categories described in \chapref{ch:modeling}, the most representative was chosen to be \gls{sf} models. 
 % since these can provide descriptions of the contact surface shape, and thus enable the solving of the \gls{iep} by deriving surface features for pose estimation. Furthermore, these represent friction forces and moments that in needed to manipulate objects in hand and ensure force closure. 
-Within the category of \gls{sf} models, a method fit for this project's use case is to be chosen to solve problem~\ref{prob:1}. \gls{sf} models can furthermore be divided up into three different categories: \gls{aebm}, \gls{efm} and \gls{fem}~\cite{a-modified-elastic-foundation-contact-model-for-application-in-3d-models-of-the-prosthetic-knee}. \medskip
+Within the category of \gls{sf} models, a method fit for this project's use case is to be chosen to solve problem~\ref{prob:1}. \gls{sf} models can furthermore be divided up into three different categories: \gls{aebm}, \gls{efm} and \gls{fem}~\cite{a-modified-elastic-foundation-contact-model-for-application-in-3d-models-of-the-prosthetic-knee}. The different categories can be seen organized in \figref{fig:sf-categories} \medskip
+%
+\begin{figure}[h]
+	\begin{small}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{chapters/state-of-the-art/fig/sf-categories.pdf}
+		\end{center}
+		\caption{The model of the world representation for this project.}
+		\label{fig:sf-categories}
+	\end{small}
+\end{figure}
 
 \gls{aebm} are theoretical formulations of elastic contact areas and the stresses on both the surfaces and the sub-surfaces of the contacting bodies. The first of such models was introduced by Heinrich Rudolf Hertz in \num{1882}~\cite{on-the-contact-of-rigid-elastic-solids-and-on-hardness} and is still used for simple contact cases. In the formulation of the Hertzian contact model, two assumptions are made: Objects in contact are made of linear elastic materials and only small contact deformations occur compared to the dimension of an object. However, robotic \gls{ee} fingertips are often made of non-linear elastic materials and for that reason, the Hertzian contact model does not represent the type of contact in this project~\cite[Chapter 37]{handbook-of-robotics}. To improve on the Hertzian model, a more general formulation can be made which extends the model from linear to nonlinear elastic contacts~\cite{modeling-of-contact-mechanics-and-friction-limit-surfaces-for-soft-fingers-in-robotics-with-experimental-results, the-haptic-and-perceptional-characteristics-of-an-anthropomorphic-curved-soft-finger-structure}. This power-law formulation subsumes the Hertzian contact theory while assuming a circular contact area. Other models have been purposed which combine the descriptions of both friction-contact and the shear-torsion as experienced by the bodies~\cite{the-sliding-of-robot-fingers-under-combined-torsion-and-shear-loading}. \medskip
 
@@ -26,6 +36,17 @@ The contact model chosen for this project is the \gls{aebm} Love's formulation d
 
 Pose estimation (\gls{pe}) is a common problem studied extensively in the literature\dots \medskip
 Two main category methods are identified: \gls{dl} based approaches and point cloud registration-based approaches\dots \medskip
+%
+\begin{figure}[h]
+	\begin{small}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{chapters/state-of-the-art/fig/pe-categories.pdf}
+		\end{center}
+		\caption{The model of the world representation for this project.}
+		\label{fig:pe-categories}
+	\end{small}
+\end{figure}
+
 
 \gls{dl} based approaches 
 % Deep Learning-Based Human Pose Estimation: A Survey

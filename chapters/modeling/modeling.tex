@@ -7,21 +7,21 @@ To model the contact between the \gls{ee}'s tactile sensors, eight different mod
 	\centering
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{chapters/modeling/fig/contact-no-friction-crop.pdf}
+		\includegraphics[width=\textwidth]{chapters/modeling/fig/contact-no-friction.pdf}
 		\caption{\gls{pwof} in point \vec{c} with normal \vec{n}. \\\hspace{\textwidth} }
 		\label{fig:pwof}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{chapters/modeling/fig/hf-crop.pdf}
+		\includegraphics[width=\textwidth]{chapters/modeling/fig/hf.pdf}
 		\caption{\gls{hf} in point \vec{c} with normal \vec{n} and contact force \mvar{\vec{f}_c}.}
 		\label{fig:hf}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{chapters/modeling/fig/sf-crop.pdf}
+		\includegraphics[width=\textwidth]{chapters/modeling/fig/sf.pdf}
 		\caption{\gls{sf} in point \vec{c} with normal \vec{n}, contact force \mvar{\vec{f}_c} and friction moment \mvar{\vec{m}_n}.}
 		\label{fig:sf}
 	\end{subfigure}
@@ -75,13 +75,13 @@ Based on the contact model categories described above, the most representative i
         \centering
         \includegraphics[width=.95\textwidth]{chapters/modeling/fig/contact-surface.pdf}%
         \vspace{0.6cm}
-        \includegraphics[width=.95\textwidth]{chapters/modeling/fig/friction-cone-schematic-crop.pdf}%
+        \includegraphics[width=.95\textwidth]{chapters/modeling/fig/friction-cone-schematic.pdf}%
     \end{minipage}%
     \hfill%
     \begin{minipage}{.48\linewidth}
         \vspace{0pt}
         \centering
-        \includegraphics[width=.95\textwidth]{chapters/modeling/fig/force-closure-schematic-crop.pdf}
+        \includegraphics[width=.95\textwidth]{chapters/modeling/fig/force-closure-schematic.pdf}
     \end{minipage}%
     %    
     \vspace{15pt}
@@ -100,14 +100,14 @@ Based on the contact model categories described above, the most representative i
         \label{fig:force-closure-model}
     \end{minipage}%
 \end{center}
-When modeling the kinematics of a humanoid gripper with frame \mvar{\robframe{H}\inR{4\times 4}} in world frame \mvar{\robframe{W}\inR{4\times 4}} interacting with an object with frame \mvar{\robframe{O}\inR{4\times 4}} the different parameters and modeling are necessary. In this system the object with position \mvar{\vec{p}\inR{3}} and pose \mvar{\vec{u}\inR{6}}, with the orientation either being represented as a four-dimensional quaternion or a three-dimensional Euler angle, makes contact with the gripper in points \mvar{\vec{c}_i\inR{3}}. Said contact points have frames \mvar{\robframe{C}_i\inR{4 \times 4}} with axes \mvar{\rlist{\vec{n}_i,\vec{t}_i,\vec{o}_i}\inR{3}}, where \mvar{\vec{n}_i\inR{3}} points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of \robframe{O} described in \robframe{W} is denoted $\vec{\nu} = \rvec{\vec{v}^\T\; \vec{\omega}^\T}^\T\inR{6} $ while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is $\vec{w} = \rvec{\vec{f}^\T\; \vec{m}^\T}^\T\inR{6}$. \medskip
+When modeling the kinematics of a humanoid gripper with frame \mvar{\robframe{H}\inR{4\times 4}} in world frame \mvar{\robframe{W}\inR{4\times 4}} interacting with an object with frame \mvar{\robframe{O}\inR{4\times 4}} the different parameters and modeling are necessary. In this system the object with position \mvar{\vec{p}\inR{3}} and pose \mvar{\vec{u}\inR{6}}, with the orientation either being represented as a four-dimensional quaternion or a three-dimensional Euler angle, makes contact with the gripper in points \mvar{\vec{c}_i\inR{3}}. Said contact points have frames \mvar{\robframe{C}_i\inR{4 \times 4}} with axes \mvar{\rlist{\vec{n}_i,\vec{t}_i,\vec{o}_i}\subset \R^{3}}, where \mvar{\vec{n}_i\inR{3}} points perpendicular to the contact plant towards the object while the remaining are contained within the contact plane. The twist of \robframe{O} described in \robframe{W} is denoted $\vec{\nu} = \rvec{\vec{v}^\T \vsep \vec{\omega}^\T}^\T\inR{6} $ while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is $\vec{w} = \rvec{\vec{f}^\T \vsep \vec{m}^\T}^\T\inR{6}$. \medskip
 
-The gripper has $n_q$ joints named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1,\;\tau_2,\;\dots,\;\tau_{n_q}\;}^\T\in\R^{n_q}$.
-
-
+The gripper has $n_q$ joints named $\vec{q} = \rvec{q_1  \vsep q_2  \vsep \dots  \vsep q_{n_q}}^\T\in\R^{n_q}$ with loads $\vec{\tau} = \rvec{\tau_1  \vsep\tau_2  \vsep\dots  \vsep\tau_{n_q} \vsep}^\T\in\R^{n_q}$.
 
 
-% About the object $\{O\}$, where the external force is represented as gravity which is a common occurrence.
+
+
+% About the object $\{O\}$ where the external force is represented as gravity which is a common occurrence.
 
 % Within these figures $p(r)$ is the pressure distribution often as a function of the contact surface's radius $r$ assuming a non-conforming contact case. $\vec{f}_N$ is the normal force of the object acting on the \gls{ee} in the contact point $\vec{c}$, $\vec{f}_f$ is the friction force opposing the external force $\vec{f}_{\text{ext}}$ which often comes in the form of gravity $\vec{f}_g$ as see in \figref{fig:force-closure-model}.
 
@@ -117,42 +117,55 @@ The gripper has $n_q$ joints named $\vec{q} = \rvec{q_1,\; q_2,\; \dots,\; q_{n_
 \begin{figure}[h]
 	\begin{small}
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{chapters/modeling/fig/test-hand-kinematics-crop.pdf}
+			\includegraphics[width=0.6\textwidth]{chapters/modeling/fig/sys-schematic.pdf}
 		\end{center}
 		\caption{The model of the world representation for this project.}
 		\label{fig:full-system-model}
 	\end{small}
 \end{figure}
 
-% With the contact model described, a segment of the kinematic tree of the \gls{ee} can be seen in \figref{fig:full-system-model}. Here $q_{thi}$ is the angle of the $i$'th joint in the thumb which here is the only finger depicted, $\boldsymbol{\tau}_{thi}$ is the torque exerted by said joint, $\{W\}$ is the world frame, $\{O\}$ is the object's frame and $\{H\}$ is the robotic hand's frame. 
+% With the contact model described a segment of the kinematic tree of the \gls{ee} can be seen in \figref{fig:full-system-model}. Here $q_{thi}$ is the angle of the $i$'th joint in the thumb which here is the only finger depicted, $\boldsymbol{\tau}_{thi}$ is the torque exerted by said joint, $\{W\}$ is the world frame, $\{O\}$ is the object's frame and $\{H\}$ is the robotic hand's frame. 
 
 While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.\medskip
 
 In this system, the twists and wrenches of contact point \mvar{\vec{c}_i\inR{3}} on the object and hand, given in contact frame \mvar{\robframe{C}_i} is referred to as \mvar{\vec{\nu}_{i,\xi}\inR{6}} and \mvar{\vec{w}_{i,\xi}\inR{6}}, with \mvar{\xi = \rlist{\text{obj}, \text{hnd}}}, respectively. Given multiple \gls{ee}s multiple contact points will exist, each with its twist and wrench. By concatenating these, two vectors can be expressed containing all twists and wrenches of the grasp, one for the object and one for the hand. These vectors are referred to as 
 %
 \begin{equation}
-	\vec{\nu}_{c,\xi} = \rvec{\vec{\nu}_{1,\xi}^\T, \vec{\nu}_{2,\xi}^\T, \ldots , \vec{\nu}_{n_c,\xi}^\T}^\T \inR{6\cdot n_c}
+	\vec{\nu}_{c,\xi} = \rvec{\vec{\nu}_{1,\xi}^\T \vsep \vec{\nu}_{2,\xi}^\T \vsep \ldots \vsep \vec{\nu}_{n_c,\xi}^\T}^\T \inR{6\cdot n_c}
 	\label{eq:all-twists}
 \end{equation}
 %
 and
 \begin{equation}
-	\vec{w}_{c,\xi} = \rvec{\vec{w}_{1,\xi}^\T, \vec{w}_{2,\xi}^\T, \ldots , \vec{w}_{n_c,\xi}^\T}^\T \inR{6\cdot n_c}
+	\vec{w}_{c,\xi} = \rvec{\vec{w}_{1,\xi}^\T \vsep \vec{w}_{2,\xi}^\T \vsep \ldots \vsep \vec{w}_{n_c,\xi}^\T}^\T \inR{6\cdot n_c}
 	\label{eq:all-wrenches}
 \end{equation}
 %
 respectively. \medskip
 
-These definitions are used to describe and analyze the kinematics of grasping and the forces involved in holding an object, also referred to as \gls{gk}. Within \gls{gk} two matrices are of special interest: the grasping matrix \mat{G} and the hand Jacobian \mat{J}. The grasping matrix describes the transformation between a twist or wrench 
+These definitions are used to describe and analyze the kinematics of grasping and the forces involved in holding an object, also referred to as \gls{gk}. Within \gls{gk} two matrices are of special interest: the grasping matrix \mat{G} and the hand Jacobian \mat{J}. The grasping matrix describes the transformation between a twist or wrench of the object in world frame \robframe{W} to the contact frames of each contact point \mvar{ \robframe{C}_i \mfor i = 1,2,\ldots,n_c} where \mvar{n_c} is the number of contact points. The grasp matrix thus can be expressed as
+\begin{equation}
+	\mat{G} = \rvec{ \mat{G}_1 \vsep \mat{G}_2 \vsep \mat{G}_1 \vsep \cdots \vsep \mat{G}_{n_c}},
+	\label{eq:grasp-matrix-def}
+\end{equation}
+where \mvar{\mat{G}_i \inR{6\times 6} \mfor i = 1,2,\ldots,n_c} and thus \mvar{\mat{G}\inR{6\times 6\cdot n_c}}. Using this grasp matrix, the object wrench and twist can be computed in all contact frames as
 %
 \begin{equation}
-	\vec{\nu}_{c,\text{obj}} =  \mat{G}^\T \vec{\nu}
-	\label{eq:grasp-matrix}
+	\vec{\nu}_{c,\text{obj}} =  \mat{G}^\T \vec{\nu} \mspa \mand \mspa \vec{w}_{c,\text{obj}} =  \mat{G}^\T \vec{w}.
+	\label{eq:grasp-matrix-twist}
 \end{equation}
+%
+While the grasp matrix can be used to describe the transformation from world frame to contact frame, the hand Jacobian describes \gls{ee} velocity and force, given some joint velocities and torques
 % 
 \begin{equation}
-	\vec{\nu}_{c,\text{hnd}} = \mat{J} \dot{\vec{q}}
-	\label{eq:hand-jacobian}
+	\vec{\nu}_{c,\text{hnd}} = \mat{J}^\T \dot{\vec{q}} \mspa \mand \mspa \vec{w}_{c,\text{hnd}} = \mat{J}^\T \vec{\tau}
+	\label{eq:hand-jacobian-velocity}
+\end{equation}
+%
+The hand Jacobian here 
+\begin{equation}
+	\vec{w}_{c,\text{hnd}} = \mat{J}^\T \vec{\tau}
+	\label{eq:hand-jacobian-force}
 \end{equation}
 
 The grasp matrix which relates the object's twist \vec{\nu} to the twist of each contact point
