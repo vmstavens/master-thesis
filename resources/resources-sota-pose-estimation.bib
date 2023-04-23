@@ -1,0 +1,143 @@
+% comprehensive review
+@misc{a-comprehensive-survey-on-point-cloud-registration,
+  title         = {A comprehensive survey on point cloud registration}, 
+  author        = {Xiaoshui Huang and Guofeng Mei and Jian Zhang and Rana Abbas},
+  year          = {2021},
+  eprint        = {2103.02690},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
+}
+
+
+%% purely dl based approaches %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% hand pose estimation
+@misc{hands-deep-in-deep-learning-for-hand-pose-estimation,
+  title         = {Hands Deep in Deep Learning for Hand Pose Estimation},
+  author        = {Markus Oberweger and Paul Wohlhart and Vincent Lepetit},
+  year          = {2016},
+  eprint        = {1502.06807},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV}
+}
+
+% human pose estimation
+@inproceedings{deeppose:-human-pose-estimation-via-deep-neural-networks,
+  title     = {DeepPose: Human Pose Estimation via Deep Neural Networks},
+  author    = {Alexander Toshev and Christian Szegedy},
+  year      = {2014},
+  booktitle = {Computer Vision and Pattern Recognition}
+}
+
+% pose estimate any body part
+﻿@article{deeplabcut:-markerless-pose-estimation-of-user-defined-body-parts-with-deep-learning,
+  author   = {Mathis, Alexander
+              and Mamidanna, Pranav
+              and Cury, Kevin M.
+              and Abe, Taiga
+              and Murthy, Venkatesh N.
+              and Mathis, Mackenzie Weygandt
+              and Bethge, Matthias},
+  title    = {DeepLabCut: markerless pose estimation of user-defined body parts with deep learning},
+  journal  = {Nature Neuroscience},
+  year     = {2018},
+  month    = {9},
+  day      = {01},
+  volume   = {21},
+  number   = {9},
+  pages    = {1281-1289},
+  abstract = {Quantifying behavior is crucial for many applications in neuroscience. Videography provides easy methods for the observation and recording of animal behavior in diverse settings, yet extracting particular aspects of a behavior for further analysis can be highly time consuming. In motor control studies, humans or other animals are often marked with reflective markers to assist with computer-based tracking, but markers are intrusive, and the number and location of the markers must be determined a priori. Here we present an efficient method for markerless pose estimation based on transfer learning with deep neural networks that achieves excellent results with minimal training data. We demonstrate the versatility of this framework by tracking various body parts in multiple species across a broad collection of behaviors. Remarkably, even when only a small number of frames are labeled ({\textasciitilde}200), the algorithm achieves excellent tracking performance on test frames that is comparable to human accuracy.},
+  issn     = {1546-1726},
+  doi      = {10.1038/s41593-018-0209-y},
+  url      = {https://doi.org/10.1038/s41593-018-0209-y}
+}
+
+% cross source methods %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+@ARTICLE{a-systematic-approach-for-cross-source-point-cloud-registration-by-preserving-macro-and-micro-structures,
+  author  = {Huang, Xiaoshui and Zhang, Jian and Fan, Lixin and Wu, Qiang and Yuan, Chun},
+  journal = {IEEE Transactions on Image Processing}, 
+  title   = {A Systematic Approach for Cross-Source Point Cloud Registration by Preserving Macro and Micro Structures}, 
+  year    = {2017},
+  volume  = {26},
+  number  = {7},
+  pages   = {3261-3276},
+  doi     = {10.1109/TIP.2017.2695888}
+}
+
+@ARTICLE{a-coarse-to-fine-algorithm-for-matching-and-registration-in-3d-cross-source-point-clouds,
+  author  = {Huang, Xiaoshui and Zhang, Jian and Wu, Qiang and Fan, Lixin and Yuan, Chun},
+  journal = {IEEE Transactions on Circuits and Systems for Video Technology}, 
+  title   = {A Coarse-to-Fine Algorithm for Matching and Registration in 3D Cross-Source Point Clouds}, 
+  year    = {2018},
+  volume  = {28},
+  number  = {10},
+  pages   = {2965-2977},
+  doi     = {10.1109/TCSVT.2017.2730232}
+}
+
+%  same source %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% end-to-end learning %%%%%%%%%%%%%
+
+% dl to finish missing pieces of point cloud
+@inproceedings{extreme-relative-pose-estimation-for-rgb-d-scans-via-scene-completion,
+  author = {Yang, Zhenpei and Pan, Jeffrey and Luo, Linjie and Zhou, Xiaowei and Grauman, Kristen and Huang, Qixing},
+  year   = {2019},
+  month  = {06},
+  pages  = {4526-4535},
+  title  = {Extreme Relative Pose Estimation for RGB-D Scans via Scene Completion},
+  doi    = {10.1109/CVPR.2019.00466}
+}
+
+% dl to learn registration patterns as parametric functions
+@misc{non-rigid-point-set-registration-networks,
+  title         = {Non-Rigid Point Set Registration Networks},
+  author        = {Lingjing Wang and Jianchun Chen and Xiang Li and Yi Fang},
+  year          = {2019},
+  eprint        = {1904.01428},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.GR}
+}
+
+% feature-metric approach
+@misc{feature-metric-registration:-a-fast-semi-supervised-approach-for-robust-point-cloud-registration-without-correspondences,
+  title         = {Feature-metric Registration: A Fast Semi-supervised Approach for Robust Point Cloud Registration without Correspondences},
+  author        = {Xiaoshui Huang and Guofeng Mei and Jian Zhang},
+  year          = {2020},
+  eprint        = {2005.01014},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV}
+}
+
+% freature-learning %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Learning Local Geometric Descriptors from RGB-D Reconstructions
+@misc{3dmatch:-learning-local-geometric-descriptors-from-rgb-d-reconstructions,
+  title         = {3DMatch: Learning Local Geometric Descriptors from RGB-D Reconstructions},
+  author        = {Andy Zeng and Shuran Song and Matthias Nießner and Matthew Fisher and Jianxiong Xiao and Thomas Funkhouser},
+  year          = {2017},
+  eprint        = {1603.08182},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV}
+}
+
+% 
+@misc{ppfnet:-global-context-aware-local-features-for-robust-3d-point-matching,
+  title         = {PPFNet: Global Context Aware Local Features for Robust 3D Point Matching},
+  author        = {Haowen Deng and Tolga Birdal and Slobodan Ilic},
+  year          = {2018},
+  eprint        = {1802.02669},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV}
+}
+
+% 
+@misc{the-perfect-match:-3d-point-cloud-matching-with-smoothed-densities,
+  title         = {The Perfect Match: 3D Point Cloud Matching with Smoothed Densities},
+  author        = {Zan Gojcic and Caifa Zhou and Jan D. Wegner and Andreas Wieser},
+  year          = {2019},
+  eprint        = {1811.06879},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV}
+}

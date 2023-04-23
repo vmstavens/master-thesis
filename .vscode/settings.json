@@ -5,5 +5,8 @@
 			"language": "latex",
 			"scheme": "file"
 		}
+	],
+	"cSpell.words": [
+		"executiontime"
 	]
 }
