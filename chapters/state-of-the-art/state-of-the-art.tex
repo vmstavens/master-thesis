@@ -68,7 +68,7 @@ These can along with their subcategories be seen in~\figref{fig:pe-categories} a
 \begin{figure}[h]
 	\begin{small}
 		\begin{center}
-			\includegraphics[width=0.8\textwidth]{chapters/state-of-the-art/fig/pe-categories-v2.pdf}
+			\includegraphics[width=0.8\textwidth]{chapters/state-of-the-art/fig/pe-categories-v3.pdf}
 		\end{center}
 		\caption{Tree of methods for solving the point cloud registration problem. The categorization is inspired by~\cite{a-comprehensive-survey-on-point-cloud-registration}.}
 		\label{fig:pe-categories}
@@ -80,12 +80,77 @@ Purely \gls{dl} based methods learn feature representations of input data, often
 The other method group i.e. \gls{pcr} methods are separated into two subgroups: cross-source and same-source \gls{pc}s. Here cross-source refers to a \gls{pc} produced by combining information from sensors of different kinds e.g. visual- and tactile sensors, while same-source methods only produce \gls{pc}s based on information from the same kind of sensors e.g. only tactile sensors. 
 While cross-source approaches have shown utility in an extensive range of applications~\cite{a-systematic-approach-for-cross-source-point-cloud-registration-by-preserving-macro-and-micro-structures,a-coarse-to-fine-algorithm-for-matching-and-registration-in-3d-cross-source-point-clouds,a-comprehensive-survey-on-point-cloud-registration} their applicability in this project is minimal, as purely tactile pose estimation is the problem of interest as presented in \chapref{ch:intro}. \medskip
 
-Within same-source \gls{pcr} three sub-categories exist: end-to-end learning, feature-learning and optimization-based methods. End-to-end learning-based methods utilize a neural network to determine the transformation matrix that aligns two \gls{pc}s. Proposed solutions include scene completion via neural networks~\cite{extreme-relative-pose-estimation-for-rgb-d-scans-via-scene-completion}, 
-learning of registration patterns as parametric functions using a network architecture that combines a scan completion module and a pairwise matching module.~\cite{non-rigid-point-set-registration-networks},
-and a fast feature-metric \gls{pc} registration framework to minimize the feature-metric projection error without correspondences~\cite{feature-metric-registration:-a-fast-semi-supervised-approach-for-robust-point-cloud-registration-without-correspondences}.
-While end-to-end methods estimate the complete transformation matrix, feature-learning methods use deep
-neural networks to learn robust feature correspondence searches, which then is used in estimation algorithms such as \gls{ransac}. Within the literature, models have been developed that extract local geometric descriptors from RGB-D reconstructions~\cite{3dmatch:-learning-local-geometric-descriptors-from-rgb-d-reconstructions}, 
-models to learn globally informed 3D local feature descriptors~\cite{ppfnet:-global-context-aware-local-features-for-robust-3d-point-matching} and 
+\gls{pcr} methods from the same source data can be categorized into three sub-categories: end-to-end learning, feature-learning, and optimization-based methods. End-to-end learning-based methods use a neural network to estimate the transformation matrix that aligns two point clouds. Proposed solutions include using neural networks for scene completion to estimate the relative pose between RGB-D scans~\cite{extreme-relative-pose-estimation-for-rgb-d-scans-via-scene-completion}, learning registration patterns as parametric functions through a scan completion module and pairwise matching module~\cite{non-rigid-point-set-registration-networks}, and a fast feature-metric point cloud registration framework to minimize the feature-metric projection error without correspondences~\cite{feature-metric-registration:-a-fast-semi-supervised-approach-for-robust-point-cloud-registration-without-correspondences}.\medskip
+
+In contrast, feature-learning methods use deep neural networks to learn robust feature correspondence searches, which are then used in estimation algorithms such as \gls{ransac}. In the literature, models have been developed to extract local geometric descriptors from RGB-D reconstructions~\cite{3dmatch:-learning-local-geometric-descriptors-from-rgb-d-reconstructions}, to learn globally informed 3D local feature descriptors~\cite{ppfnet:-global-context-aware-local-features-for-robust-3d-point-matching}, and to use siamese deep learning architectures with convolutional layers through a voxelized smoothed density value (SDV) representation~\cite{the-perfect-match:-3d-point-cloud-matching-with-smoothed-densities}. \medskip
+
+% icp based methods
+% In this paper we combine the Iterative Closest Point (ICP) and point-to-plane ICP algorithms into a single | Generalized-ICP algorithm
+
+% 3 icp algorithm solutions
+
+
+% 3 graph-based solutions 
+
+% 3 gmm-methods
+
+% semi-definite programming
+
+% RCQP
+% This allowed us to solve the original non-convex problem in a global fashion using its connection to the convex relaxation through duality theory
+
+
+% we add GNC for robust outlier rejection
+
+Lastly, registration methods based on optimization are employed to estimate the transformation matrix through two stages: correspondence searching and transformation estimation. Their goal is to minimize a cost function that gauges the dissimilarity between two point clouds. Within this category, there are four sub-categories identified: \gls{icp}-based, graph-based, \gls{gmm}-based, and semi-definite programming-based methods. \medskip
+
+Since the original proposal in 1992~\cite{a-method-for-registration-of-3-d-shapes} using point-to-point correspondences, \gls{icp}-based methods have evolved and incorporated different types of correspondences to improve performance. Examples include point-to-plane~\cite{object-modelling-by-registration-of-multiple-range-images} and plane-to-plane~\cite{generalized-icp}. Modern approaches also employ complementary methods such as point cloud filtering, adaptive fireworks algorithms, and KD-Trees~\cite{improved-iterative-closest-point-icp-3d-point-cloud-registration-algorithm-based-on-point-cloud-filtering-and-adaptive-fireworks-for-coarse-registration}. \medskip
+
+% graph-based approaches 
+The main idea of graph-based registration methods is to use a non-parametric model~\cite{a-review-of-point-set-registration:-from-pairwise-registration-to-groupwise-registration}. In this method, correspondences between two graphs are found by considering both the vertices and edges, making it an optimization problem~\cite{a-review-of-point-set-registration:-from-pairwise-registration-to-groupwise-registration}. To solve this optimization problem, there are two categories of graph-matching methods based on the objective functions' constraints: second-order and high-order methods~\cite{the-graph-matching-problem}.Second-order methods include CSGM~\cite{a-systematic-approach-for-cross-source-point-cloud-registration-by-preserving-macro-and-micro-structures}, which uses a linear program to solve the graph-matching problem and apply it to solve the cross-source point cloud registration task, FGM~\cite{factorized-graph-matching} factorizes the large pairwise affinity matrix into smaller matrices and solves the graph-matching problem with a simple path-following optimization algorithm. Spectral graph~\cite{a-spectral-technique-for-correspondence-problems-using-pairwise-constraints} uses a spectral relaxation method to approximate the \gls{qap}, and \gls{sdp} relaxation is used to relax the non-convex constraint using a convex semi-definite. While higher-order graph matching provide method for~\cite{probabilistic-graph-and-hypergraph-matching} design a probabilistic approach to solve the high-order graph-matching problem, while~\cite{a-tensor-based-algorithm-for-high-order-graph-matching} design a triangle similarity and convert the graph-matching problem into a tensor optimization problem. More recent work, such as~\cite{elastic-net-constraint-based-tensor-model-for-high-order-graph-matching} suggests an elastic net to control the trade-off between the sparsity and accuracy of the matching results by incorporating the Elastic-Net constraint into the tensor-based graph matching mode. \medskip
+
+% gaussian mixture model
+% \gls{gmm}-based methods attempt to convert the registration problem into a likelihood maximization problem for the input data, leading to the literature being focused on developing optimization strategies to maximize the likelihood and optimize the transformation matrix. One such example is~\cite{information-retrieval-for-music-and-motion} which introduces a \gls{cpd} in the form of a motion drift idea into the GMM framework by imposing constraints on transformation estimation. A different approach can be seen in~\cite{convex-hull-indexed-gaussian-mixture-model-ch-gmm-for-3d-point-set-registration} which combines the GMM with the convex hull, which is a tighter set of the original point set, to reduce computation complexity. Additionally, \gls{jrmpc}~\cite{a-generative-model-for-the-joint-registration-of-multiple-point-sets} approach registration as a clustering problem, where the transformation is optimized by solving the \gls{gmm}. More recently, \gls{deepgmr}~\cite{deepgmr:-learning-latent-gaussian-mixture-models-for-registration} has utilized deep learning to learn the correspondences between \gls{gmm} components and points. This enables the estimation of both the transformation and \gls{gmm} parameters in a single forward step.
+
+\gls{gmm}-based methods commonly tackle the point cloud registration problem by transforming it into a likelihood maximization problem for the input data. This has resulted in the development of several optimization strategies aimed at maximizing the likelihood and optimizing the transformation matrix. For instance, a motion drift idea was introduced into the \gls{gmm} framework by~\cite{information-retrieval-for-music-and-motion} in the form of \gls{cpd} which imposes constraints on transformation estimation. In another approach,\cite{convex-hull-indexed-gaussian-mixture-model-ch-gmm-for-3d-point-set-registration} combines \gls{gmm} with the convex hull to reduce computation complexity. Furthermore, \gls{jrmpc}~\cite{a-generative-model-for-the-joint-registration-of-multiple-point-sets} cast registration as a clustering problem where the transformation is optimized by solving the \gls{gmm}. Recently, \gls{deepgmr}~\cite{deepgmr:-learning-latent-gaussian-mixture-models-for-registration} employed \gls{dl} to learn the correspondences between \gls{gmm} components and points, enabling the estimation of both the transformation and \gls{gmm} parameters in a single forward step. \medskip
+
+Lastly
+
+% semidefinite programming
+
+% The positive semi-definite properties of the graph Laplacian make it suitable for solving the point set registration problem using semi-definite relaxation. An example of this approach is PSR-SDP [44], which has been applied to multiple point sets registration. Teaser [105], on the other hand, uses graduated non-convexity to solve the rotation sub-problem. This method employs Douglas-Rachford Splitting to efficiently certify global optimality, thus mitigating the high computational cost of SDP relaxation. However, Teaser may still suffer from local minima. To overcome this issue, OPRASANC [58] introduces a graduated optimization strategy that achieves better efficiency than Teaser.
+
+% Although semi-definite relaxation achieves the global minimum of the original problem, it faces scalability issues [47] and can only handle up to 15 points [53]. To address this, some techniques have been proposed. For example, [53] uses Markov random field techniques to approximate the linear programming relaxation solution, while PM-SDP [67] reduces the dimension of semi-definite constraints to improve efficiency. However, these methods are only suitable for middle-sized point cloud registration problems, and scalability remains a topic of ongoing research.
+
+% Canonical Correlation Analysis (CCA) is one such optimization-based approach that seeks to maximize the correlation between two sets of variables. Chen et al. [6] used CCA to compute correspondences between two point clouds and used a closed-form solution to estimate the transformation. However, CCA can be sensitive to noise and outliers. Robust Canonical Correlation Analysis (RCCA) is an extension of CCA that is more robust to outliers and noise. Wang et al. [7] proposed a method that uses RCCA to compute correspondences between two point clouds and a robust quadratic program to estimate the transformation. RCCP, the resulting method, has demonstrated greater robustness to noise and outliers than traditional CCA-based methods. RCQP is another optimization-based approach that is often combined with outlier rejection techniques to handle noise and outliers in the data. Li et al. [11] proposed a robust registration method based on dual geometric constraint and quadratic programming, while Zhang and Ye [13] proposed a robust point cloud registration algorithm based on quadratic programming and gradient descent. The RCQP algorithm with GNC outlier rejection has also shown promising results in point registration.
+
+% rough pros and cons regarding all methods above
+
+
+
+% rough pros and cons regarding all methods above - end
+
+% we choose ...
+
+
+
+
+
+
+
+
+
+
+
+
+
+% Within same-source \gls{pcr} three sub-categories exist end-to-end learning, feature-learning and optimization-based methods. End-to-end learning-based methods utilize a neural network to determine the transformation matrix that aligns two \gls{pc}s. Proposed solutions include scene completion via neural networks~\cite{extreme-relative-pose-estimation-for-rgb-d-scans-via-scene-completion}, 
+% learning of registration patterns as parametric functions using a network architecture that combines a scan completion module and a pairwise matching module.~\cite{non-rigid-point-set-registration-networks},
+% and a fast feature-metric \gls{pc} registration framework to minimize the feature-metric projection error without correspondences~\cite{feature-metric-registration:-a-fast-semi-supervised-approach-for-robust-point-cloud-registration-without-correspondences}.
+% While end-to-end methods estimate the complete transformation matrix, feature-learning methods use deep
+% neural networks to learn robust feature correspondence searches, which then is used in estimation algorithms such as \gls{ransac}. Within the literature, models have been developed that extract local geometric descriptors from RGB-D reconstructions~\cite{3dmatch:-learning-local-geometric-descriptors-from-rgb-d-reconstructions}, 
+% models to learn globally informed 3D local feature descriptors~\cite{ppfnet:-global-context-aware-local-features-for-robust-3d-point-matching} and siamese deep learning architectures which use convolutional layers through a voxelized smoothed density value (SDV) representation~\cite{the-perfect-match:-3d-point-cloud-matching-with-smoothed-densities}.
+% Lastly, optimization-based approaches.
 
 
 % Unlike feature-learning methods, which focus on learning point features, transformation estimation is integrated into the neural network optimization. The optimization process is separate from the transformation estimation process used in feature-learning methods.
