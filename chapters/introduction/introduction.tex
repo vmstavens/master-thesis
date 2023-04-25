@@ -118,7 +118,27 @@ To test if the developed system successfully solves the \gls{pe} problem, it is 
 % and end effector pose est
 \section{Thesis Overview}\label{sec:intro-thesis-overview}
 
-To present the work done in this project, the system modeling is done in~\chapref{ch:modeling} and \gls{sota} is presented in~\chapref{ch:state-of-the-art} for each of the problems presented above. Here the solutions best suited for this project's gripper are chosen. Each solution is described in detail, how they are applied, their performance tested and finally evaluated and concluded upon in their respective chapters i.e. chapter~\chapref{ch:1-tactile-perception},~\chapref{ch:2-pose-estimation} and~\chapref{ch:3-in-hand-manipulation}. In~\chapref{ch:4-system-integration} the three methods are combined in the final integration and finally, the project is discussed and concluded upon in~\chapref{ch:discussion} and~\chapref{ch:conclusion} respectively.
+This project is composed of \num{9} chapters, each listed below with an associated description. \medskip
+
+% To present the work done in this project, the system modeling is done in~\chapref{ch:modeling} and \gls{sota} is presented in~\chapref{ch:state-of-the-art} for each of the problems presented above. Here the solutions best suited for this project's gripper are chosen. Each solution is described in detail, how they are applied, their performance tested and finally evaluated and concluded upon in their respective chapters i.e. chapter~\chapref{ch:1-tactile-perception},~\chapref{ch:2-pose-estimation} and~\chapref{ch:3-in-hand-manipulation}. In~\chapref{ch:4-system-integration} the three methods are combined in the final integration and finally, the project is discussed and concluded upon in~\chapref{ch:discussion} and~\chapref{ch:conclusion} respectively.
+
+\textbf{Chapter 1:} The introduction presents the historical context of the project along with a problem description and thesis overview. The problem description contains the decomposition of the project into sub-problems which will be addressed in the following chapters. \medskip
+
+\textbf{Chapter 2:} The system setup presents an overview of the practical details of the project in the form of the system setup along with the code developed to execute the project. \medskip
+
+\textbf{Chapter 3:} The literature review addresses the three problems identified in \chapref{ch:intro} by providing a thorough literature review on older as well as newer methods for solving each of the identified problems. To end each section, groups are compared and a method is chosen among the ones presented. \medskip
+
+\textbf{Chapter 4:} The modeling chapter presents the physical modeling of the system and defines important mathematical notations and quantities as used in the following chapters. \medskip
+
+\textbf{Chapter 5:} The \gls{tp} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve the first problem. This chapter expands on the method chosen and its functionality, followed by an evaluation of said method through experiments and their results. Finally, the functionality of the method is concluded. \medskip
+
+\textbf{Chapter 6:} The \gls{pe} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve the second problem. This chapter follows the same structure as \chapref{ch:1-tactile-perception}. \medskip
+
+\textbf{Chapter 7:} The \gls{ihm} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve the third problem. This chapter follows the same structure as \chapref{ch:1-tactile-perception} and \chapref{ch:2-pose-estimation}. \medskip
+
+\textbf{Chapter 8:} The discussion chapter goes over the combined system and addresses problems, improvements, shortcomings and potential for future development.
+
+\textbf{Chapter 9:} The conclusion chapter addresses the successfulness of the project.
 
 % The developments in robotics as a field have over the past years provided automation solutions to execute repetitive manual tasks with high efficiency and reliability \fakecite. One of the most common tasks is pick and place tasks which involve picking up an object from one position and placing it in another. This is can be parted into the following subparts: Object localization, pose estimation, grasping and placing. In the solutions currently present for industrial use \gls{cv} is used for object localization and \gls{pe} due to the low cost of cameras and the field's maturity. However, while these solutions may be sufficient for certain tasks they fundamentally suffer from the weaknesses introduced by vision techniques. These include a great number of outliers caused by occlusions, reflecting, transparent or homogeneous surfaces, and repetitive structures when solving the \gls{corr-problem}. These problems as of the writing of this project have yet to be completely solved. Promising results have been found with the rise of \gls{dl} which in the present time has proven its versatility and provides proof of concept solutions for narrow cases in pose estimation of transparent \cite{6dof-pose-estimation-of-transparent-object-from-a-single-rgb-d-image} and reflective \medskip
 
