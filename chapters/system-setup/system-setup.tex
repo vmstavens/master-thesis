@@ -61,9 +61,23 @@ The software setup is shipped in a custom Ubuntu-based docker container~\cite{do
 	\end{small}
 \end{figure}
 
-When communicating with the simulated Shadow Dexterous hand, the primary interface provided is the 
+When communicating with the simulated Shadow Dexterous hand, the primary interface provided is the hand commander i.e. \texttt{SrHandCommander} which take provides functionalities such as retrieving the current state of the hand, executing given plans etc. Once a plan \mat{Q} is computed as a list joint states \mvar{\vec{q}_i = \rvec{q_0,\vsep q_1,\vsep \dots,\vsep q_n}} where \mvar{i \in \{0,1,\dots,m\}} with \mvar{m} being the number of states in the plan \mat{Q}, \texttt{SrHandCommander} handles the parsing to MoveIt.
 
 \texttt{SrHandCommander} which enables the definition of plans to execute and values to be read.
 Plans are executed using a PID controller~\cite{controlling-the-hand}, which follows an \gls{rrt}-Connect sample-based planner by default to generate paths. Planning is done in the configuration space.
 
+\begin{figure}[h]
+	% \begin{small}
+		\begin{center}
+			\includegraphics[width=\textwidth]{chapters/system-setup/fig/hand-communication-architecture-crop.pdf}
+		\end{center}
+		\caption{The boxes marked with grey are \gls{ros} packages, while the white are python modules.}
+		\label{fig:hand-communication-architecture}
+	% \end{small}
+\end{figure}
+
+
 % https://shadow-robot-company-dexterous-hand.readthedocs-hosted.com/en/latest/user_guide/ed_control_description.html
+% https://shadow-robot-company-dexterous-hand.readthedocs-hosted.com/en/latest/user_guide/sd_firmware.html
+% https://shadow-robot-company-dexterous-hand.readthedocs-hosted.com/en/latest/user_guide/ed_control_description.html
+% https://shadow-robot-company-dexterous-hand.readthedocs-hosted.com/en/latest/user_guide/sd_controling_hand.html
