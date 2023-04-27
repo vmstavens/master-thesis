@@ -6,7 +6,7 @@ This simulation is based on the Shadow Robot Company's~\cite{shadow-robotics} \g
 
 In this chapter, a detailed description of the hardware and software used in this project's simulation setup is provided, which includes the software architecture of the simulation, including the ROS packages and Gazebo plugins used to simulate the hand and its environment.
 
-\newpage
+% \newpage
 
 \section{Simulation Setup} \label{sec:system-setup-simulation-setup}
 
@@ -40,7 +40,7 @@ Multiple hand configurations are available including a left hand, right hand, an
 \begin{figure}[h]
 	\begin{small}
 		\begin{center}
-			\includegraphics[width=0.6\textwidth]{chapters/system-setup/fig/simulation-robot-hand.png}
+			\includegraphics[width=0.5\textwidth]{chapters/system-setup/fig/simulation-robot-hand.png}
 		\end{center}
 		\caption{A cutout of the simulated Shadow Dexterous Hand.}
 		\label{fig:simulated-robot-hand}
@@ -54,30 +54,20 @@ The software setup is shipped in a custom Ubuntu-based docker container~\cite{do
 \begin{figure}[h]
 	\begin{small}
 		\begin{center}
-			\includegraphics[width=0.6\textwidth]{chapters/system-setup/fig/init-package-diagram.pdf}
+			\includegraphics[width=0.5\textwidth]{chapters/system-setup/fig/init-package-diagram.pdf}
 		\end{center}
 		\caption{The boxes marked with grey are \gls{ros} packages, while the white are python modules.}
 		\label{fig:package-diagram}
 	\end{small}
 \end{figure}
 
-When communicating with the simulated Shadow Dexterous hand, the primary interface provided is the hand commander i.e. \texttt{SrHandCommander} which take provides functionalities such as retrieving the current state of the hand, executing given plans etc. Once a plan \mat{Q} is computed as a list joint states \mvar{\vec{q}_i = \rvec{q_0,\vsep q_1,\vsep \dots,\vsep q_n}} where \mvar{i \in \{0,1,\dots,m\}} with \mvar{m} being the number of states in the plan \mat{Q}, \texttt{SrHandCommander} handles the parsing to MoveIt.
-
-\texttt{SrHandCommander} which enables the definition of plans to execute and values to be read.
-Plans are executed using a PID controller~\cite{controlling-the-hand}, which follows an \gls{rrt}-Connect sample-based planner by default to generate paths. Planning is done in the configuration space.
-
+When communicating with the Shadow Dexterous hand, the primary interface provided is the hand commander i.e. \texttt{SrHandCommander} which provides functionalities such as retrieving the current state of the hand, executing given path plans etc. To plan and execute a path \mat{Q}, which is computed as a list joint states \mvar{\vec{q}_i = \rvec{q_0,\vsep q_1,\vsep \dots,\vsep q_n}} where \mvar{i \in \{0,1,\dots,m\}} with \mvar{m} being the number of states in the plan \mat{Q}, \texttt{SrHandCommander} parses the path to the \texttt{move\_group} handled by MoveIt~\cite{reducing-the-barrier-to-entry-of-complex-robotic-software:-a-moveit!-case-study}. After receiving the plan, MoveIt goes through several evaluations to ensure its validity, including state validation, collision checking, and motion planning. Before sampling a path, MoveIt first checks the validity of the start and goal states concerning the robot's joint limits, collision constraints, and other constraints like self-collision avoidance. This helps to ensure that the planned path is feasible and safe for the robot to execute. Once validated, the validated path \mvar{\mat{Q}_{\text{valid}}} is parsed to \gls{ompl}~\cite{the-open-motion-planning-library} where a safe path is built using sample-based path planning methods. Some examples of these methods include \gls{prm}, \gls{fmt} and \gls{rrt}-Connect, the last of which is the default used in the Shadow Robotics configuration space position controller. Using these a full and valid path \mvar{\mat{Q}_{\text{full, valid}}} is planned and parsed to the hand controller, which is build using the \texttt{ros\_control}~\cite{ros-control} framework. The \texttt{ros\_control} package provides a hardware-agnostic interface, to enable the same controllers on multiple different robotics platforms, along with the same controller being applicable on real hardware as well as simulated hardware. Finally, the hardware interface communicates with a \num{24} \gls{pid} controllers, one for each joint to ensure control of each joint. The software architecture for communicating with the robotic hand can be seen in \figref{fig:hand-communication-architecture}, which was inspired by figures from~\cite{shadow-robotics-control-description,shadow-robotics-firmware,shadow-robotics-controlling-the-hand}.
 \begin{figure}[h]
 	% \begin{small}
 		\begin{center}
 			\includegraphics[width=\textwidth]{chapters/system-setup/fig/hand-communication-architecture-crop.pdf}
 		\end{center}
-		\caption{The boxes marked with grey are \gls{ros} packages, while the white are python modules.}
+		\caption{Diagram showing the communication and control flow of interacting with the Shadow Dexterous hand.}
 		\label{fig:hand-communication-architecture}
 	% \end{small}
 \end{figure}
-
-
-% https://shadow-robot-company-dexterous-hand.readthedocs-hosted.com/en/latest/user_guide/ed_control_description.html
-% https://shadow-robot-company-dexterous-hand.readthedocs-hosted.com/en/latest/user_guide/sd_firmware.html
-% https://shadow-robot-company-dexterous-hand.readthedocs-hosted.com/en/latest/user_guide/ed_control_description.html
-% https://shadow-robot-company-dexterous-hand.readthedocs-hosted.com/en/latest/user_guide/sd_controling_hand.html
