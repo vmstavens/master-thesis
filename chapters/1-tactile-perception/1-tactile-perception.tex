@@ -1,26 +1,53 @@
 \chapter{Tactile Perception} \label{ch:1-tactile-perception}
 
-The field of robotics has been advancing rapidly in recent years, and tactile sensing is an important aspect of this advancement. Tactile data is vital for robots to interact with their environment and perform tasks with precision. One way to generate such data is through simulation, and regression neural networks have shown promise in simulating realistic tactile data. In this chapter, we analyze the performance of a regression neural network in simulating realistic tactile data, with a specific focus on its ability to simulate contact normals and skew forces. Contact normals are important for accurately estimating the pose of an object in contact with a robot, while skew forces are crucial for predicting the behavior of an object when it is grasped and manipulated by a robot's end-effector. We describe the technique behind the neural network and its architecture, and present our methodology for testing the network. Our methodology involves testing the network with a variety of input data and analyzing the output for accuracy and realism. We present our findings and discuss the strengths and weaknesses of the neural network in simulating tactile data, and draw conclusions about its overall performance and potential for future development. This analysis will provide valuable insights for researchers and practitioners working in the field of robotics and will pave the way for future advancements in tactile sensing and manipulation.
+This chapter presents an analysis of the performance of a regression neural network in simulating realistic tactile data, with a specific focus on its ability to simulate contact normals and skew forces. Contact normals are essential for accurately estimating the pose of an object in contact, while skew forces are critical for predicting the behavior of an object when it is grasped and manipulated by the Shadow Dexterous hand. \medskip
 
-\section{Introduction} \label{sec:1-tactile-perception-introduction}
+The technique behind the neural network, including its architecture, is described, and the methodology used to test the network is presented. The testing methodology involves the use of various input data, and the output is analyzed for accuracy and realism. The findings are presented and discussed, including the strengths and weaknesses of the network in simulating tactile data. Finally, an assessment is made of the network's ability to produce tactile data that is realistic. \medskip
 
-\begin{itemize}
-	\item start with performance specifications regarding the two problems the tactile perception should be able to solve: can the are the points representative, according to the source yes, but are the normals also representative. This is important for the pose estimation problem. When manipulating the object the finger needs to be able to exert enough friction to be able to hold the object, is this true. compute the contact friction and see if it is stronger than the gravity on the subject. Use numbers to verify if the performance is acceptable
-	\item 
-\end{itemize}
+The software used in this project is a regression neural network implemented as a Gazebo \texttt{ModelPlugin}~\cite{gazebo-model-plugin} in C++. However, the \gls{dl} model plugin used in the original publication~\cite{simulation-of-the-syntouch-biotac-sensor} has not been updated since 2018, making the code incompatible with the current version of Gazebo API. Moreover, the licensing issues with the files in the \texttt{xmlrpc++} library, which were used for base64 encoding and decoding, necessitated their removal~\cite{base64-encoding-decoding-licensing-issue}. To address these issues, each has been resolved and the plugin has been reorganized and repackaged for compatibility with the current version of Gazebo. The original version of the plugin can be found in~\cite{ruppel-philipp-biotac-gazebo-plugin}, while the fixed and updated version is available at~\cite{melbye-staven-biotac-sim-plugin}. \medskip
+
+The availability of the updated plugin ensures that the project can continue to benefit from the capabilities of the \gls{mlp} based \gls{dl} model for simulating realistic tactile data in the current version of Gazebo.
 
 
 \section{Method}\label{sec:1-tactile-perception-method}
 
+\subsection{Network Architecture}\label{sec:1-tactile-perception-method-network-architecture}
+
+\subsection{Network Training Procedure}\label{sec:1-tactile-perception-method-network-training-procedure}
+
+
+network architecture:
+ - in 13 temp, force position
+
+
+
+neural network architecture
+training method
+what makes it special
+
+[figure of NN architecture]
 
 \section{Experimental Setup}\label{sec:1-tactile-perception-experimental-setup}
+
+picture of hand touching flat, edge, and sphere
+
+ground truth vectors presented on figures and how errors were computed
+
+holding bunny, and logging forces. Forces compared to the theoretical ideal.
 
 
 \section{Results}\label{sec:1-tactile-perception-results}
 
+show torques, forces and normals in grid plot.
+
+normal cone and mirrroring error. How it was solved
+
+
+What is the error.
 
 \section{Discussion \& Conclusion}\label{sec:1-tactile-perception-discussion-and-conclusion}
 
+It seems to represent the real phenomenons realistically 
 
 
 % \section{Related Work} \label{sec:1-tactile-perception-related-work}
