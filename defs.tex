@@ -117,6 +117,7 @@
 \newcommand{\mvar}[1]{$#1$} % environment for mathematical variable $f(x)$ => \mvar{f(x)}
 \newcommand{\robframe}[1]{\mvar{\{\text{#1}\}}}
 \newcommand{\inR}[1]{ \in\R^{#1} }
+\newcommand{\SE}{ \text{ SE} }
 
 \newcommand{\Csf}{\mathcal{E}_{f,\text{SF}} }
 \newcommand{\Chf}{\mathcal{C}_{f,\text{HF}} }
@@ -172,6 +173,14 @@
 \usepackage{diagbox}
 \usepackage{tabularx}
 \usepackage[export]{adjustbox}
+
+
+% set max matrix size
+\setcounter{MaxMatrixCols}{20}
+
+% \aug for vertical line in matrix
+\newcommand\aug{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+
 
 % Custom tables commands for fixed-column sizes
 \newcommand{\PreserveBackslash}[1]{\let\temp=\\#1\let\\=\temp}

@@ -3,6 +3,62 @@
 \section{Introduction} \label{sec:2-pose-estimation-introduction}
 Here we write the introduction for problem 2.
 
-\section{Related Work} \label{sec:2-pose-estimation-related-work}
+In this chapter, the \gls{rcqp} method will be presented along with its performance in solving the point cloud registration problem.
+The data produced in~\chapref{ch:1-tactile-perception} is a point cloud of the form
+\begin{equation} \label{eq:data-matrix-structure}
+	\mat{X} = 
+	\begin{bmatrix}
+		c_x & c_y & c_z & n_x & n_y & n_z \\
+		c_x & c_y & c_z & n_x & n_y & n_z \\
+		 &  & \vdots &  &  &  \\
+		c_x & c_y & c_z & n_x & n_y & n_z \\
+	\end{bmatrix}\inR{M\times 6},
+\end{equation}
+
+where \mvar{\vec{c}=\rvec{c_x, c_y, c_z}} is a contact point and \mvar{\vec{n}=\rvec{n_x, n_y, n_z}} is the corresponding point's normals vector. Under the assumption of already knowing the object of interest, a \gls{gt} point cloud \mat{Y} is also generated, which takes the same structure except the number of points being \mvar{M}. One row in the data matrix \mat{X} is referred to as \vec{x}.\medskip
+
+The problem is thus to solve,
+\begin{equation} \label{eq:point-cloud-registration-problem}
+	\mat{T}^\star \arg \min_{\mat{T}\in\SE (3)} \sum^M_{i=1} d_{P_i}\left( \mat{T} \vec{x}_i \right)^2
+\end{equation}
+
+where \mvar{\SE(3)} is the Special Euclidean group in 3D, \mvar{\mat{T}\vec{x}} is the Euclidean transformation of the point \mvar{\vec{x}_i} and \mvar{d_{p_i}(\cdot)} is the distance to the primitive \mvar{P_i}.
+
+To solve this problem, correspondences must be found between the two point cloud matrices \mat{X} and \mat{Y}. Due to the points collected from 
+
+\section{Method} \label{sec:2-pose-estimation-method}
+
+The method chosen for this chapter is twofold: first outliers are rejected using \gls{gnc} and \gls{rcqp} for determining the optimal transformation \mvar{\mat{T}^\star}. One of the common problems of \gls{pcr} is the presence of outliers, exceeding \SI{95}{\percent} is not uncommon~\cite{guaranteed-outlier-removal-for-point-cloud-registration-with-correspondences}. Outlier removal is thus necessary, which is chosen in the form \gls{gnc}. To find correspondences, a point cloud feature which utilizes the clusters of points produced by the fingertips. Thus the \gls{fpfh} descriptor is chosen. Using these features descriptors \mvar{d_{t}} are found for the target data i.e. \mat{Y} and the source data \mat{X} i.e. \mvar{d_s}. Using these matching pairs of points are found using an exhaustive search and a similarity threshold of \num{0.01}
+
+the distance is the normalized Euclidean distance between the matching features.
+
+The data is then organized in matrices \mat{X} and \mat{Y} for the source and target data, but organized such that each row corresponds 
+
+% f_target = extractFPFHFeatures(pc_target);
+% f_source = extractFPFHFeatures(pc_source);
+% % f_source = extractFPFHFeatures(pc_source);
+
+% [matchingPairs,scores] = pcmatchfeatures(f_target,f_source, ...
+%     pc_target,pc_source,Method="Exhaustive");
+% length(matchingPairs);
+
+
+
+
+\subsection{Graduated Non-Convexity} \label{subs:2-pose-estimation-graduated-non-convexity}
+
+
+
+
+
+\subsection{Relaxed Convex Quadratic Programming} \label{subs:2-pose-estimation-relaxed-convex-quadratic-programming}
+
+
+
+\section{Experimental Setup} \label{sec:2-pose-estimation-experimental-setup}
+
+In order to sample dat
+
+
 
 % Here we cite the related work by \texttt{\textbackslash cite\{source-label\}} like this \cite{recent-progress-in-technologies-for-tactile-sensors}
