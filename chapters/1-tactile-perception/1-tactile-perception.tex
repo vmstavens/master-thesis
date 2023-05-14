@@ -148,27 +148,26 @@ The data set has been made publicly available and can be found in~\cite{biotac-d
 
 \subsection{Contact Normal Estimation}\label{sec:1-tactile-perception-experimental-setup-contact-normal-estimation}
 
-To test the \gls{rls} method's ability to estimate contact normals the index finger makes contact with a flat surface as shown in~\figref{fig:normal-flat-contact-3d}, through flexion and ulnar deviation a contact path is created as shown in~\figref{fig:2d-projected-contact-path-across-flat-surface}. The motion is done throughout \SI{14}{\second}, and due to a significant presence of noise, the contact position data is filtered using a rolling low pass filter with window size \num{100}. The experiment was conducted with the finger on the surface facing \mvar{-\vec{y}}, meaning the \gls{gt} normal is \mvar{\vec{n}_{gt}=\rvec{0,-1,0}}.
+To test the \gls{rls} method's ability to estimate contact normals the index finger makes contact with a flat surface as shown in~\figref{fig:flat-contact-coor}, through flexion and ulnar deviation a contact path is created as shown in~\figref{fig:2d-projected-contact-path-across-flat-surface}. The motion is done throughout \SI{14}{\second}, and due to a significant presence of noise, the contact position data is filtered using a rolling low pass filter with window size \num{100}. The experiment was conducted with the finger on the surface facing \mvar{-\vec{y}}, meaning the \gls{gt} normal is \mvar{\vec{n}_{gt}=\rvec{0,-1,0}}.
 
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/inkscape/flat-contact-coor.pdf}
-		\caption{Map showing a 2D projection of the electrodes' positions and numbers.}
-		\label{fig:normal-flat-contact-3d}
+		\caption{Experimental setup for collecting linear velocity data to estimate contact normals using \gls{rls}.}
+		\label{fig:flat-contact-coor}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/2d-projected-contact-path-across-flat-surface.pdf}
-		\caption{3D plot of electrode activations when the Shadow Dexterous hand's index finger makes contact with a flat surface.}
+		\caption{2D projection of the index finger's path across the cube's flat surface throughout the \SI{14}{\second} data is sampled.}
 		\label{fig:2d-projected-contact-path-across-flat-surface}
 	\end{subfigure}
-		\caption{3D plot of electrode activations and 2D electrode map with labels.}
+		\caption{Experimental setup and index finger's contact path when sampling contact data for normal estimation.}
 		\label{fig:experimental-setup-for-normal-estimation}
 \end{figure}
-
 
 \subsection{Skew Force Estimation}\label{sec:1-tactile-perception-experimental-setup-skew-force-estimation}
 
@@ -274,13 +273,13 @@ After executing the \gls{dl} model on all cases, the resulting simulated electro
 
 \subsection{Contact Normals} \label{sec:1-tactile-perception-results-contact-normals}
 
-Upon estimating the linear velocities~\figref{fig:linear-velocity-finger-in-contact-with-flat-surface} was produced, which shows the three velocity components. Due to a great presence of noise, a rolling low pass filter was applied with a window size of \num{100}. As one would expect the \mvar{v_y} is of negligible magnitude, as shown here. \medskip
+Upon estimating the linear velocities~\figref{fig:linear-velocity-finger-in-contact-with-flat-surface} was produced, which shows the three velocity components. Due to the great presence of noise, a rolling low pass filter was applied with a window size of \num{100}. As one would expect the \mvar{v_y} is of negligible magnitude, as shown here. \medskip
 
 \begin{figure}[!h]
 	\begin{center}
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/linear-velocity-finger-in-contact-with-flat-surface.pdf}
 	\end{center}
-	\caption{The simulated tactile electrode activations.}
+	\caption{Linear velocities of the contact points when the index finger moves across a flat surface.}
 	\label{fig:linear-velocity-finger-in-contact-with-flat-surface}
 \end{figure}
 
@@ -290,13 +289,13 @@ Based on these the contact normals are estimated using \gls{rls}, which results 
 	\begin{center}
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/contact-normal-estimates.pdf}
 	\end{center}
-	\caption{The simulated tactile electrode activations.}
+	\caption{The normal estimates across time as the experiment was executed.}
 	\label{fig:contact-normal-estimates}
 \end{figure}
 
 \subsection{Skew Forces} \label{sec:1-tactile-perception-results-skew-forces}
 
-\figref{fig:flat-contact-graph} illustrates the inputs and outputs of the \gls{dl} model when the Shadow Dexterous hand's index finger makes contact with a flat surface. As seen here, the output of the model is independent of the input. To verify this behavior, data from the data set on which the model has been trained is applied and a similar result is found as seen in~\figref{fig:train-contact-graph}. \medskip
+\figref{fig:flat-contact-graph} illustrates the inputs and outputs of the \gls{dl} model when the Shadow Dexterous hand's index finger makes contact with a flat surface. As seen here, the output of the model is independent of the input. To verify this behavior, data from the data set on which the model has been trained is applied and a similar result is found as seen in~\figref{fig:train-contact-graph}. The missing elements from this graph are value responses from the network of \texttt{inf}, which is a reference to the highest representable value by the system and is therefore not included. \medskip
 
 Due to this independence of input, the electrodes, and by extension the \gls{dl} model is not judged to be able to accurately simulate skew forces for a BioTac sensor in contact. The contact data from the remaining experiments can be found in~\appref{app:tactile-perception-simulated-electrode-activations}, which show a similar pattern.
 
@@ -304,70 +303,108 @@ Due to this independence of input, the electrodes, and by extension the \gls{dl}
 	\begin{center}
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/flat-contact-graph.pdf}
 	\end{center}
-	\caption{The simulated tactile electrode activations.}
+	\caption{The simulated tactile electrode activations the index finger is in contact with a flat surface.}
 	\label{fig:flat-contact-graph}
 \end{figure}
 \begin{figure}[!h]
 	\begin{center}
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/train-contact-graph.pdf}
 	\end{center}
-	\caption{The simulated tactile electrode activations.}
+	\caption{The simulated tactile electrode activations when data the \gls{dl} model was trained on is parsed.}
 	\label{fig:train-contact-graph}
 \end{figure}
 
-\subsection{Gazebo Physics Engine Comparison}\label{sec:1-tactile-perception-results-gazebo-comparison}
+\subsection{Physics Engine Comparison}\label{sec:1-tactile-perception-results-gazebo-comparison}
 
+Gazebo's physics engine provides interpretations of tactile contacts for models containing a contact sensor model plugin. The data comes in the form of a \texttt{ContactState} which contain the contact points in \robframe{W}, wrenches, depth and more. As a replacement for the lacking skew forces from the \gls{dl} method, and a possible extension of the contact point and normal estimation, Gazebo's physics engine is considered a potential supplement to the methods presented. \medskip
 
+To test the engine's ability to represent contact points, a 3D mesh~\cite{stanford-bunny} was sampled using the Shadow Dexterous hand, with the contact points being recorded as shown in~\figref{fig:contact-position-gazebo}. Here~\figref{fig:pc-source} shows the contact points sampled from moving the Shadow Dexterous fingers across the 3D mesh.
 
-
-Engine 
-
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/xy-projected-raw-normal-cones.pdf}
-		\caption{3D plot of electrode activations when the Shadow Dexterous hand's index finger makes contact with a flat surface.}
-		\label{fig:simulated-electrode-distribution3}
+		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pc_source.pdf}
+		\caption{The source \gls{pc} generated from simulated contact points.}
+		\label{fig:pc-source}
 	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
+	% \hfill
+	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/xy-projected-processed-normal-cones.pdf}
-		\caption{Map showing a 2D projection of the electrodes' positions and numbers.}
-		\label{fig:electrode-map3}
+		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pc_target.pdf}
+		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10 000} points.}
+		\label{fig:pc-target}
 	\end{subfigure}
-		\caption{3D plot of electrode activations and 2D electrode map with labels.}
-		\label{fig:flat-contact-experimental-and-electrode-map3}
+	% \hfill
+	\begin{subfigure}[b]{0.3\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pc_source_target.pdf}
+		\caption{The source \gls{pc} overlaid the target \gls{pc}, showing their fit.}
+		\label{fig:pc-source-and-target}
+	\end{subfigure}
+	\caption{3D plots showing the sampled source and target \gls{pc}s along with a plot showing both of them overlaid.}
+	\label{fig:contact-position-gazebo}
 \end{figure}
 
+The contact forces and torques were found likewise found, shown in~\figref{fig:xy-projected-force-cones} and~\figref{fig:xy-projected-torque-cones}, for the Shadow Dexterous finger's being in contact with an edge.
 
-\begin{figure}[h]
+\begin{figure}[!h]
 	\centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/xy-projected-force-cones.pdf}
-		\caption{3D plot of electrode activations when the Shadow Dexterous hand's index finger makes contact with a flat surface.}
-		\label{fig:simulated-electrode-distribution2}
+		\caption{XY projected force cone produced by Gazebo's physics engine when the Shadow Dexterous hand is in contact with an edge.}
+		\label{fig:xy-projected-force-cones}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/xy-projected-torque-cones.pdf}
-		\caption{Map showing a 2D projection of the electrodes' positions and numbers.}
-		\label{fig:electrode-map2}
+		\caption{XY projected torque cone produced by Gazebo's physics engine when the Shadow Dexterous hand is in contact with an edge.}
+		\label{fig:xy-projected-torque-cones}
 	\end{subfigure}
-		\caption{3D plot of electrode activations and 2D electrode map with labels.}
-		\label{fig:flat-contact-experimental-and-electrode-map2}
+		\caption{XY projected force and torque cones produced by Gazebo's physics engine when the Shadow Dexterous hand is in contact with an edge.}
+		\label{fig:xy-projected-force-torque-cones}
 \end{figure}
 
+The normals however posed a challenge, as the colliding meshes caused a misinterpretation by the physics engine to produce contact normals which were reflected \SI{180}{\degree}. This can be seen in~\figref{fig:xy-projected-raw-normal-cones}. This was solved by sampling a set of contact normals over \num{10} time steps, reducing the sampling frequency to \SI{10}{\hertz}. These were then clustered using Euclidean clustering with an \mvar{\epsilon} of \SI{1}{\centi\meter} and \num{3} as the minimum number of samples. The centroid of each cluster was then used as the representative and the normal cones shown in~\figref{fig:xy-projected-processed-normal-cones} were achieved.
 
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/xy-projected-raw-normal-cones.pdf}
+		\caption{XY projected raw normal cone produced by Gazebo's physics engine when the Shadow Dexterous hand is in contact with an edge.}
+		\label{fig:xy-projected-raw-normal-cones}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/xy-projected-processed-normal-cones.pdf}
+		\caption{XY projected processed normal cone produced by Gazebo's physics engine when the Shadow Dexterous hand is in contact with an edge.}
+		\label{fig:xy-projected-processed-normal-cones}
+	\end{subfigure}
+		\caption{XY projected raw and processed normal cones produced by Gazebo's physics engine when the Shadow Dexterous hand is in contact with an edge.}
+		\label{fig:xy-projected-processed-normal-normal-cones}
+\end{figure}
 
+Finally, the angle errors \mvar{\theta_e} of the contact normals were found for each of the four presented cases. This can be seen in~\figref{fig:histogram-normal-errors}
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/histogram-normal-errors.pdf}
+	\end{center}
+	\caption{Probability distributions of the angle error \mvar{\theta_e} between simulated and \gls{gt} contact normals.}
+	\label{fig:histogram-normal-errors}
+\end{figure}
+
+\newpage
 \section{Discussion \& Conclusion}\label{sec:1-tactile-perception-discussion-and-conclusion}
 
-It seems to represent the real phenomenons realistically 
+In this study, the performance of a \gls{dl} model in estimating the tactile perception of a BioTac sensor when in contact with different objects is evaluated. The findings indicate that the \gls{dl} model did not provide any useful information in this study. The lack of accuracy in simulating the electrode activations limits the usefulness of the model in applications that require tactile force sensing. This finding highlights the importance of carefully evaluating the performance of \gls{dl} models in specific applications and contexts, as they may not always provide the expected benefits. It was at the time of this project not possible to replicate the tactile information from the original paper~\cite{simulation-of-the-syntouch-biotac-sensor}. \medskip
+
+Contact normals
+Instead, we used simulated contact points and the RLS method to estimate these values. However, the contact normals produced by Gazebo's physics engine were acceptable and could be used to supplement our methods.
 
 
-% \section{Related Work} \label{sec:1-tactile-perception-related-work}
-
-% Here we cite the related work by \texttt{\textbackslash cite\{source-label\}} like this \cite{recent-progress-in-technologies-for-tactile-sensors}
+In conclusion, this study provides insights into the limitations of DL models in estimating tactile perception and highlights the importance of considering alternative methods, such as physics engine simulations, to supplement or replace DL models when necessary. Future studies could explore other DL architectures or combinations of different methods to improve the accuracy and usefulness of tactile perception estimation.
