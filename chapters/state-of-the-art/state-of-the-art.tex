@@ -120,93 +120,17 @@ One such example provides estimates which are insensitive to a large fraction of
 Among the categories presented above, the ones of particular interest are optimization-based techniques due to their mature mathematical foundation and possible certifiable optimality and outlier rejection capabilities, and \gls{dl}-based techniques due to their adaptability and low execution time. While \gls{dl}-based methods can learn feature representations of point clouds and estimate the transformation between two point clouds, optimization-based approaches with outlier rejection can effectively handle noise and outliers in the data, which is a common problem within the \gls{pcr} problem. Due to this, the chosen method is the optimization based \gls{rcqp} method with \gls{gnc} outlier rejection~\cite{graduated-non-convexity-for-robust-spatial-perception:-from-non-minimal-solvers-to-global-outlier-rejection}.
 
 
-% %&&&&&&&&&&&&&&&&&&&&&&&&&&&
-% intro -system setup - sota - model  prob 1 ...
-% kalman filter - gnc is sensor abstracttion level
-% expand on list of thesis overviewz
-% 
-
-
-% %&&&&&&&&&&&&&&&&&&&&&&&&&&&
-
-
-
-% Recently, more sophisticated SDP-based methods have been proposed to solve the registration problem. For instance, Gao et al. [5] proposed an efficient global registration algorithm based on a pairwise comparison of points in point clouds, where SDP is used to optimize the matching problem. This method performs well on point clouds with both small and large overlaps.
-
-% Another SDP-based method that has been proposed is the Sparse Correlation Assignment and Matching (SCAM) method by Li et al. [6]. SCAM is an efficient method that can handle large-scale registration problems. It involves solving an SDP problem using a weighted nuclear norm penalty function. The method has been shown to be robust to noise and outliers, and it outperforms traditional methods like ICP and coherent point drift (CPD) [7] in terms of accuracy and efficiency.
-
-% In addition to SDP-based registration methods, other graph-based methods have also shown promising results. For example, the Fast Approximate Nearest-Neighbor Graph (FANNG) method proposed by Li et al. [8] constructs a graph structure to find approximate nearest neighbors between two point clouds. The graph is then optimized using an SDP algorithm to obtain accurate correspondences. Another graph-based method is the pairwise geometric matching (PGM) method proposed by Wang et al. [9], which uses an SDP relaxation to solve the 
-% geometric matching problem between two point clouds.
-
-
-% A final example is the RCQP
-
-
-% read RCQP paper along with 2103.02690.pdf
-
-% semidefinite programming
-
-% The positive semi-definite properties of the graph Laplacian make it suitable for solving the point set registration problem using semi-definite relaxation. An example of this approach is PSR-SDP [44], which has been applied to multiple point sets registration. Teaser [105], on the other hand, uses graduated non-convexity to solve the rotation sub-problem. This method employs Douglas-Rachford Splitting to efficiently certify global optimality, thus mitigating the high computational cost of SDP relaxation. However, Teaser may still suffer from local minima. To overcome this issue, OPRASANC [58] introduces a graduated optimization strategy that achieves better efficiency than Teaser. 
-
-% Although semi-definite relaxation achieves the global minimum of the original problem, it faces scalability issues [47] and can only handle up to 15 points [53]. To address this, some techniques have been proposed. For example, [53] uses Markov random field techniques to approximate the linear programming relaxation solution, while PM-SDP [67] reduces the dimension of semi-definite constraints to improve efficiency. However, these methods are only suitable for middle-sized point cloud registration problems, and scalability remains a topic of ongoing research.
-
-% Canonical Correlation Analysis (CCA) is one such optimization-based approach that seeks to maximize the correlation between two sets of variables. Chen et al. [6] used CCA to compute correspondences between two point clouds and used a closed-form solution to estimate the transformation. 
-
-% However, CCA can be sensitive to noise and outliers. Robust Canonical Correlation Analysis (RCCA) is an extension of CCA that is more robust to outliers and noise. Wang et al. [7] proposed a method that uses RCCA to compute correspondences between two point clouds and a robust quadratic program to estimate the transformation. RCCP, the resulting method, has demonstrated greater robustness to noise and outliers than traditional CCA-based methods. 
-
-% RCQP is another optimization-based approach that is often combined with outlier rejection techniques to handle noise and outliers in the data. Li et al. [11] proposed a robust registration method based on dual geometric constraint and quadratic programming, while Zhang and Ye [13] proposed a robust point cloud registration algorithm based on quadratic programming and gradient descent. 
-
-% The RCQP algorithm with GNC outlier rejection has also shown promising results in point registration.
-
-
-% Zhou et al. [2] introduced Fast Global Registration, which employs a neural network to compute correspondences between two point clouds, followed by a closed-form solution for the transformation estimation.
-
-% The point registration problem is a challenging task in computer vision and robotics, which involves finding the transformation that aligns two point clouds acquired from the same sensor. In recent years, deep learning-based and optimization-based approaches have shown great potential in solving this problem.
-
-% Optimization-based approaches, on the other hand, formulate the point registration problem as an optimization problem and seek to minimize a cost function that measures the dissimilarity between the two point clouds. 
-
-% One such approach is Canonical Correlation Analysis (CCA), which seeks to maximize the correlation between two sets of variables. This method has been applied to point registration by Chen et al. [6], who used it to compute the correspondences between two point clouds, and then used a closed-form solution to estimate the transformation.
-
-% Another optimization-based approach is Robust Canonical Correlation Analysis (RCCA), which is an extension of CCA that is more robust to outliers and noise. RCCA has been used for point registration by Wang et al. [7], who proposed a method that uses RCCA to compute the correspondences between two point clouds, and then uses a robust quadratic program to estimate the transformation. This method, called RCCP, was shown to be more robust to noise and outliers than traditional CCA-based methods.
-
-% RCQP is another optimization-based approach that has been used for point registration, particularly in combination with outlier rejection techniques. Li et al. [11] proposed a robust registration method for point clouds based on dual geometric constraint and quadratic programming, which can effectively handle outliers and noise in the data. Zhang and Ye [13] proposed a robust point cloud registration algorithm based on quadratic programming and gradient descent, which can achieve sub-millimeter accuracy in point registration. A Robust and Efficient Registration Method for Point Clouds Based on the RCQP Algorithm with GNC Outlier Rejection [10] is another example of an RCQP-based method with outlier rejection that has demonstrated promising results in point registration.
-
-% In conclusion, both deep learning-based and optimization-based approaches have shown great potential in solving the point registration problem. While deep learning-based methods can learn feature representations of point clouds and estimate the transformation between two point clouds, optimization-based approaches such as CCA, RCCA, and RCQP can formulate the point registration problem as an optimization problem and effectively handle noise and outliers in the data. Future research could focus on combining these different approaches to further improve the accuracy and robustness of point registration.
-
-% References
-
-% Chetverikov, D., & Stepanov, D. (2002). A fast effective algorithm for point set registration. In Proceedings of the IEEE International Conference on Computer Vision (Vol. 2, pp. 1071-1078).
-
-% Besl, P. J., & McKay, N. D. (1992). A method for registration of 3-D shapes. IEEE Transactions on pattern analysis and machine intelligence, 14(2), 239-256.
-
-% Chen, Y., Medioni, G., & Weizman, A. (1992). Object modeling by registration of multiple range images. Image and vision computing, 10(3), 145-155.
-
-% Rusu, R. B., Blodow, N., & Beetz, M. (2009, May). Fast point feature histograms (FPFH) for 3D registration. In 2009 IEEE International Conference on Robotics and Automation (pp. 3212-3217). IEEE.
-
-% Pomerleau, F., Colas, F., & Siegwart, R. (2013). A review of point cloud registration algorithms for mobile robotics. Foundations and Trends® in Robotics, 2(1-2), 1-104.
-
-% Amiri, R., & Rezaei, M. (2019). A review of point cloud registration methods. Journal of Intelligent & Robotic Systems, 93(3-4), 409-446.
-
-% Zhang, C., Zhu, J., Zhang, C., Lu, F., & Liu, Y. (2020). A survey of point cloud registration based on deep learning. IEEE Access, 8, 205788-205813.
-
-% Chen, Y., & Medioni, G. (1991). Object modelling by registration of multiple range images. Image and vision computing, 10(3), 145-155.
-
-% Aiger, D., Shamir, A., & Cohen-Or, D. (2008, August). 3D photography on your desk. In ACM Transactions on Graphics (TOG) (Vol. 27, No. 3, p. 68). ACM.
-
-% Gao, J., Hou, M., Wang, Y., Zhang, X., & Zhao, Q. (2021). A survey of point cloud registration: From classical iterative methods to deep learning-based techniques. Signal Processing: Image Communication, 97, 116358.
-
-% Leordeanu, M., & Hebert, M. (2005). A spectral technique for correspondence problems using pairwise constraints. In Computer Vision, 2005. ICCV 2005. Tenth IEEE International Conference on (Vol. 2, pp. 1482-1489). IEEE.
-
-% Myronenko, A., & Song, X. (2010). Point set registration: Coherent point drift. IEEE Transactions on Pattern Analysis and Machine Intelligence, 32(12), 2262-2275.
-
-% Yang, B., Luo, C., Wu, L., & Zhang, H. (2020). Robust point cloud registration algorithm based on RCQP with GNC outlier rejection. Journal of Visual Communication and Image Representation, 72, 102894.
-
-% Hotelling, H. (1936). Relations between two sets of variates. Biometrika, 28(3/4), 321-377.
-
-% Hardoon, D. R., Szedmak, S., & Shawe-Taylor, J. (
-
 
 \section{Problem 3 - In-Hand Manipulation}\label{sec:lit-rev-problem-3}
+
+Motion planning is a critical aspect of robot applications as it involves finding a path without collisions between two configurations. However, when it comes to dexterous manipulation, where the object may not always be fully constrained, a more advanced approach called kinodynamic motion planning becomes necessary. Kinodynamic motion planning presents significant challenges, particularly in high-dimensional spaces, and is known to be PSPACE-hard~\cite*{planning-algorithms}, indicating its computational complexity.
+
+To address these challenges, researchers have proposed probabilistic complete sampling-based kinodynamic motion planners like SST and SST*~\cite{asymptotically-optimal-sampling-based-kinodynamic-planning}. These planners utilize sampling-based techniques and probabilistic methods to generate collision-free paths in complex environments. Despite their effectiveness, the complexity of the motion planning problem has led to the integration of motion planning algorithms with model predictive control. By combining these two techniques, it becomes possible to avoid solving a boundary value problem~\cite{mpc-mpnet-model-predictive-motion-planning-networks-for-fast-near-optimal-planning-under-kinodynamic-constraints}, reducing the computational burden associated with kinodynamic motion planning.
+
+Furthermore, to further enhance performance, researchers have explored the combination of kinodynamic motion planning algorithms with reinforcement learning. This integration leverages the capabilities of reinforcement learning algorithms to learn from experience and improve the efficiency and quality of the generated motion plans~\cite{sampling-based-exploration-for-reinforcement-learning-of-dexterous-manipulation}. By incorporating the knowledge acquired through reinforcement learning, the kinodynamic motion planning process can adapt and optimize its solutions over time, resulting in more refined and effective paths for dexterous manipulation tasks.
+
+Overall, the field of motion planning has witnessed the development of various approaches to address the challenges posed by kinodynamic motion planning in high-dimensional spaces. From probabilistic complete sampling-based planners to the integration of model predictive control and reinforcement learning, these advancements aim to enhance the efficiency, reliability, and adaptability of motion planning algorithms in order to support complex robot applications.
+
 
 % In-hand manipulation is an important aspect of robotic manipulation that allows robots to grasp and manipulate objects in a more dexterous manner. A key component of in-hand manipulation is the gripper, which must be capable of grasping and manipulating objects with a high degree of precision and adaptability. In recent years, there has been significant research on the development of dexterous grippers for in-hand manipulation. In this literature review, we will survey some of the methods and techniques for performing in-hand manipulation using dexterous grippers.
 
@@ -222,14 +146,10 @@ Among the categories presented above, the ones of particular interest are optimi
 
 % In conclusion, there have been significant advances in the development of dexterous grippers for in-hand manipulation in recent years. Soft grippers, multi-fingered hands, modular fingers, and underactuated hands are all promising approaches for achieving dexterous manipulation. Furthermore, researchers have explored various methods for planning and control of in-hand manipulation tasks, such as neural network models. Future research in this area could focus on further improving the adaptability and versatility of dexterous grippers, as well as developing more efficient and effective planning and control methods for in-hand manipulation tasks.
 
-References:
-
 % [1] Polygerinos, Panagiotis, et al. "Soft robotic glove for combined assistance and at-home rehabilitation." Robotics and Autonomous Systems 73 (2015): 135-143.
 
 % [2] Chalon, Maxime, et al. "A Three-Fingered Robot Hand Capable of Dexterous In-Hand Manipulation." IEEE Robotics and Automation Letters 3.2 (2018):
 
-
-resources:
 % https://github.com/PKU-MARL/DexterousHands
 % https://github.com/NVIDIA-Omniverse/IsaacGymEnvs/blob/main/docs/rl_examples.md
 % https://github.com/vikashplus/Adroit

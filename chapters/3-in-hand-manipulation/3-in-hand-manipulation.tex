@@ -1,14 +1,75 @@
-\chapter{In-Hand Manipulation} \label{ch:3-in-hand-manipulation}
+\chapter{In-Hand Manipulation}\label{ch:3-in-hand-manipulation}
 
-\section{Introduction} \label{sec:3-in-hand-manipulation-introduction}
+\section{Introduction}\label{sec:3-in-hand-manipulation-introduction}
 Here we write the introduction for problem 3.
 
 
-\section{Related Work} \label{sec:3-in-hand-manipulation-related-work}
+\section{Method}\label{sec:3-in-hand-manipulation-method}
 
-% Here we cite the related work by \texttt{\textbackslash cite\{source-label\}} like this \cite{recent-progress-in-technologies-for-tactile-sensors}
+Certainly! Here's the combined section that explains the problem definition and the MPC-MPNet method, including the relevant mathematics written in LaTeX:
 
+\subsection{Problem Definition and MPC-MPNet Method}
 
+In this section, we present the problem definition and propose MPC-MPNet, an end-to-end learning-based Kinodynamic Motion Planning (KMP) algorithm. MPC-MPNet aims to find collision-free trajectories connecting a given initial state to a goal region in the configuration space. We describe the problem formulation and the main components of our approach, which include an observation encoder, a neural generator, a neural discriminator, and Model Predictive Control (MPC).
 
+\subsubsection{Problem Definition}
 
-For history see hand book of robotics chapter 38, the first section.
+Let $C$ denote a configuration space (C-space) of a mechanical system, where collision and collision-free regions are represented as $C_{\text{obs}}$ and $C_{\text{free}} = C \setminus C_{\text{obs}}$, respectively. The state space $X$ consists of states $x = (c, \dot{c}) \in X$ that contain a configuration $c \in C$ and its time derivative $\dot{c}$. Similarly, $X_{\text{obs}}$ and $X_{\text{free}}$ represent the collision and collision-free state spaces, respectively. The dynamics of the system are described by the implicit set of equations $ \dot{x} = f(x, u)$, where $u$ denotes the control input from a feasible control set $U$. The objective of KMP is to find a collision-free trajectory $\sigma = \left[(x, u, \tau)_t\right]_{t=0}^{T}$, consisting of a sequence of states $[x_t]_{t=0}^{T}$ and controls $[u_t]_{t=0}^{T}$ with their corresponding durations $[\tau_t]_{t=0}^{T}$, such that $x(0) = x_{\text{init}}$ and $x(T) \in X_{\text{goal}}$.
+
+\subsection{MPC-MPNet Method}
+
+MPC-MPNet is an end-to-end learning-based KMP algorithm that iteratively generates waypoints and local steering trajectories to construct collision-free paths between the start and goal states. The method comprises an observation encoder, a neural generator, a neural discriminator, and two planning algorithms named MPC-MPNetPath and MPC-MPNetTree. We describe each component in detail:
+
+\subsubsection{Observation Encoder}
+
+The observation encoder embeds the workspace information, represented as voxel maps $v$, into latent features $Z$ containing critical anchor points for the neural generator and discriminator. Voxel maps are volumetric with dimensions $L \times W \times H \times C$, where $L$, $W$, $H$, and $C$ represent the length, width, height, and number of channels, respectively. To address the computational inefficiency of 3D convolutional neural networks (CNNs) due to their cubic representations and empty volumes, we convert the voxel maps into voxel patches with dimensions $L \times W \times \hat{C}$, where $\hat{C} = HC$. This conversion allows us to use 2D CNNs for learning the embeddings.
+
+\subsubsection{Neural Generator}
+
+The neural generator $G$, parameterized by $\theta_g$, is a stochastic neural model that generates intermediate waypoints $\hat{x}_{t+1}$ given the environment encoding $Z$, the robot's current state $x_t \in X_{\text{free}}$, and the goal state $x_{\text{goal}} \in X_{\text{test}}$
+
+{MPC-MPNet (continued)}
+
+\subsubsection{Neural Discriminator}
+
+The neural discriminator $D$, parameterized by $\theta_d$, is a binary classifier that distinguishes between valid and invalid paths. It receives the environment encoding $Z$ and a trajectory $\sigma$ and produces a probability $p(\sigma)$ that the trajectory is collision-free. 
+% The discriminator is trained using the Wasserstein GAN (WGAN) objective \cite{wgan}, which minimizes the Wasserstein distance between the true data distribution and the generator's distribution.
+
+\subsubsection{Model Predictive Control}
+
+Model Predictive Control (MPC) is a control strategy that computes a sequence of control inputs over a finite time horizon by solving a constrained optimization problem. At each time step, MPC uses the current state $x_t$ and the goal state $x_{\text{goal}}$ to generate a candidate trajectory, which is evaluated by the neural discriminator. MPC selects the first control input of the best-performing trajectory and applies it to the system. The process is repeated at each time step, with the initial state updated to the current state.
+
+\subsubsection{MPC-MPNetPath and MPC-MPNetTree}
+
+We introduce two planning algorithms that use MPC-MPNet to generate collision-free paths. MPC-MPNetPath generates a single trajectory between the initial and goal states by iteratively applying MPC and refining the path with the neural generator. MPC-MPNetTree constructs a search tree by iteratively generating and evaluating candidate trajectories using MPC and the neural discriminator. The search tree is used to construct the final path by backtracking from the goal node to the start node.
+
+\subsubsection{Mathematical Formulation}
+
+The MPC-MPNet algorithm can be formulated as follows:
+
+\begin{equation}
+    \text{Find } \sigma = \left[(x, u, \tau)_t\right]_{t=0}^{T} \text{ such that } x(0) = x_{\text{init}}, x(T) \in X_{\text{goal}}, \text{ and } \sigma \in \mathcal{F},
+\end{equation}
+
+where $\mathcal{F}$ denotes the set of collision-free trajectories. The problem can be solved by iteratively applying MPC and the neural generator until a collision-free trajectory is found. The MPC optimization problem can be written as:
+
+\begin{equation}
+    \begin{aligned}
+        &\text{minimize} && \sum_{t=0}^{T-1} l(x_t, u_t) \\
+        &\text{subject to} && x_{t+1} = f(x_t, u_t) \\
+        &&& x_0 = x_t \\
+        &&& x_T \in X_{\text{goal}} \\
+        &&& x_t \in X_{\text{free}} \\
+        &&& u_t \in U \\
+    \end{aligned}
+\end{equation}
+
+where $l(x_t, u_t)$ is a cost function, $f(x_t, u_t)$ is the system dynamics, $x_0$ is the initial state, $x_T$ is the final state, and $U$ is the feasible control set. The neural generator is trained to generate intermediate waypoints $\hat{x}_{t+1}$ that minimize the difference between the MPC-generated trajectory and the true trajectory. The discriminator is trained to distinguish between valid and invalid trajectories, where invalid trajectories are those that collide with obstacles.
+
+\section{Conclusion}
+
+% In this section, we presented the problem formulation for Kinodynamic Motion Planning (KMP) and proposed MPC-MPNet, an end-to-end learning-based
+
+%  approach to solving the KMP problem. MPC-MPNet incorporates an observation encoder, a neural generator, a neural discriminator, and Model Predictive Control (MPC) to generate collision-free trajectories. Our approach leverages the strengths of deep neural networks and MPC to efficiently and effectively navigate complex environments. Experimental evaluation demonstrates the effectiveness and efficiency of MPC-MPNet in solving KMP problems.
+
+%  https://github.com/yzqin/dexmv-sim

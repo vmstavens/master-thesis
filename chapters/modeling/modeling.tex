@@ -42,14 +42,14 @@ This model states that the frictional force acting on an object can be formulate
 	\label{eq:coulomb-friction}
 \end{equation}
 
-with \mvar{f_f} being the magnitude of the Coulomb friction, \mvar{f_N} being the magnitude of normal force in the point of contact and \mvar{\mu\in[0,1]} being the friction coefficient. One visualization of this linear relationship can be seen in the cones illustrated in \figref{fig:hf} and \figref{fig:sf}. These cones are referred to as friction cones, which for a hard finger model can be formulated as
+with \mvar{f_f} being the magnitude of the Coulomb friction, \mvar{f_N} being the magnitude of the normal force in the point of contact and \mvar{\mu\in[0,1]} being the friction coefficient. One visualization of this linear relationship can be seen in the cones illustrated in \figref{fig:hf} and \figref{fig:sf}. These cones are referred to as friction cones, which for a hard finger model can be formulated as
 %
 \begin{equation} 
 	\Chf = \left\{ \; f_c\; \middle|\; f_{t} \le \mu f_z,\; \mu f_z \ge 0 \; \right\} \qquad , \qquad f_t = \sqrt{f_x^2 + f_y^2}.
 	\label{eq:hf}
 \end{equation}
 %
-Here \mvar{f_c} is the magnitude of the contact force, \mvar{f_t} is the magnitude of the tangential force. \mvar{f_x}, \mvar{f_y} and \mvar{f_z} are the magnitudes of the \mvar{x}, \mvar{y} and \mvar{z} components of the contact force (\mvar{\vec{f}_c\inR{3}}) and \mvar{\mu} is the friction coefficient~\cite[Chapter 37]{handbook-of-robotics}. By applying a contact force that ensures the friction stays greater than the magnitude of the tangential force, neither object slips i.e. \mvar{f_z} must ensure that \mvar{f_z\mu} stays greater than \mvar{f_t} for the objects not to slip. Visually this is the case when the contact force \mvar{\vec{f}_c} stays within the friction cone, which enables a friction-based grasp type referred to as force closure. Specifically, force closure refers to when the composite wrench cone contains the entire wrench space so that any external wrench \vec{w_{\text{ext}}} on the body can be balanced by contact forces~\cite{modern-robotics-mechanics-planning-and-control}. A force that commonly contributes significantly to the external wrench, and thus to the tangential force, is gravity. \medskip
+Here \mvar{f_c} is the magnitude of the contact force and \mvar{f_t} is the magnitude of the tangential force. \mvar{f_x}, \mvar{f_y} and \mvar{f_z} are the magnitudes of the \mvar{x}, \mvar{y} and \mvar{z} components of the contact force (\mvar{\vec{f}_c\inR{3}}) and \mvar{\mu} is the friction coefficient~\cite[Chapter 37]{handbook-of-robotics}. By applying a contact force that ensures the friction stays greater than the magnitude of the tangential force, neither object slips i.e. \mvar{f_z} must ensure that \mvar{f_z\mu} stays greater than \mvar{f_t} for the objects not to slip. Visually this is the case when the contact force \mvar{\vec{f}_c} stays within the friction cone, which enables a friction-based grasp type referred to as force closure. Specifically, force closure refers to when the composite wrench cone contains the entire wrench space so that any external wrench \vec{w_{\text{ext}}} on the body can be balanced by contact forces~\cite{modern-robotics-mechanics-planning-and-control}. A force that commonly contributes significantly to the external wrench, and thus to the tangential force, is gravity. \medskip
 
 The \gls{sf} model, as shown in \figref{fig:sf}, is used to represent scenarios where both friction and surface deformations are significant. Due to deformations of the finger, an additional torsional moment about the contact normal will be present~\cite[Chapter 38]{handbook-of-robotics}. While an analytical formulation of the \gls{sf} relation depends on the pressure distribution inside the contact, and can only be derived for a limited number of special cases, the general case can be approximated using 
 %
@@ -98,7 +98,7 @@ When modeling the kinematics of an anthropomorphic gripper with frame \mvar{\rob
 \begin{figure}[h]
 	\begin{small}
 		\begin{center}
-			\includegraphics[width=0.6\textwidth]{chapters/modeling/fig/sys-schematic.pdf}
+			\includegraphics[width=0.6\textwidth]{chapters/modeling/fig/sys-schematic-reversed-crop.pdf}
 		\end{center}
 		\caption{The model of the world representation for this project.}
 		\label{fig:sys-schematic}
