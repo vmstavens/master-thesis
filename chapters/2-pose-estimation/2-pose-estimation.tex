@@ -1,10 +1,23 @@
-\chapter{Pose Estimation} \label{ch:2-pose-estimation}
+\chapter{Pose Estimation}\label{ch:2-pose-estimation}
 
-\section{Introduction} \label{sec:2-pose-estimation-introduction}
-Here we write the introduction for problem 2.
+This chapter focuses on pose estimation, specifically addressing the optimization-based PCR problem. It introduces the \gls{rcqp} and \gls{gnc} methods used to solve this problem and evaluates their performance in estimating the pose of the object of interest. The primary objective is to assess the extent to which \gls{rcqp} and \gls{gnc} can accurately estimate the position and orientation of the object, aiming for a \SI{95}{\percent} accuracy level as mentioned in \secref{sec:intro-problem-description}. Importantly, it is assumed throughout the chapter that the object of interest is known, eliminating the need for classification.\medskip
 
-In this chapter, the \gls{rcqp} method will be presented along with its performance in solving the point cloud registration problem.
-The data produced in~\chapref{ch:1-tactile-perception} is a point cloud of the form
+To achieve this goal, the chapter presents the methodologies employed, the experimental setup, and the obtained results. The results obtained in this chapter encompass two main aspects 1) synthetic source data is utilized, and generated from the target data to ensure accurate correspondences. This allows for the evaluation of the methods' robustness by introducing varying percentages of outliers. 2) the methods are applied to sampled data from~\chapref{ch:1-tactile-perception} to estimate the pose of the object based on computed correspondences.\medskip
+
+Furthermore, in addition to solving the pose estimation problem, the chapter includes an estimation of the signal-to-outlier ratio. This is achieved by utilizing the weights produced by \gls{gnc}. The estimation is conducted firstly on the synthetic source data where the ground truth is known and secondly on the sampled source data where the outlier ratio is unknown.
+
+% In this chapter, the pose estimation is presented as an optimization-based \gls{pcr} problem, along with the \gls{rcqp} and \gls{gnc} methods used for solving said problem and their performance in solving the \gls{pcr} problem. The goal of this chapter is to determine to what extent \gls{rcqp} and \gls{gnc} are capable of sufficiently estimating the pose of the object of interest. According to~\ref*{sec:intro-problem-description} \SI{95}{\percent} accuracy in both position and orientation estimates. It is throughout this chapter assumed that the object of interest is known, and thus no classification is needed. \medskip
+
+% This is achieved by presenting the methods used, along with the experimental setup and results. The results gained in this chapter will be two fold 1) The methods will be performed on synthetic source data, meaning point clouds generated from the target data to ensure accurate correspondences while enabling the enforcement of certain outliers percentages, which will be applied to determine the methods robustness. 2) the methods will be applied on sampled data from~\chapref{ch:1-tactile-perception} to determine the object's pose from computed correspondences. \medskip
+
+% In addition to the pose estimation problem solved, the signal-to-outlier ratio is estimated based on the weights produced by \gls{gnc}, first on the synthetic source data where the \gls{gt} in known and secondly on the sampled source data where the outlier ratio is unknown. \medskip
+
+\section{Problem}\label{sec:2-pose-estimation-problem}
+
+
+
+In this chapter, the \gls{rcqp} method with \gls{gnc} will be presented along with its performance in solving the \gls{pcr} problem. The produced source data \mat{X} in~\chapref{ch:1-tactile-perception} is a \gls{pc} of the form
+%
 \begin{equation} \label{eq:data-matrix-structure}
 	\mat{X} = 
 	\begin{bmatrix}
@@ -15,20 +28,45 @@ The data produced in~\chapref{ch:1-tactile-perception} is a point cloud of the f
 	\end{bmatrix}\inR{M\times 6},
 \end{equation}
 
-where \mvar{\vec{c}=\rvec{c_x, c_y, c_z}} is a contact point and \mvar{\vec{n}=\rvec{n_x, n_y, n_z}} is the corresponding point's normals vector. Under the assumption of already knowing the object of interest, a \gls{gt} point cloud \mat{Y} is also generated, which takes the same structure except the number of points being \mvar{M}. One row in the data matrix \mat{X} is referred to as \vec{x}.\medskip
+where \mvar{\vec{c}=\rvec{c_x, c_y, c_z}} is a contact point, \mvar{\vec{n}=\rvec{n_x, n_y, n_z}} is the corresponding point's normal vector and \mvar{M} is the number of source data points. The target data \mat{Y} is structured likewise, except for the number of target data points being \mvar{N}, where \mvar{N\ge M}. For convenience, the \mvar{i}'th row in source data is referred to as \mvar{\vec{x}_i} while the \mvar{i}'th row in the target data is referred to as \mvar{\vec{y}_i}. \medskip 
 
-The problem is thus to solve,
+Under the assumption of already knowing the object of interest, \mat{Y} is generated from the mesh of the Stanford bunny model~\cite{stanford-bunny} with a resolution of \num{10,000} data points as shown in figure~\figref{fig:pe-pc-target}. The source data \mat{X} can likewise be seen in~\figref{fig:pe-pc-source} as generated in~\chapref{ch:1-tactile-perception}. \medskip
+
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pc_source.png}
+		\caption{The source data \mat{X} \gls{pc} generated from simulated contact points, normals are also included, but not illustrated here for the sake of simplicity.}
+		\label{fig:pe-pc-source}
+	\end{subfigure}
+	% \hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pc_target.png}
+		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10,000} points, normals are also included, but not illustrated here for the sake of simplicity.}
+		\label{fig:pe-pc-target}
+	\end{subfigure}
+	\caption{3D plots showing source and target data.}
+	\label{fig:pe-contact-position-gazebo}
+\end{figure}
+
+To determine the transformation between the two point clouds \tf[T]{\mat{X}}{\mat{Y}}, correspondences must be found according to the \gls{corr-problem}. Due to \mat{X} being produced by local sensing with high-density sensor regions, a \gls{pc} feature which exploits this is desired. The one chosen is \gls{fpfh} which is a feature descriptor used in 3D point cloud analysis and registration tasks and provides a feature matrix \mvar{\mat{F}\inR{N\times 33}}. The feature descriptor calculates a histogram representation for each point by considering the local geometric properties of its neighboring points. It captures information about the distribution of surface normals and distances between points within a local neighborhood. Additionally, \gls{fpfh} is computationally efficient and provides robust feature representations. \medskip
+
+Using the correspondences found from \gls{fpfh}, the pose estimation problem can be formulated as an optimization problem for determining the optimal homogeneous transformation matrix between the two points clouds \tf[T]{\star\mat{X}}{\;\;\mat{Y}}, which for convenience is from now on referred to as \tf[T]{\star}{}, by
+% \colorbox{red}{obs, what makes GNC special is the fact that it changes the \mvar{\mu} either up or down depending on GM or TLS, which gradually causes non-convexity. RCQP is used to solve for x in gnc paper}
+%
 \begin{equation} \label{eq:point-cloud-registration-problem}
-	\mat{T}^\star = \arg \min_{(\mat{R},\vec{t})\in\SE (3)} \sum^M_{i=1} d_{P_i}\left( \mat{T} \vec{x}_i \right)^{2}
+	\tf[T]{\star}{} = \arg \min_{(\mat{R},\vec{t})\in\SE (3)} \sum^M_{i=1} d_{P_i}\left( \mat{T} \oplus \vec{x}_i \right)^{2}.
 \end{equation}
 
-where \mvar{\SE(3)} is the Special Euclidean group in 3D, \mvar{\mat{T}\vec{x}} is the Euclidean transformation of the point \mvar{\vec{x}_i} and \mvar{d_{p_i}(\cdot)} is the distance to the primitive \mvar{P_i}.
+Here \mvar{\tf[T]{}{}=(\tf[R]{}{}, \vec{t})\in\SE (3)} refers to the homogeneous transformation matrix \mvar{\tf[T]{}{}\inR{4\times 4}} from \mat{X} to \mat{Y}, which consists of a rotation matrix \mvar{\tf[R]{}{}\inR{3\times 3}} and a translation vector \mvar{\vec{t}\inR{3}} as members of the \gls{se} group in 3D. \mvar{\tf[T]{}{}\oplus \vec{x}_i} refers to the Euclidean transformation of the point \mvar{\vec{x}_i} and \mvar{d_{P_i}(\cdot)} is the distance to the matching primitive \mvar{P_i}. The primitives of interest in this project are point-to-point and point-to-plane, due to the presence of contact normals. \medskip
 
-To solve this problem, correspondences must be found between the two point cloud matrices \mat{X} and \mat{Y}. Due to the points collected from 
+However solving the \gls{pcr} problem globally is challenging, even when known correspondences are available, primarily because of the non-convex nature of the rotation constraints, where \mvar{\mat{R}\in\SE (3)}. For this reason, global approaches are applied to deal with the problem of local minima, by starting from a convex problem, and gradually increasing the non-convexity until the original problem is retrieved, this being the purpose of \gls{gnc}. However, not all solutions when found globally are of interest, as the structure of the rotation matrix places certain quadratic constraints on the solution to be valid, such as orthonormality. From a then estimated optimal \mvar{\mat{R}^\star}, the optimal translation \mvar{\vec{t}^\star} can be found~\cite{convex-global-3d-registration-with-lagrangian-duality}. Thus the problem has been reduced to an orientation estimation problem to find \tf[R]{\star}{}.
 
 \section{Method} \label{sec:2-pose-estimation-method}
 
-The method chosen for this chapter is twofold: first outliers are rejected using \gls{gnc} and \gls{rcqp} for determining the optimal transformation \mvar{\mat{T}^\star}. One of the common problems of \gls{pcr} is the presence of outliers, exceeding \SI{95}{\percent} is not uncommon~\cite{guaranteed-outlier-removal-for-point-cloud-registration-with-correspondences}. Outlier removal is thus necessary, which is chosen in the form \gls{gnc}. To find correspondences, a point cloud feature which utilizes the clusters of points produced by the fingertips. Thus the \gls{fpfh} descriptor is chosen. Using these features descriptors \mvar{d_{t}} are found for the target data i.e. \mat{Y} and the source data \mat{X} i.e. \mvar{d_s}. Using these matching pairs of points are found using an exhaustive search and a similarity threshold of \num{0.01}
+% The method chosen for this chapter is twofold: first outliers are rejected using \gls{gnc} and \gls{rcqp} for determining the optimal transformation \mvar{\mat{T}^\star}. One of the common problems of \gls{pcr} is the presence of outliers, exceeding \SI{95}{\percent} is not uncommon~\cite{guaranteed-outlier-removal-for-point-cloud-registration-with-correspondences}. Outlier removal is thus necessary, which is chosen in the form \gls{gnc}. To find correspondences, a point cloud feature which utilizes the clusters of points produced by the fingertips. Thus the \gls{fpfh} descriptor is chosen. Using these features descriptors \mvar{d_{t}} are found for the target data i.e. \mat{Y} and the source data \mat{X} i.e. \mvar{d_s}. Using these matching pairs of points are found using an exhaustive search and a similarity threshold of \num{0.01}
 
 % the distance is the normalized Euclidean distance between the matching features.
 
@@ -45,7 +83,7 @@ The method chosen for this chapter is twofold: first outliers are rejected using
 % quadratic cost in the least squares problem (1) with a robust cost $\rho(\cdot)$:
 
 
-\subsection{Graduated Non-Convexity} \label{subs:2-pose-estimation-graduated-non-convexity}
+\subsection{Graduated Non-Convexity}\label{subs:2-pose-estimation-graduated-non-convexity}
 
 \gls{gnc} refers to a phenomenon that arises in optimization problems where the objective function exhibits non-convexity and has multiple local optima. In contrast to traditional non-convex optimization, \gls{gnc} exploits the presence of these local optima to find better solutions progressively. \medskip
 
@@ -292,7 +330,34 @@ The tight dual relaxation method is a powerful technique for solving non-convex 
 
 
 
-\section{Experimental Setup} \label{sec:2-pose-estimation-experimental-setup}
+\section{Experimental Setup}\label{sec:2-pose-estimation-experimental-setup}
+
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/M.pdf}
+		\caption{The source \gls{pc} generated from simulated contact points.\newline}
+		\label{fig:pe-feature-filtered-pc}
+	\end{subfigure}
+	% \hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/M_unfiltered.pdf}
+		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10,000} points.}
+		\label{fig:pe-feature-unfiltered-pc}
+	\end{subfigure}
+	\caption{3D plots showing the sampled source and target \gls{pc}s along with a plot showing both of them overlaid.}
+	\label{fig:pe-filture-and-unfiltered-pc}
+\end{figure}
+
 
 % In order to sample dat
 % Here we cite the related work by \texttt{\textbackslash cite\{source-label\}} like this \cite{recent-progress-in-technologies-for-tactile-sensors}
+
+\section{Results}\label{sec:2-pose-estimation-results}
+
+
+\section{Discussion}\label{sec:2-pose-estimation-discussion}
+
+\section{Conclusion}\label{sec:2-pose-estimation-conclusion}
