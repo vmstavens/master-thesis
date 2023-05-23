@@ -57,12 +57,23 @@ Using the correspondences found from \gls{fpfh}, the pose estimation problem can
 % \colorbox{red}{obs, what makes GNC special is the fact that it changes the \mvar{\mu} either up or down depending on GM or TLS, which gradually causes non-convexity. RCQP is used to solve for x in gnc paper}
 %
 \begin{equation} \label{eq:point-cloud-registration-problem}
-	\tf[T]{\star}{} = \arg \min_{(\mat{R},\vec{t})\in\SE (3)} \sum^M_{i=1} d_{P_i}\left( \mat{T} \oplus \vec{x}_i \right)^{2}.
+	\tf[T]{\star}{} = \arg \min_{(\mat{R},\vec{t})\in\SE (3)} \sum^M_{i=1} d_{P_i}\left( \vec{x}_i, \mat{T} \right)^{2}.
 \end{equation}
 
-Here \mvar{\tf[T]{}{}=(\tf[R]{}{}, \vec{t})\in\SE (3)} refers to the homogeneous transformation matrix \mvar{\tf[T]{}{}\inR{4\times 4}} from \mat{X} to \mat{Y}, which consists of a rotation matrix \mvar{\tf[R]{}{}\inR{3\times 3}} and a translation vector \mvar{\vec{t}\inR{3}} as members of the \gls{se} group in 3D. \mvar{\tf[T]{}{}\oplus \vec{x}_i} refers to the Euclidean transformation of the point \mvar{\vec{x}_i} and \mvar{d_{P_i}(\cdot)} is the distance to the matching primitive \mvar{P_i}. The primitives of interest in this project are point-to-point and point-to-plane, due to the presence of contact normals. \medskip
+Here \mvar{\tf[T]{}{}=(\tf[R]{}{}, \vec{t})\in\SE (3)} refers to the homogeneous transformation matrix \mvar{\tf[T]{}{}\inR{4\times 4}} from \mat{X} to \mat{Y}, which consists of a rotation matrix \mvar{\tf[R]{}{}\inR{3\times 3}} and a translation vector \mvar{\vec{t}\inR{3}} as members of the \gls{se} group in 3D, and \mvar{d_{P_i}(\cdot)} is the distance to the matching primitive \mvar{P_i}. The primitives of interest in this project are point-to-point and point-to-plane, due to the presence of contact normals. The distance function will differ between primitive, and thus the ones of interest are listed as
+%
+\begin{align}\label{eq:distance-functions}
+	\min_{\vec{y}'\in P} \|\vec{x}-\vec{y}'\|^2_2 &=  \\
+		& =\|\vec{x}-\vec{y}\|_2^2=\|\vec{x} - \vec{y}\|_{\mat{I}_3}^2 & \text{(point)} \\
+		& = \left( \vec{n}^\T (\vec{x} - \vec{y}) \right)^2=\|\vec{x}-\vec{y}\|^2_{\vec{n}\vec{n}^\T} & \text{(plane)}
+\end{align}
+where \mvar{\vec{y}'\inR{3}} is the term used as a substitute for each primitive, \vec{x} is a 3D point, \mvar{\mat{I}_3\inR{3\times 3}} is the identity matrix and \mvar{\vec{n}_i} is the unit normal vector for a plane. However, these are highly sensitive to outliers and noise, and thus a robust cost function \mvar{\rho(\cdot)} is applied. Of the two presented in~\cite{graduated-non-convexity-for-robust-spatial-perception:-from-non-minimal-solvers-to-global-outlier-rejection} i.e. \gls{tls} and \gls{gm}, \gls{tls} was chosen, as it shows slightly better performance. The problem can thus be written as
+%
+\begin{equation}\label{eq:point-cloud-registration-problem-robust}
+		\tf[T]{\star}{} = \arg \min_{(\mat{R},\vec{t})\in\SE (3)} \sum^M_{i=1} \rho\left(d_{P_i}\left( \vec{x}_i, \mat{T} \right)^{2}\right).
+\end{equation}
 
-However solving the \gls{pcr} problem globally is challenging, even when known correspondences are available, primarily because of the non-convex nature of the rotation constraints, where \mvar{\mat{R}\in\SE (3)}. For this reason, global approaches are applied to deal with the problem of local minima, by starting from a convex problem, and gradually increasing the non-convexity until the original problem is retrieved, this being the purpose of \gls{gnc}. However, not all solutions when found globally are of interest, as the structure of the rotation matrix places certain quadratic constraints on the solution to be valid, such as orthonormality. From a then estimated optimal \mvar{\mat{R}^\star}, the optimal translation \mvar{\vec{t}^\star} can be found~\cite{convex-global-3d-registration-with-lagrangian-duality}. Thus the problem has been reduced to an orientation estimation problem to find \tf[R]{\star}{}.
+However solving the \gls{pcr} problem globally is still a challenging endeavor, even when known correspondences are available, primarily because of the non-convex nature of the rotation constraints, where \mvar{\mat{R}\in\SE (3)}. For this reason, global approaches are applied to deal with the problem of local minima, by starting from a convex problem, and gradually increasing the non-convexity until the original problem is retrieved, this being the purpose of \gls{gnc}. However, not all solutions when found globally are of interest, as the structure of the rotation matrix places certain quadratic constraints on the solution to be valid, such as orthonormality. From a then estimated optimal \mvar{\mat{R}^\star}, the optimal translation \mvar{\vec{t}^\star} can be found~\cite{convex-global-3d-registration-with-lagrangian-duality}. Thus the problem has been reduced to an orientation estimation problem to find \tf[R]{\star}{}.
 
 \section{Method} \label{sec:2-pose-estimation-method}
 
@@ -85,248 +96,452 @@ However solving the \gls{pcr} problem globally is challenging, even when known c
 
 \subsection{Graduated Non-Convexity}\label{subs:2-pose-estimation-graduated-non-convexity}
 
-\gls{gnc} refers to a phenomenon that arises in optimization problems where the objective function exhibits non-convexity and has multiple local optima. In contrast to traditional non-convex optimization, \gls{gnc} exploits the presence of these local optima to find better solutions progressively. \medskip
-
-To understand \gls{gnc}, let's start by defining some terms. In optimization, a convex function is one that has a unique global minimum. Mathematically, a function \mvar{f(\vec{x})} defined on a convex set \mat{X} is convex if for any two points \mvar{\vec{x}_1} and \mvar{\vec{x}_2} in \mat{X} and any $\lambda \in [0,1]$, the following inequality holds:
+Rather than applying \gls{gnc} for optimizing the robust cost function \mvar{\rho(\cdot)}, we fix constant \mvar{\mu} to instead optimize
+%
 \begin{equation}
-	f(\lambda \vec{x}_1 + (1-\lambda)\vec{x}_2) \leq \lambda f(\vec{x}_1) + (1-\lambda)f(\vec{x}_2)
+	\tf[R]{\star}{}=\arg \min_{\mat{R}\in\SE (3)} \sum^M_{i=1} \rho_\mu \left(d_{P_i}\left(\vec{x}_i, \mat{R} \right)^{2}\right)
+\end{equation}
+However, since this problem cannot be solved using a non-minimal solver, the \gls{br} duality can be applied, given the necessary conditions are met. These conditions are as follows
+%
+\begin{align}\label{eq:br-condition-1-2-3}
+	\lim_{z\rightarrow 0} \phi'(z) &= 1 & \text{condition 1} \\
+	\lim_{z\rightarrow \infty}\phi'(z) &= 0 & \text{condition 2} \\
+	\phi''(z) &< 0 & \text{condition 3}
+\end{align}
+Here \mvar{\phi(z)} is defined with respect to the robust cost function \mvar{\rho} in the following manner
+%
+\begin{equation}
+	\phi(z) \overset{\cdot}{=} \rho(\sqrt{z}).
 \end{equation}
 
-This inequality essentially means that the function lies below the line segment connecting any two points on its graph. Convex optimization is a well-studied field with efficient algorithms for finding the global minimum.
+Condition 1 indicates that as the argument \mvar{z} approaches \num{0}, the derivative of \mvar{\phi(z)} approaches \num{1}. Geometrically, it implies that near the origin, the function \mvar{\phi(z)} grows at a similar rate as the square root function itself. This behavior ensures that small values of \mvar{z} are penalized appropriately by the robust cost function \mvar{\rho(\cdot)}, allowing for robustness against outliers or deviations from the assumed distribution. \medskip
 
-However, many real-world problems involve non-convex functions, which may have multiple local minima, saddle points, or other complex structures. Traditional optimization methods struggle with non-convex problems because they can get stuck in local optima, unable to find the global optimum.
+Condition 2 states that as \mvar{z} approaches \mvar{\infty}, the derivative of \mvar{\phi(z)} tends towards \num{0}. This implies that as the argument becomes larger, the function \mvar{\phi(z)} approaches a plateau or a constant value. Consequently, large values of \mvar{z} have a diminishing effect on the robust cost function, making it less sensitive to extreme observations. \medskip
 
-\gls{gnc} takes a different approach. Instead of trying to escape local optima, it leverages them to improve the optimization process. The idea is to gradually increase the level of non-convexity in the objective function during optimization. This process allows the algorithm to refine its solution by escaping local optima at a controlled pace.
+Condition 3 states that the second derivative of \mvar{\phi(z)} is negative, indicating that the function \mvar{\phi(z)} is concave. This concavity is crucial as it ensures that the robust cost function \mvar{\rho(\cdot)} is monotonically increasing. In other words, as the argument \mvar{z} increases, the robust cost increases as well. This property is desirable in robust estimation problems, as it helps in downplaying the impact of outliers or influential points on the overall estimation. \medskip
 
-A common technique used in GNC is to introduce a parameter $t$ that controls the level of non-convexity. As \mvar{t} increases, the objective function becomes more non-convex. The optimization algorithm starts with a low value of $t$ where the objective function is approximately convex. It then gradually increases $t$ over time, exploring the non-convex landscape.
+All of these conditions are met by the \gls{tls}~\cite{graduated-non-convexity-for-robust-spatial-perception:-from-non-minimal-solvers-to-global-outlier-rejection}.\medskip
 
-The introduction of $t$ is often done by incorporating a regularization term into the objective function. The regularization term helps to maintain the properties of the convex function, ensuring that the optimization algorithm does not diverge. As $t$ increases, the regularization term becomes less significant compared to the non-convex part of the objective function, allowing the algorithm to escape local optima.
+With these conditions fulfilled, the \gls{br} duality enables
+%
+\begin{equation}\label{eq:br-result}
+	\arg \min_{\mat{R}\in\SE (3)} \sum^M_{i=1} \rho_\mu \left(d_{P_i}\left( \vec{x}_i,\mat{R} \right)^{2}\right) = 
+	\arg \min_{\substack{\mat{R}\in\SE (3),\\ w_i\in [0,1]}} \sum^M_{i=1} \left[ w_i d_{P_i}\left( \vec{x}_i,\mat{R} \right)^{2} + \Phi_{\rho_\mu}(w_i)\right],
+\end{equation}
+whereas the rightmost side will be the problem of interest. In this expression \mvar{w_i\in[0,1]\forall i=1,2,\dots,N} are weights associated with each measurement \mvar{\vec{x}_i} and the outlier process function \mvar{\Phi_{\rho_\mu}(w_i)}, which computes a penalty based on the weight. The exact shape of \mvar{\Phi_{\rho_mu}(w_i)} is determined by the chosen robust cost function. \medskip
 
-A common form of the objective function in GNC is:
-
+\mvar{\Phi_{\rho_\mu}(w_i)} can simply be computed by
+%
 \begin{equation}
-	F_t(x) = f(x) + t\phi(x)
+	\Phi_{\rho_\mu}(w_i) = \frac{\mu(1-w_i)}{\mu+w_i}\bar{c}^2,
+\end{equation}
+where \mvar{\mu} is the control parameter used to dictate to what extent the \mvar{\Phi_{\rho_mu}(w_i)} should be convex or non-convex. For \gls{tls} \mvar{\Phi_{\rho_mu}(w_i)} will become less convex as \mvar{\mu\rightarrow \infty}, while completely convex at \mvar{\mu=0}. This effect can be seen in~\figref{fig:tls-cost}.
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.5\textwidth]{chapters/2-pose-estimation/fig/tls-cost.pdf}
+	\end{center}
+	\caption{Cost function for the \gls{tls} with }
+	\label{fig:tls-cost}
+\end{figure}
+\mvar{\bar{c}^2} is a given truncation threshold, which in practice is set to the maximum error expected for the inliers. Finally, \mvar{w_i} can be computed when using \gls{tls} by
+%
+\begin{equation}\label{eq:tls-weights}
+	w_i^{(t)} = \begin{cases}
+		0 & \text{ if } \hat{r}_i^2\in\left[ \frac{\mu+1}{\mu}\bar{c}^2, +\infty \right] \\
+		\frac{\bar{c}}{\hat{r}_i}\sqrt{\mu(\mu+1)} - \mu & \text{ if } \hat{r}_i^2\in\left[ \frac{\mu}{\mu+1}\bar{c}^2, \frac{\mu + 1}{\mu}\bar{c}^2 \right] \\
+		1 & \text{ if } \hat{r}_i^2\in\left[ 0, \frac{\mu}{\mu + 1}\bar{c}^2 \right] \\
+	\end{cases}
+\end{equation}
+where \mvar{\hat{r}_i^2\overset{\cdot}{=} d_{P_i}(\cdot)^2}. \eqref{eq:br-result} can now be solved through a two-step alternating optimization. First, an outer loop is defined to which increases control parameter \mvar{\mu} from \num{0} to \mvar{\infty}, until a stop criterion, dictated by the cost function, is met.~\cite{graduated-non-convexity-for-robust-spatial-perception:-from-non-minimal-solvers-to-global-outlier-rejection} found that an increase of \mvar{\mu} by a factor of \num{1.4} provided satisfactory results.
+The inner loop is two-fold 1) the current estimate of \tf[R]{(t)}{} is computed by optimizing over \tf[R]{}{} with fixed weights \mvar{w_i}, also referred to as the variable update step. The variable update step can thus be written as
+%
+\begin{equation}\label{eq:variable-update}
+	\tf[R]{(t)}{} = \arg\min_{\mat{R}\in\SE (3)} \sum^N_{i=1}w_i^{(t-1)}d_{P_i}(\vec{x}_i,\mat{R}) + \underbrace{\Phi_{\rho_\mu}\left(w_i^{(t-1)}\right)}_{\text{constant}}
 \end{equation}
 
-where $f(x)$ is the original non-convex function to be optimized, $\phi(x)$ is a convex regularization term, and $t$ is the parameter controlling the non-convexity level.
+This optimization problem is non-convex and is solved using \gls{rcqp}, which is described in~\secref{subs:2-pose-estimation-relaxed-convex-quadratic-programming}. 2) the found \tf[R]{}{} is then used to update the weights \mvar{w_i\forall i =1,2,\dots, N}, which typically can be solved in closed form, as formulated in~\eqref{eq:tls-weights}, which also is referred to as the weight update step. \medskip
 
-The choice of the regularization term $\phi(x)$ depends on the problem at hand and the desired behavior of the optimization algorithm. It should be designed in such a way that it encourages exploration of the non-convex landscape as $t$ increases.
-
-During the optimization process, as $t$ gradually increases, the algorithm starts with a nearly convex objective and finds a solution that is close to a local optimum. Then, it gradually explores the non-convex landscape by increasing the influence of the non-convex part of the objective function. This exploration helps the algorithm find better solutions that are not trapped in local optima.
-
-In summary, Graduated Non-Convexity is a technique used in optimization problems with non-convex objective functions. It gradually increases the level of non-convexity to explore the landscape and escape local optima. By incorporating a regularization term that maintains convexity at
-
-Let's consider a specific optimization problem with a non-convex objective function $f(x)$ that we want to minimize. We introduce a parameter $t$ to control the level of non-convexity.
-
-First, let's define the problem in a matrix and vector form. Suppose we have a vector of variables $x \in \mathbb{R}^n$ and a matrix $A \in \mathbb{R}^{m \times n}$ representing the problem's constraints. The optimization problem can be formulated as:
-
-\begin{align*}
-\text{minimize} & \quad f(x) \\
-\text{subject to} & \quad Ax \leq b,
-\end{align*}
-
-where $b \in \mathbb{R}^m$ is the vector of constraint values.
-
-To incorporate Graduated Non-Convexity, we introduce a convex regularization term $\phi(x)$ that helps maintain the properties of a convex function. The objective function $F_t(x)$ becomes:
-
+When executing \gls{gnc} in practice, values are needed for \mvar{\mu_0} and \mvar{\vec{w}^(0)}, i.e. the parameters' initial values, along with an update rule for \mvar{\mu} and a stopping criterion. 
+In this project the initial value for \mvar{\mu} is \mvar{\mu=2r_{\max}^2/\bar{c}^2} where \mvar{r_{\max}^2 \overset{\cdot}{=}\max_i \left(r^2(\vec{x}_i,\mat{R}^{(0)})\right)}, meaning the maximum residual after the first variable update, while \mvar{\vec{w}^{(0)}_i=1 \forall i=1,2,\dots,N}. The update rule used for \mvar{\mu} is \mvar{\mu\leftarrow 1.4\mu}, and as mentioned previously \mvar{\bar{c}^2} is set to the maximum error expected for the inliers. For \gls{tls} a fitting stop criterion is chosen to be the sum weighted squared residuals, i.e.
 \begin{equation}
-	F_t(x) = f(x) + t\phi(x).
+	\sum^N_{i=1}w_i\hat{r}_i^2.
 \end{equation}
+These initial values, update rules and stop criterion are based on the discoveries of~\cite{graduated-non-convexity-for-robust-spatial-perception:-from-non-minimal-solvers-to-global-outlier-rejection}. The \gls{gnc} algorithm can be seen summarized in~\algoref{alg:gnc}.
 
+\begin{algorithm}
+	\floatname{algorithm}{Algorithm}
+	\algrenewcommand\algorithmicrequire{\textbf{Input: }}
+	\algrenewcommand\algorithmicensure{\textbf{Output: }}
+	\caption{\gls{gnc} algorithm when using \gls{tls} as \mvar{\rho(\cdot)}}
+	\label{alg:gnc}
+	\begin{algorithmic}[1]
+		\Require matching pairs from (\mat{X},\mat{Y}) 
+		\Ensure inliers, stats
+		\While {true} // outer loop
+			\State $\mu\gets 1.4\mu$
+			\State $\mat{R}^{(t)} \gets $ Variable Update
+			\State $\vec{w}^{(t)} \gets $ Weight Update
+			\If{$\sum^N_{i=1}w_i\hat{r}_i^2$ has converged}
+				\State \textbf{break}
+			\EndIf
+		\EndWhile
+		\State \textbf{return} inliers, stats
+	\end{algorithmic}
+\end{algorithm}
 
-Here, $t$ controls the level of non-convexity, and as $t$ increases, the influence of the non-convex part ($t\phi(x)$) becomes more significant.
+In~\algoref{alg:gnc} the stats output generally contains information about the algorithm execution such as execution time, number of iterations, and the weights \vec{w}.
 
-For example, let's consider a simple case where $f(x)$ is a quadratic function and $\phi(x)$ is a convex regularization term. We can express $f(x)$ using a matrix form as:
+% \gls{gnc} refers to a phenomenon that arises in optimization problems where the objective function exhibits non-convexity and has multiple local optima. In contrast to traditional non-convex optimization, \gls{gnc} exploits the presence of these local optima to find better solutions progressively. \medskip
 
-\begin{equation}
-	f(x) = \frac{1}{2} x^T Q x + c^T x,
-\end{equation}
+% To understand \gls{gnc}, let's start by defining some terms. In optimization, a convex function is one that has a unique global minimum. Mathematically, a function \mvar{f(\vec{x})} defined on a convex set \mat{X} is convex if for any two points \mvar{\vec{x}_1} and \mvar{\vec{x}_2} in \mat{X} and any $\lambda \in [0,1]$, the following inequality holds:
+% \begin{equation}
+% 	f(\lambda \vec{x}_1 + (1-\lambda)\vec{x}_2) \leq \lambda f(\vec{x}_1) + (1-\lambda)f(\vec{x}_2)
+% \end{equation}
 
-where $Q \in \mathbb{R}^{n \times n}$ is a symmetric positive semi-definite matrix, and $c \in \mathbb{R}^n$ is a vector.
-The convex regularization term $\phi(x)$ can be written as:
+% This inequality essentially means that the function lies below the line segment connecting any two points on its graph. Convex optimization is a well-studied field with efficient algorithms for finding the global minimum.
 
-\begin{equation}
-	\phi(x) = g(Dx),
-\end{equation}
+% However, many real-world problems involve non-convex functions, which may have multiple local minima, saddle points, or other complex structures. Traditional optimization methods struggle with non-convex problems because they can get stuck in local optima, unable to find the global optimum.
 
-where $D \in \mathbb{R}^{p \times n}$ is a matrix, and $g(\cdot)$ is a convex function.
+% \gls{gnc} takes a different approach. Instead of trying to escape local optima, it leverages them to improve the optimization process. The idea is to gradually increase the level of non-convexity in the objective function during optimization. This process allows the algorithm to refine its solution by escaping local optima at a controlled pace.
 
-The objective function $F_t(x)$ with GNC can be written as:
+% A common technique used in GNC is to introduce a parameter $t$ that controls the level of non-convexity. As \mvar{t} increases, the objective function becomes more non-convex. The optimization algorithm starts with a low value of $t$ where the objective function is approximately convex. It then gradually increases $t$ over time, exploring the non-convex landscape.
 
-\begin{equation}
-	F_t(x) = \frac{1}{2} x^T Q x + c^T x + t g(Dx).
-\end{equation}
+% The introduction of $t$ is often done by incorporating a regularization term into the objective function. The regularization term helps to maintain the properties of the convex function, ensuring that the optimization algorithm does not diverge. As $t$ increases, the regularization term becomes less significant compared to the non-convex part of the objective function, allowing the algorithm to escape local optima.
 
-Now, during the optimization process, we start with a small value of \mvar{t} e.g., \mvar{t = 0} where the objective function is approximately convex. We solve the optimization problem using traditional convex optimization techniques, such as quadratic programming, to find a solution \mvar{x_0} that is close to a local optimum.
+% A common form of the objective function in GNC is:
 
-Then, we gradually increase \mvar{t} over time, which increases the non-convexity of the objective function. As \mvar{t} increases, the regularization term becomes less significant compared to the non-convex part \mvar{t g(Dx)}, allowing the algorithm to explore the non-convex landscape and potentially escape local optima.
+% \begin{equation}
+% 	F_t(x) = f(x) + t\phi(x)
+% \end{equation}
 
-The specific choice of the convex regularization term \mvar{\phi(x)} and the function \mvar{g(\cdot)} depends on the problem at hand. Common choices include the \mvar{\ell_1} norm, total variation, or other convex functions that encourage certain properties or structures in the solution.
+% where $f(x)$ is the original non-convex function to be optimized, $\phi(x)$ is a convex regularization term, and $t$ is the parameter controlling the non-convexity level.
 
-In summary, the math behind Graduated Non-Convexity involves introducing a parameter \mvar{t} to control the level of non-convexity and incorporating a convex regularization term \mvar{\phi(x)}
+% The choice of the regularization term $\phi(x)$ depends on the problem at hand and the desired behavior of the optimization algorithm. It should be designed in such a way that it encourages exploration of the non-convex landscape as $t$ increases.
 
+% During the optimization process, as $t$ gradually increases, the algorithm starts with a nearly convex objective and finds a solution that is close to a local optimum. Then, it gradually explores the non-convex landscape by increasing the influence of the non-convex part of the objective function. This exploration helps the algorithm find better solutions that are not trapped in local optima.
 
-Step 1: Initialize the algorithm
+% In summary, Graduated Non-Convexity is a technique used in optimization problems with non-convex objective functions. It gradually increases the level of non-convexity to explore the landscape and escape local optima. By incorporating a regularization term that maintains convexity at
 
-\begin{align*}
-&\text{Set } t = t_0 \text{ initial value of } t \\
-&\text{Set } x_0 \text{ as an initial feasible solution} \\
-&\text{Set iteration counter } k = 0
-\end{align*}
+% Let's consider a specific optimization problem with a non-convex objective function $f(x)$ that we want to minimize. We introduce a parameter $t$ to control the level of non-convexity.
 
+% First, let's define the problem in a matrix and vector form. Suppose we have a vector of variables $x \in \mathbb{R}^n$ and a matrix $A \in \mathbb{R}^{m \times n}$ representing the problem's constraints. The optimization problem can be formulated as:
 
-Step 2: Solve the convex subproblem
-
-\begin{align*}
-&\text{Solve the following convex subproblem to obtain a solution } x_k: \\
-&\quad \min_{x} \frac{1}{2}x^TQx + c^Tx \\
-&\quad \text{subject to } Ax \leq b
-\end{align*}
-
-Step 3: Update the parameter \mvar{t}
 % \begin{align*}
-% &\text{Update } t \text{ based on a predefined schedule, e.g., } t = g(k) \text{ for some function } g(\cdot) \\
-% &\text{Increment } k \text{ by 1 (} k = k + 1\text{)}
+% \text{minimize} & \quad f(x) \\
+% \text{subject to} & \quad Ax \leq b,
 % \end{align*}
 
-Step 4: Update the objective function
+% where $b \in \mathbb{R}^m$ is the vector of constraint values.
 
-\begin{align*}
-&\text{Compute the convex regularization term: } \phi(x_k) \\
-&\text{Update the objective function with the increased non-convexity: } \\
-&\quad F_t(x) = \frac{1}{2}x^TQx + c^Tx + t\phi(x)
-\end{align*}
+% To incorporate Graduated Non-Convexity, we introduce a convex regularization term $\phi(x)$ that helps maintain the properties of a convex function. The objective function $F_t(x)$ becomes:
 
-Step 5: Solve the updated non-convex problem
+% \begin{equation}
+% 	F_t(x) = f(x) + t\phi(x).
+% \end{equation}
 
-\begin{align*}
-&\text{Solve the following non-convex problem to obtain a new solution } x_{k+1}: \\
-&\quad \min_{x} F_t(x)
-\end{align*}
 
-Step 6: Check termination criteria
+% Here, $t$ controls the level of non-convexity, and as $t$ increases, the influence of the non-convex part ($t\phi(x)$) becomes more significant.
 
-\begin{align*}
-&\text{If termination criteria are satisfied, stop and return the current solution } x_{k+1} \\
-&\text{Otherwise, go to Step 3}
-\end{align*}
+% For example, let's consider a simple case where $f(x)$ is a quadratic function and $\phi(x)$ is a convex regularization term. We can express $f(x)$ using a matrix form as:
 
-In Step 2, the convex subproblem represents a traditional convex optimization problem that can be solved using various techniques such as quadratic programming or linear programming.
+% \begin{equation}
+% 	f(x) = \frac{1}{2} x^T Q x + c^T x,
+% \end{equation}
 
-In Step 4, the convex regularization term $\phi(x_k)$ can take different forms based on the problem requirements. For example, if $\phi(x_k)$ is based on the $\ell_1$ norm, it can be computed as $\phi(x_k) = \|Dx_k\|_1$ where $D$ is a matrix that determines the sparsity pattern.
+% where $Q \in \mathbb{R}^{n \times n}$ is a symmetric positive semi-definite matrix, and $c \in \mathbb{R}^n$ is a vector.
+% The convex regularization term $\phi(x)$ can be written as:
 
-In Step 6, the termination criteria can be defined based on the problem's requirements or convergence properties, such as reaching a maximum number of iterations, achieving a desired objective value, or satisfying certain optimality conditions.
+% \begin{equation}
+% 	\phi(x) = g(Dx),
+% \end{equation}
 
-The algorithm iteratively solves a sequence of convex subproblems and updated non-convex problems, gradually increasing the non-convexity level with the parameter \mvar{$t$}. By exploring the non-convex landscape, the algorithm aims to escape local optima and find better solutions.
+% where $D \in \mathbb{R}^{p \times n}$ is a matrix, and $g(\cdot)$ is a convex function.
 
-Remember that the specific implementation details of the GNC algorithm may vary depending on the problem, the chosen convex regularization term, and the optimization techniques used in solving the convex subproblems.
+% The objective function $F_t(x)$ with GNC can be written as:
+
+% \begin{equation}
+% 	F_t(x) = \frac{1}{2} x^T Q x + c^T x + t g(Dx).
+% \end{equation}
+
+% Now, during the optimization process, we start with a small value of \mvar{t} e.g., \mvar{t = 0} where the objective function is approximately convex. We solve the optimization problem using traditional convex optimization techniques, such as quadratic programming, to find a solution \mvar{x_0} that is close to a local optimum.
+
+% Then, we gradually increase \mvar{t} over time, which increases the non-convexity of the objective function. As \mvar{t} increases, the regularization term becomes less significant compared to the non-convex part \mvar{t g(Dx)}, allowing the algorithm to explore the non-convex landscape and potentially escape local optima.
+
+% The specific choice of the convex regularization term \mvar{\phi(x)} and the function \mvar{g(\cdot)} depends on the problem at hand. Common choices include the \mvar{\ell_1} norm, total variation, or other convex functions that encourage certain properties or structures in the solution.
+
+% In summary, the math behind Graduated Non-Convexity involves introducing a parameter \mvar{t} to control the level of non-convexity and incorporating a convex regularization term \mvar{\phi(x)}
+
+
+% Step 1: Initialize the algorithm
+
+% \begin{align*}
+% &\text{Set } t = t_0 \text{ initial value of } t \\
+% &\text{Set } x_0 \text{ as an initial feasible solution} \\
+% &\text{Set iteration counter } k = 0
+% \end{align*}
+
+
+% Step 2: Solve the convex subproblem
+
+% \begin{align*}
+% &\text{Solve the following convex subproblem to obtain a solution } x_k: \\
+% &\quad \min_{x} \frac{1}{2}x^TQx + c^Tx \\
+% &\quad \text{subject to } Ax \leq b
+% \end{align*}
+
+% Step 3: Update the parameter \mvar{t}
+% % \begin{align*}
+% % &\text{Update } t \text{ based on a predefined schedule, e.g., } t = g(k) \text{ for some function } g(\cdot) \\
+% % &\text{Increment } k \text{ by 1 (} k = k + 1\text{)}
+% % \end{align*}
+
+% Step 4: Update the objective function
+
+% \begin{align*}
+% &\text{Compute the convex regularization term: } \phi(x_k) \\
+% &\text{Update the objective function with the increased non-convexity: } \\
+% &\quad F_t(x) = \frac{1}{2}x^TQx + c^Tx + t\phi(x)
+% \end{align*}
+
+% Step 5: Solve the updated non-convex problem
+
+% \begin{align*}
+% &\text{Solve the following non-convex problem to obtain a new solution } x_{k+1}: \\
+% &\quad \min_{x} F_t(x)
+% \end{align*}
+
+% Step 6: Check termination criteria
+
+% \begin{align*}
+% &\text{If termination criteria are satisfied, stop and return the current solution } x_{k+1} \\
+% &\text{Otherwise, go to Step 3}
+% \end{align*}
+
+% In Step 2, the convex subproblem represents a traditional convex optimization problem that can be solved using various techniques such as quadratic programming or linear programming.
+
+% In Step 4, the convex regularization term $\phi(x_k)$ can take different forms based on the problem requirements. For example, if $\phi(x_k)$ is based on the $\ell_1$ norm, it can be computed as $\phi(x_k) = \|Dx_k\|_1$ where $D$ is a matrix that determines the sparsity pattern.
+
+% In Step 6, the termination criteria can be defined based on the problem's requirements or convergence properties, such as reaching a maximum number of iterations, achieving a desired objective value, or satisfying certain optimality conditions.
+
+% The algorithm iteratively solves a sequence of convex subproblems and updated non-convex problems, gradually increasing the non-convexity level with the parameter \mvar{$t$}. By exploring the non-convex landscape, the algorithm aims to escape local optima and find better solutions.
+
+% Remember that the specific implementation details of the GNC algorithm may vary depending on the problem, the chosen convex regularization term, and the optimization techniques used in solving the convex subproblems.
 
 \subsection{Relaxed Convex Quadratic Programming} \label{subs:2-pose-estimation-relaxed-convex-quadratic-programming}
 
 % Chapter: Tight Dual Relaxation for Non-Convex Optimization
 
-% 1. Introduction
-The tight dual relaxation method is a powerful approach for solving non-convex optimization problems. It leverages Lagrangian duality theory to obtain a globally optimal solution. This chapter provides an extensive explanation of the method presented in the paper, focusing on the mathematical formulations and key concepts involved. The sizes of vectors and matrices are explicitly mentioned to enhance clarity and understanding.
+To compute the optimal rotation matrix \tf[R]{}{}, the problem definition must be expressed purely in \tf[R]{}{}. To do so, it will be derived from the optimization problem involving the full transformation matrix \tf[T]{}{}, formulated as
+%
+\begin{equation}\label{eq:linear-in-r-and-t}
+	d_{P_i}^2(\vec{x}_i, \mat{T})=(\mat{T}\oplus \vec{x}_i - \vec{y}_i)^\T\mat{C}_i (\mat{T}\oplus \vec{x}_i - \vec{y}_i).
+\end{equation}
+Here \mvar{\mat{T}\oplus \vec{x}_i} is the Euclidean transformation of \mvar{\vec{x}_i}, which is an expression linear in \tf[R]{}{} and \vec{t}
+%
+\begin{equation}
+	\tf[T]{}{} \oplus \vec{x}_i = \mat{R}\vec{x}_i + \vec{t} = \left( \tilde{\vec{x}}^\T \otimes \mat{I}_3\right) \text{vec}(\mat{T}).
+\end{equation}
+Here \mvar{\tilde{\vec{x}}=\rvec{\vec{x}^\T, 1}^\T} is the homogeneous coordinate of \vec{x}, \mvar{\otimes} is the Kronecker product and \mvar{\text{vec}(\mat{T})} is the vectorization of \mat{T} i.e.
+%
+\begin{align}
+	\text{vec}(\mat{T}) &= \rvec{\text{vec}(\mat{R})^\T, \vec{t}^\T}^\T \\
+	&= \rvec{r_{11},r_{12},\dots,r_{32},r_{33},t_{1},t_{2},t_{3}}^\T.
+\end{align}
+Using this linear relationship in \mat{T},~\eqref{eq:linear-in-r-and-t} can be reformulated as 
+%
+\begin{equation}\label{eq:quadratic-nature}
+	d_{P_i}(\vec{x}_i,\mat{T})=\tilde{\vec{\tau}}^\T \mat{N}_i^\T \mat{C}_i \mat{N}_i \tilde{\vec{\tau}}
+\end{equation}
+where \mvar{\vec{\tau}} is \mvar{\text{vec}(\mat{T})}, \mvar{\tilde{\vec{\tau}}} is the homogenized \mvar{\text{vec}(\mat{T})} i.e. \mvar{\rvec{\text{vec}(\mat{T})^\T,1}^\T}, and \mvar{\mat{N}_i=\rvec{\tilde{\vec{x}}_i^\T \otimes \mat{I}_3 | -\vec{y}_i }\inR{3\times 10}}. Due to the quadratic nature of~\eqref{eq:quadratic-nature}, it is possible to organize the observations and compress all the data into a single matrix \mvar{\tilde{\mat{M}}} from \mvar{\tilde{\mat{M}}_i = \mat{N}_i^\T \mat{C}_i \mat{N}_i\inR{13\times 13}}
+%
+\begin{equation}
+	f(\mat{T})=\sum^N d_{P_i}(\vec{x}_i,\mat{T})=\tilde{\vec{\tau}}^\T \left( \sum^N_{i=1} \tilde{\mat{M}}_i \right) \tilde{\vec{\tau}} = \tilde{\vec{\tau}}^\T \tilde{\mat{M}} \tilde{\vec{\tau}}.
+\end{equation}
+From this expression, it can now be seen that the problem has been made independent of \mvar{N}. By then applying marginalization to the unconstrained parts of the known \mat{T} i.e. the translation \vec{t}, further compression of the problem is achieved, such that
+%
+\begin{equation}\label{eq:prep-primary-problem}
+	f^\star = \min_{\mat{R}\in \SE (3)} \tilde{\vec{r}}^\T \tilde{\mat{Q}} \tilde{\vec{r}} \qquad, \qquad \tilde{\vec{r}}=\rvec{\text{vec}(\mat{R})^\T, 1}^\T
+\end{equation}
+Here \mvar{\tilde{\mat{Q}}} is the Schur complement of the block matrix \mvar{\tilde{\mat{M}}_{t,t}} in \mvar{\tilde{\mat{M}}}. Here the \mvar{t} subscript indicates the indexes of the corresponding to translation variables and
+\begin{equation}
+	\mat{Q} = \tilde{\mat{M}}_{!t,!t} - \tilde{\mat{M}}_{!t,t}\tilde{\mat{M}}_{t,t}\inv \tilde{\mat{M}}_{t,!t}
+\end{equation}
+with \mvar{!t} being the complement of \mvar{t}.\medskip 
 
-% 2. Lagrangian Duality Basics
-Before delving into the tight dual relaxation method, it is essential to understand some fundamental concepts from Lagrangian duality theory. In Lagrangian duality, we consider an optimization problem with a primal objective function, subject to constraints. The Lagrangian function is formed by introducing dual variables associated with each constraint. The dual problem seeks to maximize the Lagrangian function over the feasible region defined by the dual variables. Duality theory establishes a relationship between the primal and dual problems, providing bounds on the optimal solutions.
+Although the problem is originally non-convex, it is approached by applying a convex relaxation technique to facilitate its solution. Although a formal proof is not presented, empirical evidence from~\cite{convex-global-3d-registration-with-lagrangian-duality} demonstrates that this relaxation method consistently produces results that are close to the globally optimal solution for the marginalized problem. \medskip
 
-% 3. Problem Formulation
-Let's consider a non-convex optimization problem denoted as \mvar{P}. The objective is to find an optimal solution to this problem. The problem involves minimizing a cost function, subject to a set of constraints. The problem can be expressed as follows:
+This convex relaxation is achieved by applying Lagrangian duality to define two problems, a primary problem~\ref{eq:P} and a dual problem~\ref{eq:D}. The primary problem is an extension of~\eqref{eq:prep-primary-problem}, such that the necessary constraints for legal rotation matrices solutions are enforced, while the dual problem will be corresponding to a homogeneous version of the primal problem \ref{eq:P}, which makes~\ref{eq:D} a Semidefinite Program (SDP), meaning the problem is convex and can be solved using off the shelf solvers. \medskip
+
+To apply Lagrangian duality, strong duality must hold between~\ref{eq:P} and~\ref{eq:D}, meaning the solution to each of the problems are equal and their objective function values coincide. While this is not proven to hold, empirically this relaxation appears always to be tight, meaning strong duality holds, even under extreme conditions as asserted by~\cite{convex-global-3d-registration-with-lagrangian-duality}. This project will continue under the assumption that strong duality holds. \medskip
+
+To formulate~\ref{eq:P}, the constraints of \mvar{\mat{R}\in \SE (3)} state that orthonormality and positive unit determinant must hold i.e.
+%
+\begin{equation}
+	\mat{R}^\T\mat{R} = \mat{I}_3 \qquad \text{and} \qquad \det(\mat{R})=+1
+\end{equation}
+
+While it is appealing to formulate~\ref{eq:P} as a \gls{qcqp}, the determinant constraint is cubic and thus does not allow this formulation. In other solutions to this problem, it is not uncommon to discard the determinant constraint~\cite{lagrangian-duality-in-3d-slam:-verification-techniques-and-optimal-solutions,planar-pose-graph-optimization:-duality-optimal-solutions-and-verification} resulting in the problem only being constrained by the orthonormality constraint. This amounts to optimizing in O(3) rather than in SO(3). \medskip
+
+Instead, by introducing additional constraints, the duality of the problem can be enhanced. Each time a new scalar constraint $c_{k+1}(\cdot)$ is incorporated into the Lagrangian, a corresponding dual variable $\lambda_{k+1}$ is introduced, and the dimension of the dual problem increases by one. This causes the new \ref{eq:D} bound \mvar{d^\star_{k+1}} to be at least as good as the previous problem's bound i.e.
+%
+\begin{equation}
+	d^\star_{k} \le d^\star_{k+1} \le f^\star.
+\end{equation}
+Since this change in \ref{eq:P} causes direct changes to \ref{eq:D}, \ref{eq:D} is not intrinsic, instead it is dependant on the feasible region of \ref{eq:P}. By utilizing this property, adding more valid quadratic constraints has been shown to improve the quality of the dual relaxation~\cite[Chapter 13]{semidefinite-programming-relaxations-of-nonconvex-quadratic-optimization}. \medskip
+
+Thus additional linearly independent quadratic constraints are added such as column and row-based orthonormality, along with additional quadratic constraints, which enforce the positive unit determinant, referred to as the rotation matrices handedness. This constraint states that a positive unit determinant is guaranteed if the column space of \mat{R} respects the right-hand rule i.e.
+%
+\begin{equation}
+	\mat{R}^{(1)}\times \mat{R}^{(2)} = \mat{R}^{(3)},
+\end{equation}
+where \mvar{\mat{R}^{(k)}} is the $k$-th column of \mat{R}. Utilizing the three possible cyclic permutations of this equation provides exactly three independent quadratic constraints, which strengthens the duality between \ref{eq:P} and \ref{eq:D}. A final constraint can be added by homogenizing~\ref{eq:P} by introducing an auxiliary variable $y$ with the constraint $y^2 = 1$. The primary problem~\ref*{eq:P} can thus be expressed as
+%
+\begin{align*}
+	&\min_{\mat{R}\in \SE (3)} \tilde{\vec{r}}^\T \tilde{\mat{Q}} \tilde{\vec{r}}  \quad , \quad \tilde{\vec{r}}=\rvec{\text{vec}(\mat{R})^\T, y}^\T, \\
+	& \text{s.t. }         \\ 
+	&\qquad \qquad \mat{R}^\T\mat{R} = y^2\mat{I}_3, \tag{$\mathcal{P}$} \label{eq:P}\\
+	&\qquad \qquad \mat{R}\mat{R}^\T = y^2 \mat{I}_3, \\
+	&\qquad \qquad \mat{R}^{(i)}\times \mat{R}^{(j)}=y \mat{R}^{(k)} \quad , \quad i,j,k = \text{cyclic}(1,2,3), \\
+	&\qquad \qquad y^2 = 1.
+\end{align*}
+
+To derive the dual problem~\ref{eq:D}, the \gls{qcqp} nature of~\ref{eq:P} is utilized to express its Lagrangian as
+\begin{equation}
+	\mathcal{L}(\tilde{\vec{r}}, \tilde{\vec{\lambda}}) = \gamma + \tilde{\vec{r}}^\T  \tilde{\mat{Z}}  \tilde{\vec{r}}.
+\end{equation}
+Here \mvar{\tilde{\vec{\lambda}}=\rvec{\vec{\lambda}^\T, \gamma}^\T\inR{22}}, where \num{22} is the number of constraints of~\ref{eq:P}, \mvar{\tilde{\mat{Z}}=\tilde{\mat{Q}} + \tilde{\mat{P}}(\tilde{\vec{\lambda}})}, which is a penalization matrix as the sum of \mvar{\tilde{\mat{Q}}}, which contains all the data from~\ref{eq:P}, and \mvar{\tilde{\mat{P}}(\tilde{\vec{\lambda}})} is the accumulation of all the penalization terms corresponding to different constrain types. \mvar{\tilde{\mat{P}}(\tilde{\vec{\lambda}})} can be computed as
+%
+\begin{equation}
+	\tilde{\mat{P}}(\tilde{\vec{\lambda}}) = \tilde{\mat{P}}_r(\mat{\Lambda}_r) + \tilde{\mat{P}}_c(\mat{\Lambda}_c) + \tilde{\mat{P}}_d(\{ \vec{\lambda}_{d_{ijk}} \}) + \tilde{\mat{P}}_h(\gamma),
+\end{equation}
+which by definition is a linear function of the dual variables, where the structural pattern of the involved matrices can be found in~\cite{convex-global-3d-registration-with-lagrangian-duality}. Using this formulation of the Lagrangian, its relaxation can be solved in closed form as 
+\begin{align}
+	d(\tilde{\vec{\gamma}})&=\min_{\tilde{\vec{r}}}\mathcal{L}(\tilde{\vec{r}},\tilde{\vec{\lambda}})=\min_{\tilde{\vec{r}}} \gamma + \tilde{\vec{r}}^\T \tilde{\vec{Z}} \tilde{\vec{r}} \\
+	&= \begin{cases}
+		\gamma & \text{ if } \tilde{\mat{Z}} \succeq \vec{0}, \\
+		-\infty & \text{ otherwise }.
+	\end{cases}
+\end{align}
+
 
 \begin{align*}
-	&\text{minimize } f(\vec{x}) \\
-	& \text{subject to }         \\ 
-	&\qquad \qquad g_i(\vec{x}) \leq 0, \quad i = 1, 2, \ldots, m \\
-	&\qquad \qquad h_j(\vec{x}) = 0, \quad j = 1, 2, \ldots, p \\
+	& d^\star = \max_{\tilde{\vec{\lambda}}} \gamma, \\
+	& \text{s.t. }         \\ 
+	&\qquad \qquad \tilde{\mat{Z}}(\tilde{\vec{\lambda}})=\tilde{\mat{Q}} + \tilde{\mat{P}}(\tilde{\vec{\lambda}}) \succeq 0. \tag{$\mathcal{D}$} \label{eq:D}\\
 \end{align*}
 
 
-Here, \vec{x} represents the optimization variables, \mvar{f(\vec{x})} is the cost function, \mvar{g_i(\vec{x})} are the inequality constraints, and \mvar{h_j(\vec{x})} are the equality constraints.
-
-% 4. Lagrangian Dual Formulation
-To apply Lagrangian duality, we introduce dual variables \mvar{\lambda_i} for the inequality constraints and \mvar{\nu_j} for the equality constraints. The Lagrangian function for problem \mvar{P} is defined as:
-
-\begin{equation}
-	L(\vec{x}, \lambda, \nu) = f(\vec{x}) + \sum_{i=1}^{m} \lambda_i g_i(\vec{x}) + \sum_{j=1}^{p} \nu_j h_j(\vec{x})
-\end{equation}
 
 
-Here, \mvar{\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_m)} and \mvar{\nu = (\nu_1, \nu_2, \ldots, \nu_p)} are the vectors of dual variables.
+% While the problem remains non-convex, convex relaxation is applied to enable the solving of the problem. While no proof has been provided, this relaxation empirically proves to be tight in all the evaluated cases from~\cite{convex-global-3d-registration-with-lagrangian-duality}, enabling the recovery of a globally optimal solution for the marginalized problem.
 
-% 5. Lagrangian Dual Problem
-The Lagrangian dual problem seeks to maximize the Lagrangian function over the feasible region defined by the dual variables. The dual problem is formulated as follows:
-
-\begin{align*}
-	 & \text{maximize } \theta(\lambda, \nu) = \inf_{x} L(x, \lambda, \nu) \\
-	 & \text{subject to } \\
-	 & \qquad \qquad \lambda \geq 0\\
-\end{align*}
+through formulating a tight dual relaxation.
 
 
-The function \mvar{\theta(\lambda, \nu)} represents the optimal value of the Lagrangian function.
 
-% 6. Tight Dual Relaxation Approach
-The tight dual relaxation approach aims to solve non-convex optimization problems by leveraging Lagrangian duality. The key idea is to formulate a dual problem that provides tight bounds on the optimal solution. In the tight dual relaxation, we carefully select the set of constraints to maximize the tightness of the relaxation.
+% % 1. Introduction
+% The tight dual relaxation method is a powerful approach for solving non-convex optimization problems. It leverages Lagrangian duality theory to obtain a globally optimal solution. This chapter provides an extensive explanation of the method presented in the paper, focusing on the mathematical formulations and key concepts involved. The sizes of vectors and matrices are explicitly mentioned to enhance clarity and understanding.
 
-% 7. Primal Problem Formulation
-In the context of the paper, we consider a specific non-convex optimization problem denoted as \mvar{\tilde{P}}. The objective is to find an optimal 3x3
+% % 2. Lagrangian Duality Basics
+% Before delving into the tight dual relaxation method, it is essential to understand some fundamental concepts from Lagrangian duality theory. In Lagrangian duality, we consider an optimization problem with a primal objective function, subject to constraints. The Lagrangian function is formed by introducing dual variables associated with each constraint. The dual problem seeks to maximize the Lagrangian function over the feasible region defined by the dual variables. Duality theory establishes a relationship between the primal and dual problems, providing bounds on the optimal solutions.
 
- rotation matrix \mat{R} that satisfies orthonormality and determinant constraints. The primal problem \mvar{\tilde{P}} can be formulated as a Quadratically Constrained Quadratic Program (QCPQ):
+% % 3. Problem Formulation
+% Let's consider a non-convex optimization problem denoted as \mvar{P}. The objective is to find an optimal solution to this problem. The problem involves minimizing a cost function, subject to a set of constraints. The problem can be expressed as follows:
 
-\begin{align*}
-	& \text{minimize } \text{tr}(R^\top R - I)^2 \\
-	& \text{subject to } \\
-	& \quad\quad R^\top R = I \\
-	& \quad\quad \text{det}(R) = 1
-\end{align*}
-
-
-Here, \mat{I} represents the identity matrix.
-
-% 8. Dual Problem Derivation
-To derive the dual problem for \mvar{\tilde{P}}, we construct the Lagrangian function \mvar{L(\mat{R}, \Lambda)}, where \mat{R} is the rotation matrix and \mvar{\Lambda} represents the dual variables associated with the constraints. The Lagrangian function is defined as:
-
-\begin{equation}
-	L(R, \Lambda) = \text{tr}(\mat{R}^\top \mat{R} - \mat{I})^2 + \text{tr}(\Lambda^\top (R^\top \mat{R} - I)) + \lambda(\text{det}(\mat{R}) - 1)
-\end{equation}
+% \begin{align*}
+% 	&\text{minimize } f(\vec{x}) \\
+% 	& \text{subject to }         \\ 
+% 	&\qquad \qquad g_i(\vec{x}) \leq 0, \quad i = 1, 2, \ldots, m \\
+% 	&\qquad \qquad h_j(\vec{x}) = 0, \quad j = 1, 2, \ldots, p \\
+% \end{align*}
 
 
-Here, \mvar{\Lambda} represents a symmetric matrix of dual variables and \mvar{\lambda} is a scalar dual variable.
+% Here, \vec{x} represents the optimization variables, \mvar{f(\vec{x})} is the cost function, \mvar{g_i(\vec{x})} are the inequality constraints, and \mvar{h_j(\vec{x})} are the equality constraints.
 
-% 9. Penalized Matrix
-The tight dual relaxation approach involves constructing a penalized matrix to incorporate the penalization terms corresponding to the different kinds of constraints. The penalized matrix is denoted as \mvar{\mathcal{M}} and defined as:
+% % 4. Lagrangian Dual Formulation
+% To apply Lagrangian duality, we introduce dual variables \mvar{\lambda_i} for the inequality constraints and \mvar{\nu_j} for the equality constraints. The Lagrangian function for problem \mvar{P} is defined as:
 
-\begin{equation}
-	\mathcal{M} = 2(R^\top R - I) + \Lambda + \lambda(I - R^\top R)
-\end{equation}
-
-
-Here, \mvar{\mathcal{M}} is a 3x3 matrix, \mvar{R^\top R} is a 3x3 matrix representing the orthonormality constraints, and \mvar{I} is the identity matrix.
-
-% 10. Lagrangian Relaxation
-The Lagrangian relaxation involves expressing the dual problem as an unconstrained problem by eliminating the equality constraints. The dual problem can be reformulated as follows:
-
-\begin{equation}
-	\text{maximize } \mathcal{D}(\Lambda, \lambda) = \inf_{R} L(R, \Lambda, \lambda)
-\end{equation}
-
-Here, \mvar{\mathcal{D}(\Lambda, \lambda)} represents the optimal value of the Lagrangian function after relaxation.
-
-% 11. Dual Bound Function
-The tight dual relaxation provides a dual bound function \mvar{d(\lambda)} that estimates the optimal value of the primal problem. The dual bound function is defined as:
-
-\begin{equation}
-	d(\lambda) = \max_{\Lambda} \mathcal{D}(\Lambda, \lambda)
-\end{equation}
+% \begin{equation}
+% 	L(\vec{x}, \lambda, \nu) = f(\vec{x}) + \sum_{i=1}^{m} \lambda_i g_i(\vec{x}) + \sum_{j=1}^{p} \nu_j h_j(\vec{x})
+% \end{equation}
 
 
-Here, \mvar{d(\lambda)} represents the dual bound.
+% Here, \mvar{\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_m)} and \mvar{\nu = (\nu_1, \nu_2, \ldots, \nu_p)} are the vectors of dual variables.
 
-% 12. Conclusion
-The tight dual relaxation method is a powerful technique for solving non-convex optimization problems. By carefully selecting the set of constraints and formulating the dual problem, this method provides tight bounds on the optimal solution. The Lagrangian relaxation and dual bound function play crucial roles in the process. Understanding and applying the tight dual relaxation approach can lead to efficient and effective solutions to challenging optimization problems.
+% % 5. Lagrangian Dual Problem
+% The Lagrangian dual problem seeks to maximize the Lagrangian function over the feasible region defined by the dual variables. The dual problem is formulated as follows:
 
-% Note: This chapter provides a general explanation of the method based on the information available. For a more detailed and accurate understanding, it is recommended to refer to the original paper.
+% \begin{align*}
+% 	 & \text{maximize } \theta(\lambda, \nu) = \inf_{x} L(x, \lambda, \nu) \\
+% 	 & \text{subject to } \\
+% 	 & \qquad \qquad \lambda \geq 0\\
+% \end{align*}
+
+
+% The function \mvar{\theta(\lambda, \nu)} represents the optimal value of the Lagrangian function.
+
+% % 6. Tight Dual Relaxation Approach
+% The tight dual relaxation approach aims to solve non-convex optimization problems by leveraging Lagrangian duality. The key idea is to formulate a dual problem that provides tight bounds on the optimal solution. In the tight dual relaxation, we carefully select the set of constraints to maximize the tightness of the relaxation.
+
+% % 7. Primal Problem Formulation
+% In the context of the paper, we consider a specific non-convex optimization problem denoted as \mvar{\tilde{P}}. The objective is to find an optimal 3x3
+
+%  rotation matrix \mat{R} that satisfies orthonormality and determinant constraints. The primal problem \mvar{\tilde{P}} can be formulated as a Quadratically Constrained Quadratic Program (QCPQ):
+
+% \begin{align*}
+% 	& \text{minimize } \text{tr}(R^\top R - I)^2 \\
+% 	& \text{subject to } \\
+% 	& \quad\quad R^\top R = I \\
+% 	& \quad\quad \text{det}(R) = 1
+% \end{align*}
+
+
+% Here, \mat{I} represents the identity matrix.
+
+% % 8. Dual Problem Derivation
+% To derive the dual problem for \mvar{\tilde{P}}, we construct the Lagrangian function \mvar{L(\mat{R}, \Lambda)}, where \mat{R} is the rotation matrix and \mvar{\Lambda} represents the dual variables associated with the constraints. The Lagrangian function is defined as:
+
+% \begin{equation}
+% 	L(R, \Lambda) = \text{tr}(\mat{R}^\top \mat{R} - \mat{I})^2 + \text{tr}(\Lambda^\top (R^\top \mat{R} - I)) + \lambda(\text{det}(\mat{R}) - 1)
+% \end{equation}
+
+
+% Here, \mvar{\Lambda} represents a symmetric matrix of dual variables and \mvar{\lambda} is a scalar dual variable.
+
+% % 9. Penalized Matrix
+% The tight dual relaxation approach involves constructing a penalized matrix to incorporate the penalization terms corresponding to the different kinds of constraints. The penalized matrix is denoted as \mvar{\mathcal{M}} and defined as:
+
+% \begin{equation}
+% 	\mathcal{M} = 2(R^\top R - I) + \Lambda + \lambda(I - R^\top R)
+% \end{equation}
+
+
+% Here, \mvar{\mathcal{M}} is a 3x3 matrix, \mvar{R^\top R} is a 3x3 matrix representing the orthonormality constraints, and \mvar{I} is the identity matrix.
+
+% % 10. Lagrangian Relaxation
+% The Lagrangian relaxation involves expressing the dual problem as an unconstrained problem by eliminating the equality constraints. The dual problem can be reformulated as follows:
+
+% \begin{equation}
+% 	\text{maximize } \mathcal{D}(\Lambda, \lambda) = \inf_{R} L(R, \Lambda, \lambda)
+% \end{equation}
+
+% Here, \mvar{\mathcal{D}(\Lambda, \lambda)} represents the optimal value of the Lagrangian function after relaxation.
+
+% % 11. Dual Bound Function
+% The tight dual relaxation provides a dual bound function \mvar{d(\lambda)} that estimates the optimal value of the primal problem. The dual bound function is defined as:
+
+% \begin{equation}
+% 	d(\lambda) = \max_{\Lambda} \mathcal{D}(\Lambda, \lambda)
+% \end{equation}
+
+
+% Here, \mvar{d(\lambda)} represents the dual bound.
+
+% % 12. Conclusion
+% The tight dual relaxation method is a powerful technique for solving non-convex optimization problems. By carefully selecting the set of constraints and formulating the dual problem, this method provides tight bounds on the optimal solution. The Lagrangian relaxation and dual bound function play crucial roles in the process. Understanding and applying the tight dual relaxation approach can lead to efficient and effective solutions to challenging optimization problems.
+
+% % Note: This chapter provides a general explanation of the method based on the information available. For a more detailed and accurate understanding, it is recommended to refer to the original paper.
 
 
 
