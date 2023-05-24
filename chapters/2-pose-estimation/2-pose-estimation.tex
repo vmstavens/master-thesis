@@ -407,38 +407,78 @@ where \mvar{\mat{R}^{(k)}} is the $k$-th column of \mat{R}. Utilizing the three 
 \end{align*}
 
 To derive the dual problem~\ref{eq:D}, the \gls{qcqp} nature of~\ref{eq:P} is utilized to express its Lagrangian as
-\begin{equation}
+%
+\begin{equation}\label{eq:lagrangian-p}
 	\mathcal{L}(\tilde{\vec{r}}, \tilde{\vec{\lambda}}) = \gamma + \tilde{\vec{r}}^\T  \tilde{\mat{Z}}  \tilde{\vec{r}}.
 \end{equation}
 Here \mvar{\tilde{\vec{\lambda}}=\rvec{\vec{\lambda}^\T, \gamma}^\T\inR{22}}, where \num{22} is the number of constraints of~\ref{eq:P}, \mvar{\tilde{\mat{Z}}=\tilde{\mat{Q}} + \tilde{\mat{P}}(\tilde{\vec{\lambda}})}, which is a penalization matrix as the sum of \mvar{\tilde{\mat{Q}}}, which contains all the data from~\ref{eq:P}, and \mvar{\tilde{\mat{P}}(\tilde{\vec{\lambda}})} is the accumulation of all the penalization terms corresponding to different constrain types. \mvar{\tilde{\mat{P}}(\tilde{\vec{\lambda}})} can be computed as
 %
-\begin{equation}
+\begin{equation}\label{eq:penalty-matrix}
 	\tilde{\mat{P}}(\tilde{\vec{\lambda}}) = \tilde{\mat{P}}_r(\mat{\Lambda}_r) + \tilde{\mat{P}}_c(\mat{\Lambda}_c) + \tilde{\mat{P}}_d(\{ \vec{\lambda}_{d_{ijk}} \}) + \tilde{\mat{P}}_h(\gamma),
 \end{equation}
 which by definition is a linear function of the dual variables, where the structural pattern of the involved matrices can be found in~\cite{convex-global-3d-registration-with-lagrangian-duality}. Using this formulation of the Lagrangian, its relaxation can be solved in closed form as 
 \begin{align}
-	d(\tilde{\vec{\gamma}})&=\min_{\tilde{\vec{r}}}\mathcal{L}(\tilde{\vec{r}},\tilde{\vec{\lambda}})=\min_{\tilde{\vec{r}}} \gamma + \tilde{\vec{r}}^\T \tilde{\vec{Z}} \tilde{\vec{r}} \\
+	d(\tilde{\vec{\lambda}})&=\min_{\tilde{\vec{r}}}\mathcal{L}(\tilde{\vec{r}},\tilde{\vec{\lambda}})=\min_{\tilde{\vec{r}}} \gamma + \tilde{\vec{r}}^\T \tilde{\vec{Z}} \tilde{\vec{r}} \\
 	&= \begin{cases}
 		\gamma & \text{ if } \tilde{\mat{Z}} \succeq \vec{0}, \\
 		-\infty & \text{ otherwise }.
 	\end{cases}
 \end{align}
-
-
+In cases where \mvar{\tilde{\mat{Z}}} is not \gls{psd} no lower bound exists for this problem, and thus no optimal solution can be found. But by restricting all \mvar{\tilde{\vec{\lambda}}}, to the solutions of \mvar{d(\tilde{\vec{\lambda}})} which satisfy \mvar{\tilde{\mat{Z}} \succeq \vec{0}}, the dual problem \ref{eq:D} to the homogeneous primal problem \ref{eq:P} is a Semidefinite Program on the form 
+%
 \begin{align*}
 	& d^\star = \max_{\tilde{\vec{\lambda}}} \gamma, \\
-	& \text{s.t. }         \\ 
-	&\qquad \qquad \tilde{\mat{Z}}(\tilde{\vec{\lambda}})=\tilde{\mat{Q}} + \tilde{\mat{P}}(\tilde{\vec{\lambda}}) \succeq 0. \tag{$\mathcal{D}$} \label{eq:D}\\
+	& \text{s.t. }         \tag{$\mathcal{D}$} \label{eq:D}\\ 
+	&\qquad \qquad \tilde{\mat{Z}}(\tilde{\vec{\lambda}})=\tilde{\mat{Q}} + \tilde{\mat{P}}(\tilde{\vec{\lambda}}) \succeq 0. 
 \end{align*}
+Which is a semidefinite program i.e. a convex problem that can be solved by out-of-the-box solvers. \medskip
 
+From the now defined primal problem~\ref{eq:P} and dual problem~\ref{eq:D}, and under the assumption that strong duality holds \mvar{f^\star = d^\star}, by duality theory \mvar{\tilde{\vec{r}}^\star} must be a minimizer of the Lagrangian~\ref{eq:lagrangian-p} evaluated at \mvar{\tilde{\vec{\lambda}}^\star}, such that
+%
+\begin{equation}
+	\vec{r}^\star = \arg\min_{\vec{r}} \mathcal{L}(\vec{r},\vec{\lambda}^\star) \quad \Rightarrow \quad \left( \tilde{\vec{r}}^\star \right)^\T \tilde{\mat{Z}}^\star \tilde{\vec{r}}^\star = 0.
+\end{equation}
+Assuming \mvar{\tilde{\mat{Z}}^\star} is \gls{psd} i.e. \mvar{\tilde{\mat{Z}}^\star \succeq 0}, then the optimal solution \mvar{\tilde{\vec{r}}^\star} must lie in the nullspace of \mvar{\tilde{\mat{Z}}^\star} i.e. \mvar{\tilde{\vec{r}}^\star \in \text{null}\left( \tilde{\mat{Z}}^\star \right)}. If this was not the case, either \mvar{\text{null}\left( \tilde{\mat{Z}}^\star \right) = \emptyset} or \mvar{\tilde{\vec{r}}^\star \notin \text{null}\left( \tilde{\mat{Z}}^\star \right)}, as a direct consequence of \mvar{\tilde{\mat{Z}}^\star} being \gls{psd}. \medskip
 
+Here the nullspace basis \mat{V} of \mvar{ \tilde{\mat{Z}}^\star } i.e. \mvar{\mat{V}=\text{null}\left( \tilde{\mat{Z}}^\star \right)} can be computed using QR decomposition. \medskip
 
+If it here is the case that \mvar{\text{rank}(\mat{V})=1} then the optimal solution \mvar{\tilde{\vec{r}}^\star} is achieved up to a scaling factor of \mvar{1/y}, due to~\ref{eq:P} being homogenous. By simply dehomogenizing \mvar{\tilde{\vec{r}}^\star}, the optimal rotation \mvar{\vec{r}^\star} is found. \medskip
+
+Verifying the legitimacy of this solution is simply done by evaluating the nullspace determinant to be unit, and the difference between the optimal value of~\ref{eq:P} and~\ref{eq:D} being \num{0} i.e.
+%
+\begin{equation}
+	\text{rank} \left(\text{null}( \tilde{\mat{Z}}^\star )\right) = 1 \qquad \text{ and } \qquad  d^\star - f^\star(\vec{r}^\star) = 0
+\end{equation}
+where \mvar{\mat{R}^\star = \text{reshape}(\vec{r}^\star)}. \medskip
+
+To summarize, the \gls{rcqp} algorithm can be seen in~\algoref{alg:rcqp}.
+
+\begin{algorithm}
+	\floatname{algorithm}{Algorithm}
+	\algrenewcommand\algorithmicrequire{\textbf{Input: }}
+	\algrenewcommand\algorithmicensure{\textbf{Output: }}
+	\caption{\gls{rcqp} algorithm for determining \tf[R]{\star}{} from \mvar{\tilde{\vec{r}}^\T \tilde{\mat{Q}} \tilde{\vec{r}}}}
+	\label{alg:rcqp}
+	\begin{algorithmic}[1]
+		\Require Marginalized quadratic form of the primary problem, \ref{eq:P} i.e. \mvar{\tilde{\vec{r}}^\T \tilde{\mat{Q}} \tilde{\vec{r}}}
+		\Ensure Globally optimal \tf[R]{\star}{}, if strong duality holds
+		\State \mvar{ \tilde{\mat{Z}} ( \tilde{\vec{\lambda}})  \gets } build\mvar{\left(\tilde{\mat{Q}} + \tilde{\mat{P}}(\tilde{\vec{\lambda}})\right)} based on~\ref{eq:penalty-matrix}
+
+		\State \mvar{(\tilde{\vec{\lambda}}^\star, \tilde{\mat{Z}}^\star) \gets} \texttt{cvx}(\ref{eq:D}\mvar{(\tilde{\vec{\lambda}}, \tilde{\mat{Z}})}) i.e. solve the Semidefinite Program using optimization tools such as \texttt{cvx} 
+
+		\State \mvar{\mat{V} \gets \text{null}(\tilde{\mat{Z}}^\star)}, from methods such as QR decomposition.
+
+		\State \texttt{ASSERT} (rank\mvar{(\mat{V} ) == 1}), ensure the nullspace rank is unit
+		\State \texttt{ASSERT} \mvar{\left( \left(\tilde{\vec{r}}^\star\right)^\T \tilde{\mat{Q}} \tilde{\vec{r}}^\star - d^\star < \epsilon \right)}  , where \mvar{\epsilon} is some threshold close to \num{0}, to ensure strong duality
+		
+		\State \mvar{\vec{r}^\star \gets \tilde{\vec{r}}^\star}, dehomogenize \mvar{\tilde{\vec{r}}^\star}
+
+		\State \mvar{\tf[R]{\star}{} \gets} reshape(\mvar{\vec{r}^\star}), reshape \mvar{\vec{r}^\star\inR{9}} to \mvar{\mat{R}^\star\inR{3 \times 3}}
+		\State \textbf{return} \tf[R]{\star}{}, return the globally optimal rotation
+	\end{algorithmic}
+\end{algorithm}
 
 % While the problem remains non-convex, convex relaxation is applied to enable the solving of the problem. While no proof has been provided, this relaxation empirically proves to be tight in all the evaluated cases from~\cite{convex-global-3d-registration-with-lagrangian-duality}, enabling the recovery of a globally optimal solution for the marginalized problem.
-
-through formulating a tight dual relaxation.
-
-
 
 % % 1. Introduction
 % The tight dual relaxation method is a powerful approach for solving non-convex optimization problems. It leverages Lagrangian duality theory to obtain a globally optimal solution. This chapter provides an extensive explanation of the method presented in the paper, focusing on the mathematical formulations and key concepts involved. The sizes of vectors and matrices are explicitly mentioned to enhance clarity and understanding.
@@ -546,6 +586,40 @@ through formulating a tight dual relaxation.
 
 
 \section{Experimental Setup}\label{sec:2-pose-estimation-experimental-setup}
+
+To Test the performance of the algorithms presented in~\secref{sec:2-pose-estimation-method} synthetic source data is generated based on the target data sampled from \gls{cad} model of the object of interest i.e. the Stanford bunny. The mesh is sampled uniformly with \num{1000} data points making up the target data, while the source data is made from a homogeneous transformation matrix applied to a copy of the target data. This will ensure the index \mvar{i} of each point in each point cloud will be true correspondences even when transformation. The homogeneous transformation matrix chosen is
+\begin{equation}
+	\tf[T]{\text{Target}}{\text{Source}} = 
+	\begin{bmatrix}
+		\tf[R]{}{z}(\pi/4) & \vec{t}_x(1) \\
+		\vec{0}_{1\times 3} & 1
+	\end{bmatrix}
+\end{equation} 
+where 
+
+
+
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/synthetic_pc_target.png}
+		\caption{The target \gls{pc} generated from simulated contact points.\newline}
+		\label{fig:pe-feature-filtered-pc}
+	\end{subfigure}
+	% \hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/synthetic_pc_source.png}
+		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10,000} points.}
+		\label{fig:pe-feature-unfiltered-pc}
+	\end{subfigure}
+	\caption{3D plots showing the sampled source and target \gls{pc}s along with a plot showing both of them overlaid.}
+	\label{fig:pe-filture-and-unfiltered-pc}
+\end{figure}
+
+
+
 
 \begin{figure}[!h]
 	\centering
