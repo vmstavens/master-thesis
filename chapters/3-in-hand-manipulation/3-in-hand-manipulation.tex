@@ -1,72 +1,129 @@
 \chapter{In-Hand Manipulation}\label{ch:3-in-hand-manipulation}
 
-\section{Introduction}\label{sec:3-in-hand-manipulation-introduction}
-Here we write the introduction for problem 3.
+The goal of this chapter is to analyze the performance of the reinforcement learning-based manipulation algorithm \gls{dapg}, which employs \gls{il} to constrain the algorithm's search space when solving the relocation task. The relocation task requires the robot hand to pick up an object and move it to a target location.\medskip 
 
+The analysis will focus on the relevant metrics from the training process as well as the final models performance. \medskip
+
+\gls{dapg} was chosen as the algorithm from~\cite{dexmv:-imitation-learning-for-dexterous-manipulation-from-human-videos}, due to it showing the best performance when solving the relocation task. \medskip
+
+Firstly, the \gls{dapg} method is presented and described, followed by the setup for collecting the data used for training. The results are then presented and finally, the findings are discussed and concluded.\medskip
+
+The simulation is done using a \gls{ah}~\cite{learning-complex-dexterous-manipulation-with-deep-reinforcement-learning-and-demonstrations} in the dynamic simulator MuJoCo~\cite{todorov2012mujoco}. The hand is thus equipped with \num{30} controllable parameters, \num{24} for the hand's joints and \num{6} for the hand's position \mvar{\vec{p}_{hnd}=\rvec{p_x,p_y,p_z}} and orientation \mvar{\vec{o}=\rvec{\phi,\theta,\psi}} in \gls{rpy} format. These make up the agent's actions \mvar{a}, while the states {s} also include the position of the prop when performing the relocation task.
 
 \section{Method}\label{sec:3-in-hand-manipulation-method}
 
-Certainly! Here's the combined section that explains the problem definition and the MPC-MPNet method, including the relevant mathematics written in LaTeX:
+\subsection{Demo Augmented Policy Gradient}\label{dapg}
 
-\subsection{Problem Definition and MPC-MPNet Method}
+The \gls{dapg} is an approach that expands on the \gls{npg} by introducing a demonstration term to weigh the gradient by \mvar{\lambda_0} and \mvar{\lambda_1}, which are hyperparameters to determine the advantage of state-action pair in demonstrations. \medskip
 
-In this section, we present the problem definition and propose MPC-MPNet, an end-to-end learning-based Kinodynamic Motion Planning (KMP) algorithm. MPC-MPNet aims to find collision-free trajectories connecting a given initial state to a goal region in the configuration space. We describe the problem formulation and the main components of our approach, which include an observation encoder, a neural generator, a neural discriminator, and Model Predictive Control (MPC).
-
-\subsubsection{Problem Definition}
-
-Let $C$ denote a configuration space (C-space) of a mechanical system, where collision and collision-free regions are represented as $C_{\text{obs}}$ and $C_{\text{free}} = C \setminus C_{\text{obs}}$, respectively. The state space $X$ consists of states $x = (c, \dot{c}) \in X$ that contain a configuration $c \in C$ and its time derivative $\dot{c}$. Similarly, $X_{\text{obs}}$ and $X_{\text{free}}$ represent the collision and collision-free state spaces, respectively. The dynamics of the system are described by the implicit set of equations $ \dot{x} = f(x, u)$, where $u$ denotes the control input from a feasible control set $U$. The objective of KMP is to find a collision-free trajectory $\sigma = \left[(x, u, \tau)_t\right]_{t=0}^{T}$, consisting of a sequence of states $[x_t]_{t=0}^{T}$ and controls $[u_t]_{t=0}^{T}$ with their corresponding durations $[\tau_t]_{t=0}^{T}$, such that $x(0) = x_{\text{init}}$ and $x(T) \in X_{\text{goal}}$.
-
-\subsection{MPC-MPNet Method}
-
-MPC-MPNet is an end-to-end learning-based KMP algorithm that iteratively generates waypoints and local steering trajectories to construct collision-free paths between the start and goal states. The method comprises an observation encoder, a neural generator, a neural discriminator, and two planning algorithms named MPC-MPNetPath and MPC-MPNetTree. We describe each component in detail:
-
-\subsubsection{Observation Encoder}
-
-The observation encoder embeds the workspace information, represented as voxel maps $v$, into latent features $Z$ containing critical anchor points for the neural generator and discriminator. Voxel maps are volumetric with dimensions $L \times W \times H \times C$, where $L$, $W$, $H$, and $C$ represent the length, width, height, and number of channels, respectively. To address the computational inefficiency of 3D convolutional neural networks (CNNs) due to their cubic representations and empty volumes, we convert the voxel maps into voxel patches with dimensions $L \times W \times \hat{C}$, where $\hat{C} = HC$. This conversion allows us to use 2D CNNs for learning the embeddings.
-
-\subsubsection{Neural Generator}
-
-The neural generator $G$, parameterized by $\theta_g$, is a stochastic neural model that generates intermediate waypoints $\hat{x}_{t+1}$ given the environment encoding $Z$, the robot's current state $x_t \in X_{\text{free}}$, and the goal state $x_{\text{goal}} \in X_{\text{test}}$
-
-{MPC-MPNet (continued)}
-
-\subsubsection{Neural Discriminator}
-
-The neural discriminator $D$, parameterized by $\theta_d$, is a binary classifier that distinguishes between valid and invalid paths. It receives the environment encoding $Z$ and a trajectory $\sigma$ and produces a probability $p(\sigma)$ that the trajectory is collision-free. 
-% The discriminator is trained using the Wasserstein GAN (WGAN) objective \cite{wgan}, which minimizes the Wasserstein distance between the true data distribution and the generator's distribution.
-
-\subsubsection{Model Predictive Control}
-
-Model Predictive Control (MPC) is a control strategy that computes a sequence of control inputs over a finite time horizon by solving a constrained optimization problem. At each time step, MPC uses the current state $x_t$ and the goal state $x_{\text{goal}}$ to generate a candidate trajectory, which is evaluated by the neural discriminator. MPC selects the first control input of the best-performing trajectory and applies it to the system. The process is repeated at each time step, with the initial state updated to the current state.
-
-\subsubsection{MPC-MPNetPath and MPC-MPNetTree}
-
-We introduce two planning algorithms that use MPC-MPNet to generate collision-free paths. MPC-MPNetPath generates a single trajectory between the initial and goal states by iteratively applying MPC and refining the path with the neural generator. MPC-MPNetTree constructs a search tree by iteratively generating and evaluating candidate trajectories using MPC and the neural discriminator. The search tree is used to construct the final path by backtracking from the goal node to the start node.
-
-\subsubsection{Mathematical Formulation}
-
-The MPC-MPNet algorithm can be formulated as follows:
-
+The parameter update rule to gain \mvar{\theta_{k+1}} can be written as
+%
 \begin{equation}
-    \text{Find } \sigma = \left[(x, u, \tau)_t\right]_{t=0}^{T} \text{ such that } x(0) = x_{\text{init}}, x(T) \in X_{\text{goal}}, \text{ and } \sigma \in \mathcal{F},
+    \theta_{k+1} = \theta_k + \sqrt{\frac{\delta}{g^\T F^{-1}_{\theta_k}g}}F^{-1}_{\theta_k}g,
+\end{equation}
+where \mvar{F_{\theta_k}} is the \gls{fim}, \mvar{g} is the gradient, \mvar{\delta} is the step size, and \mvar{\theta_{k}} is the previous weights.\medskip
+
+The objective function is thus formulated as 
+%
+\begin{equation}\label{eq:dapg}
+    g_{aug} = \sum_{(s,a)\in\rho_{\pi_\theta}}\nabla_\theta \ln \pi_\theta(a|s)A^{\pi_\theta}(s,a) + \sum_{(s,a)\in\rho_{\pi_D}} \nabla_\theta \ln \pi_\theta(a|s) \lambda_0 \lambda_1^k
 \end{equation}
 
-where $\mathcal{F}$ denotes the set of collision-free trajectories. The problem can be solved by iteratively applying MPC and the neural generator until a collision-free trajectory is found. The MPC optimization problem can be written as:
+Here \mvar{\rho_{\pi_\theta}} is the occupancy measure, which is the probability of ending up in a state action tuple i.e. \mvar{(s,a)}, \mvar{\nabla_\theta} is the derivative operator in terms of \mvar{\theta}, \mvar{\pi_\theta} is the policy under the parameters \mvar{\theta}, \mvar{A^{\pi_\theta}} is the advantage function which tells the advantage gained by performing each action \mvar{\{a_1,a_2,\dots,a_{n_a}\}}, where \mvar{n_a} is the number of actions in the current state, compared to the expected return from taking the currently best action~\cite{advantage-updating}. Finally, \mvar{\rho_{\pi_D}} is the occupancy function from the demonstrations.
 
+\subsection{Data Collection Procedure}
+To train \gls{dapg}, raw video data of expert demonstrations of the relocation task is collected. While~\cite{dexmv:-imitation-learning-for-dexterous-manipulation-from-human-videos} provides data for additional tasks i.e. \textit{pour} and \textit{place inside}, these are not of interest in this chapter. The objects used are from the YCB dataset~\cite{ycb} and the demonstrations were recorded by two RGBD cameras.\medskip
+
+The collected data are then parsed to a multi-state pipeline including 3D pose estimation, that being for both the object of interest and the hand and demonstration translation.
+
+\subsubsection{Object Pose Estimation}
+The \num{6}-\gls{dof} object poses in the physical setup is found using the PVN3D model, which is a deep learning-based pose estimation model, trained on the YCB data set.\medskip
+
+The \num{6}-\gls{dof} object pose is afterward optimized by minimizing the \gls{PnP} matching error.
+
+\subsubsection{Hand Pose Estimation}
+
+The hand pose is found using the deep learning-based pose estimation model MANO~\cite{mano}, which produces three parameters to represent the hand's pose: \mvar{\theta_t},\mvar{\beta_t} and \mvar{r_t}. \mvar{\theta_t} refers to the 3D rotations of \num{15} joints, \mvar{\beta_t} is the shape
+parameters and \mvar{r_t} is the hand root's global pose. These can be combined through hand kinematics to compute the 3D angle of each hand joint
+%
 \begin{equation}
-    \begin{aligned}
-        &\text{minimize} && \sum_{t=0}^{T-1} l(x_t, u_t) \\
-        &\text{subject to} && x_{t+1} = f(x_t, u_t) \\
-        &&& x_0 = x_t \\
-        &&& x_T \in X_{\text{goal}} \\
-        &&& x_t \in X_{\text{free}} \\
-        &&& u_t \in U \\
-    \end{aligned}
+    \vec{q}^{3d}_t = \mat{J}(\theta_t,\beta_t,r_t)
 \end{equation}
 
-where $l(x_t, u_t)$ is a cost function, $f(x_t, u_t)$ is the system dynamics, $x_0$ is the initial state, $x_T$ is the final state, and $U$ is the feasible control set. The neural generator is trained to generate intermediate waypoints $\hat{x}_{t+1}$ that minimize the difference between the MPC-generated trajectory and the true trajectory. The discriminator is trained to distinguish between valid and invalid trajectories, where invalid trajectories are those that collide with obstacles.
+By utilizing off-the-shelf skin segmentation techniques such as Combinatorial Color Space Models~\cite{combinatorial-color-space-models-for-skin-detection-in-sub-continental-human-images} and hand detection models on video data, a hand mask \mvar{M_t} is extracted. \mvar{M_t} is overlayed the depth channel of the recorded data and the center of which is the used estimate of \mvar{r_t}. From the video data, the RGB channels are additionally parsed to a MANO which estimates 2D hand joint angles \mvar{\vec{q}_t^{2D}}, along with the hand parameters \mvar{(\theta_t,\beta_t,r_t)}. Having the cameras poses \mat{\Pi} enables the formulation of an optimization problem to determine the optimal \mvar{(\theta_t,\beta_t,r_t)} i.e. \mvar{(\theta_t^\star,\beta_t^\star,r_t^\star)}
+%
+\begin{equation}
+    \theta_t^\star,\beta_t^\star, r_t^\star = \argmin_{\theta_t,\beta_t,r_t} \| \mat{\Pi} \mat{J}(\theta_t,\beta_t, r_t) - \vec{q}_t^{2d} \|^2 + \lambda\| M_t \left( \mat{R}(\theta_t,\beta_t,r_t) - D_t \right) \|^2
+\end{equation}
+Here \mvar{\lambda=0.001} is a hyperparameter, \mat{R} is a depth rendering function and \mvar{D_t} is the corresponding depth map in frame \mvar{t}.
 
-\section{Conclusion}
+\subsubsection{Demonstration Translation}
+
+Demonstration translation involves transforming the actions performed by the expert agent with one kinematic structure to a \gls{ml} agent with some other set of actions. This is essential as, while the kinematic structure between the biological human hand and the anthropomorphic robot hand is similar, they are not identical. The similarity can be seen in the hands' kinematic trees in~\appref{app:human-and-robot-hand-kinematics} with their \gls{rom}s in~\appref{app:range-of-motion-shadow-hand} and~\appref{app:range-of-motion-human-hand}.\medskip
+
+This process requires two components: hand motion retargeting and Predicting
+robot action. The hand motion retargeting attempts to align the human hand motion to the
+robot hand motion, which due to the difference in kinematics is non-trivial as mentioned above. The prediction robot action attempts to estimate the torque necessary for each robot motor to recover the action from only pose estimation results. \medskip
+
+The hand motion retargeting is solved using \gls{tsv}s to describe the optimization problem
+\begin{equation}
+    \vec{q}^\star_t = \min_{\vec{q}_t} \sum^N_{i=1}\| \vec{v}^{hum}_i(\theta_t,\beta_t,r_t)-\vec{v}^{rob}_i(\vec{q}_t)\|^2+\alpha \| \vec{q}_t - \vec{q}_{t-1} \|^2.
+\end{equation}
+Here \vec{\vec{v}^{hum}_i(\theta_t,\beta_t,r_t)} computes the \mvar{i}'th \gls{tsv} to the finger tip and middle of the human hand, and the robot's forward kinematics function \mvar{\vec{v}^{rob}_i(\vec{q})} computes the \mvar{i}'th \gls{tsv} to the fingertip and middle of the robot hand. The \gls{tsv}s can be seen illustrated in~\figref{fig:tsv} from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.\medskip
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.3\textwidth]{chapters/3-in-hand-manipulation/fig/tsv.pdf}
+	\end{center}
+	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\label{fig:tsv}
+\end{figure}
+
+The optimization problem was solved using \gls{slsqp} with \mvar{\alpha = 8e-3}.\medskip
+
+The robot action estimation is achieved through the model \mvar{\vec{q}(t)} presented in~\cite{smoothness-maximization-along-a-predefined-path-accurately-predicts-the-speed-profiles-of-complex-arm-movements}, which fulfills the criteria of zero jerk i.e. \mvar{\vec{q}'''(t) \approx 0}. The model enables \mvar{\vec{q}'(t)} and \mvar{\vec{q}''(t)} which through inverse dynamics can be converted to toques \mvar{\vec{\tau}}
+\begin{equation}
+    \vec{\tau} = f_{inv}\left(\vec{q}(t),\vec{q}'(t),\vec{q}''(t)\right)
+\end{equation}
+The zero jerk here enables behavior similar to that of a human, which in turn leads to more natural robot motion, as well as ensuring low joint position errors for motors and limiting excessive wear on the physical robot.
+
+\section{Experimental Setup}\label{sec:3-in-hand-manipulation-experimental-setup}
+
+To train and test the \gls{dapg} algorithm, the mug shown in~\figref{fig:manipulation-mug} is chosen as the prop. Additionally, to remain consistent with the original paper~\cite{dexmv:-imitation-learning-for-dexterous-manipulation-from-human-videos} the number of training iterations was \num{2,000} with demonstration hyper parameters \mvar{\lambda_0} and \mvar{\lambda_1} being \num{0.1} and \num{0.99} respectively. Furthermore, the learning rate \mvar{\alpha_{lr}} was set to \num{1.0}, the step size \mvar{\delta} was set to \mvar{0.1} and the discount factor \mvar{\gamma} was \num{0.995}. \medskip
+
+To execute the relocation task, the object is placed on a table and a goal is defined at a random location marked with green silhouette. The experimental setup can be seen in~\figref{fig:experimental-setup-dapg}.
+
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/mug.pdf}
+		\caption{The mug prop from YCB~\cite{ycb} chosen for training.\newline}
+		\label{fig:fig:manipulation-mug}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/experimental-setup-dapg.pdf}
+		\caption{The experimental setup used when training the \gls{dapg} algorithm. The figure contains the table platform, the mug prop, the simulated anthropomorphic hand and the goal mug position marked as a green silhouette.}
+		\label{fig:experimental-setup-dapg}
+	\end{subfigure}
+	\caption{The mug prop used for training and the experimental setup.}
+	\label{fig:manipulation-mug-experimental-setup-dapg}
+\end{figure}
+
+\section{Results}\label{3-in-hand-manipulation-results}
+The improvement in the surrogate objective function after the policy update
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.3\textwidth]{chapters/3-in-hand-manipulation/fig/stochastic-policy-over-epochs.pdf}
+	\end{center}
+	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\label{fig:stochastic-policy-over-epochs}
+\end{figure}
+
+\section{Discussion \& Conclusion}
 
 % In this section, we presented the problem formulation for Kinodynamic Motion Planning (KMP) and proposed MPC-MPNet, an end-to-end learning-based
 

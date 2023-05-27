@@ -1,11 +1,11 @@
 \chapter{Shadow Dexterous Hand - Technical Specifications}\label{app:shadow-dexterous-hand-technical-specifications}
 
-\tabref{app:range-of-motion-shadow-hand} shows the \gls{rom} for the Shadow Dexterous Hand and \tabref{app:range-of-motion-human-hand} shown the \gls{rom} for a human hand. The shorthand abbreviations used in these tables can be seen listed in \tabref{app:joint-abbreviations}. The joints are numbered from fingertip to base and thus FF1 refers to the first joint after the fingertip on the first finger i.e. the index finger.
+\tabref{app:range-of-motion-shadow-hand} shows the \gls{rom} for the \gls{sdh} and \tabref{app:range-of-motion-human-hand} shown the \gls{rom} for a human hand. The shorthand abbreviations used in these tables can be seen listed in \tabref{app:joint-abbreviations}. The joints are numbered from fingertip to base and thus FF1 refers to the first joint after the fingertip on the first finger i.e. the index finger.
 \begin{table}[!h]
 \begin{center}
 	\begin{tabular}{ |p{0.22\textwidth}|p{0.08\textwidth}|p{0.08\textwidth}|p{0.08\textwidth}|p{0.08\textwidth}|p{0.3\textwidth}| } 
 	\hline
-	\multicolumn{6}{|c|}{\textbf{\gls{rom} - Shadow Dexterous Hand}} \\ \hline
+	\multicolumn{6}{|c|}{\textbf{\gls{rom} - \gls{sdh}}} \\ \hline
 	\textbf{Joint(s)} & \textbf{Min deg} & \textbf{Max deg} & \textbf{Min rad} & \textbf{Max rad} & \textbf{Notes} \\ \hline
 	FF1, MF1, RF1, LF1 &0&90&0&1.571  & \multirow{2}{4em}{Coupled}\\ \cline{1-5}
 	FF2, MF2, RF2, LF2 & 0   & 90 & 0      & 1.571 & \\ \hline
@@ -20,7 +20,7 @@
 	WR1&-40&28&-0.698&0.489& \\ \hline
 	WR2&-28&10&-0.489&0.174& \\ \hline
 	\end{tabular}
-	\caption{The ranges of motion for each joint in the Shadow Dexterous Hand~\cite{range-of-motion-shadow-hand}.}
+	\caption{The ranges of motion for each joint in the \gls{sdh}~\cite{range-of-motion-shadow-hand}.}
 	\label{app:range-of-motion-shadow-hand}
 \end{center}
 \end{table}
@@ -31,14 +31,14 @@
 		\hline
 		\multicolumn{6}{|c|}{\textbf{\gls{rom} - Human Hand}} \\ \hline
 		\textbf{Joint(s)} & \textbf{Min deg} & \textbf{Max deg} & \textbf{Min rad} & \textbf{Max rad} & \textbf{Latin Name} \\ \hline
-		TH1 & -15 & 80 & & & Interphalangeal (IP) \\ \hline
-		TH2 + TH3 & -10 & 55 & & & Metacarpophalangeal (MCP)\\ \hline
-		TH4 +TH5  & -10 & 55 & & & Carpometacarpal (CMC)\\ \hline
-		FF1, MF1, RF1, LF1 & 0 & 80 & & & Distal interphalangeal (DIP) \\ \hline
-		FF2, MF2, RF2, LF2 & 0 & 100 & & & Proximal interphalangeal (PIP) \\ \hline
-		FF3, MF3, RF3, LF3 & -45 & 90 & & & Metacarpophalangeal (MCP) \\ \hline
-		WR1 &-80&80& & & Radiocarpal \\ \hline
-		WR2 &-28&20& & & Radiocarpal \\ \hline
+		TH1                & -15 & 80  & -0.262 & 1.396 & Interphalangeal (IP) \\ \hline
+		TH2 + TH3          & -10 & 55  & -0.175 & 0.96 & Metacarpophalangeal (MCP)\\ \hline
+		TH4 +TH5           & -10 & 55  & -0.175 & 0.96 & Carpometacarpal (CMC)\\ \hline
+		FF1, MF1, RF1, LF1 & 0   & 80  & 0.0 & 1.396 & Distal interphalangeal (DIP) \\ \hline
+		FF2, MF2, RF2, LF2 & 0   & 100 & 0.0 & 1.745 & Proximal interphalangeal (PIP) \\ \hline
+		FF3, MF3, RF3, LF3 & -45 & 90  & -0.785 & 1.571 & Metacarpophalangeal (MCP) \\ \hline
+		WR1                &-80  & 80  & -1.396 & 1.396 & Radiocarpal \\ \hline
+		WR2                &-28  & 20  & -0.489 & 0.349 & Radiocarpal \\ \hline
 		\end{tabular}
 		\caption{The theoretical \gls{rom} for each finger joint in human hand~\cite{continuous-and-simultaneous-estimation-of-finger-kinematics-using-inputs-from-an-emg-to-muscle-activation-model} and found \gls{rom} for the wrist joints~\cite{functional-wrist-motion:-a-biomechanical-study}.}
 		\label{app:range-of-motion-human-hand}
@@ -76,16 +76,16 @@ To compare the kinematic structure of the Shadow Dexterous Hand and a human hand
 	\begin{subfigure}[b]{0.69\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/appendix/fig/robot-hand-kinematics.pdf}
-		\caption{The kinematic tree of the Shadow Dexterous Hand according to~\cite{robot-hand-kinematics}. \newline}
+		\caption{The kinematic tree of the \gls{sdh} according to~\cite{robot-hand-kinematics}. \newline}
 		\label{app:robot-hand-kinematics}
 	\end{subfigure}
-	\caption{The kinematic trees of a human hand and the Shadow Dexterous hand.}
+	\caption{The kinematic trees of a human hand and the \gls{sdh}.}
 	\label{app:human-and-robot-hand-kinematics}
 \end{figure}
 
 \chapter{Tactile Perception - Simulated Electrode Activations}\label{app:tactile-perception-simulated-electrode-activations}
 
-Below three 
+Below three figures are found showing the \gls{dl} model inputs and outputs as described in~\secref{sec:1-tactile-perception-method}.~\figref{app:edge-contact-graph} shows the input and output graphs for the case when the \gls{sdh} index finger in contact with an edge.~\figref{app:smooth-contact-graph} shows the same graph but for contact with a smooth surface and~\figref{app:corner-contact-graph} shows the graph but for contact with a corner.
 
 \begin{figure}[!h]
 	\begin{center}
@@ -109,4 +109,87 @@ Below three
 	\end{center}
 	\caption{The simulated tactile electrode activations when the simulated Shadow Dexterous hand's index finger is in contact with a corner.}
 	\label{app:corner-contact-graph}
+\end{figure}
+
+\chapter{Pose Estimation Weight Convergence}\label{app:pose-estimation-weight-convergence}
+
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-10-conv.pdf}
+		\caption{.}
+		\label{app:GNC-TLS-w-run-10-conv}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-20-conv.pdf}
+		\caption{The kinematic tree of the Shadow Dexterous Hand according to~\cite{robot-hand-kinematics}. \newline}
+		\label{app:GNC-TLS-w-run-20-conv}
+	\end{subfigure}
+	\caption{The kinematic trees of a human hand and the Shadow Dexterous hand.}
+	\label{app:GNC-TLS-w-run-10-20-conv}
+\end{figure}
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-30-conv.pdf}
+		\caption{The kinematic tree of a human hand according to~\cite{grasp-synthesis-algorithms-for-multifingered-robot-hands}.}
+		\label{app:GNC-TLS-w-run-30-conv}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-40-conv.pdf}
+		\caption{The kinematic tree of the Shadow Dexterous Hand according to~\cite{robot-hand-kinematics}. \newline}
+		\label{app:GNC-TLS-w-run-40-conv}
+	\end{subfigure}
+	\caption{The kinematic trees of a human hand and the Shadow Dexterous hand.}
+	\label{app:GNC-TLS-w-run-30-40-conv}
+\end{figure}
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-50-conv.pdf}
+		\caption{The kinematic tree of a human hand according to~\cite{grasp-synthesis-algorithms-for-multifingered-robot-hands}.}
+		\label{app:GNC-TLS-w-run-50-conv}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-60-conv.pdf}
+		\caption{The kinematic tree of the Shadow Dexterous Hand according to~\cite{robot-hand-kinematics}. \newline}
+		\label{app:GNC-TLS-w-run-60-conv}
+	\end{subfigure}
+	\caption{The kinematic trees of a human hand and the Shadow Dexterous hand.}
+	\label{app:GNC-TLS-w-run-50-60-conv}
+\end{figure}
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-70-conv.pdf}
+		\caption{The kinematic tree of a human hand according to~\cite{grasp-synthesis-algorithms-for-multifingered-robot-hands}.}
+		\label{app:GNC-TLS-w-run-70-conv}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-80-conv.pdf}
+		\caption{The kinematic tree of the Shadow Dexterous Hand according to~\cite{robot-hand-kinematics}. \newline}
+		\label{app:GNC-TLS-w-run-80-conv}
+	\end{subfigure}
+	\caption{The kinematic trees of a human hand and the Shadow Dexterous hand.}
+	\label{app:GNC-TLS-w-run-70-80-conv}
+\end{figure}
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-90-conv.pdf}
+	\end{center}
+	\caption{The simulated tactile electrode activations when the simulated Shadow Dexterous hand's index finger is in contact with a corner.}
+	\label{app:GNC-TLS-w-run-90-conv}
 \end{figure}

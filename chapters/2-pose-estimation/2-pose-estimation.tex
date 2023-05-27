@@ -1,6 +1,6 @@
 \chapter{Pose Estimation}\label{ch:2-pose-estimation}
 
-This chapter focuses on pose estimation, specifically addressing the optimization-based PCR problem. It introduces the \gls{rcqp} and \gls{gnc} methods used to solve this problem and evaluates their performance in estimating the pose of the object of interest. The primary objective is to assess the extent to which \gls{rcqp} and \gls{gnc} can accurately estimate the position and orientation of the object, aiming for a \SI{95}{\percent} accuracy level as mentioned in \secref{sec:intro-problem-description}. Importantly, it is assumed throughout the chapter that the object of interest is known, eliminating the need for classification.\medskip
+This chapter focuses on pose estimation, specifically addressing the optimization-based PCR problem. It introduces the \gls{rcqp} and \gls{gnc} methods used to solve this problem and evaluates their performance in estimating the pose of the object of interest. The primary objective is to assess the extent to which \gls{rcqp} and \gls{gnc} can accurately estimate the position and orientation of the object, aiming for an orientational error less than \SI{5}{\degree} and a positional error less than \SI{1}{cm} as mentioned in \secref{sec:intro-problem-description}. Importantly, it is assumed throughout the chapter that the object of interest is known, eliminating the need for classification.\medskip
 
 To achieve this goal, the chapter presents the methodologies employed, the experimental setup, and the obtained results. The results obtained in this chapter encompass two main aspects 1) synthetic source data is utilized, and generated from the target data to ensure accurate correspondences. This allows for the evaluation of the methods' robustness by introducing varying percentages of outliers. 2) the methods are applied to sampled data from~\chapref{ch:1-tactile-perception} to estimate the pose of the object based on computed correspondences.\medskip
 
@@ -40,7 +40,7 @@ Under the assumption of already knowing the object of interest, \mat{Y} is gener
 		\caption{The source data \mat{X} \gls{pc} generated from simulated contact points, normals are also included, but not illustrated here for the sake of simplicity.}
 		\label{fig:pe-pc-source}
 	\end{subfigure}
-	% \hfill
+	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pc_target.png}
@@ -75,7 +75,7 @@ where \mvar{\vec{y}'\inR{3}} is the term used as a substitute for each primitive
 
 However solving the \gls{pcr} problem globally is still a challenging endeavor, even when known correspondences are available, primarily because of the non-convex nature of the rotation constraints, where \mvar{\mat{R}\in\SE (3)}. For this reason, global approaches are applied to deal with the problem of local minima, by starting from a convex problem, and gradually increasing the non-convexity until the original problem is retrieved, this being the purpose of \gls{gnc}. However, not all solutions when found globally are of interest, as the structure of the rotation matrix places certain quadratic constraints on the solution to be valid, such as orthonormality. From a then estimated optimal \mvar{\mat{R}^\star}, the optimal translation \mvar{\vec{t}^\star} can be found~\cite{convex-global-3d-registration-with-lagrangian-duality}. Thus the problem has been reduced to an orientation estimation problem to find \tf[R]{\star}{}.
 
-\section{Method} \label{sec:2-pose-estimation-method}
+\section{Method}\label{sec:2-pose-estimation-method}
 
 % The method chosen for this chapter is twofold: first outliers are rejected using \gls{gnc} and \gls{rcqp} for determining the optimal transformation \mvar{\mat{T}^\star}. One of the common problems of \gls{pcr} is the presence of outliers, exceeding \SI{95}{\percent} is not uncommon~\cite{guaranteed-outlier-removal-for-point-cloud-registration-with-correspondences}. Outlier removal is thus necessary, which is chosen in the form \gls{gnc}. To find correspondences, a point cloud feature which utilizes the clusters of points produced by the fingertips. Thus the \gls{fpfh} descriptor is chosen. Using these features descriptors \mvar{d_{t}} are found for the target data i.e. \mat{Y} and the source data \mat{X} i.e. \mvar{d_s}. Using these matching pairs of points are found using an exhaustive search and a similarity threshold of \num{0.01}
 
@@ -139,7 +139,7 @@ where \mvar{\mu} is the control parameter used to dictate to what extent the \mv
 
 \begin{figure}[!h]
 	\begin{center}
-		\includegraphics[width=0.5\textwidth]{chapters/2-pose-estimation/fig/tls-cost.pdf}
+		\includegraphics[width=0.3\textwidth]{chapters/2-pose-estimation/fig/tls-cost.pdf}
 	\end{center}
 	\caption{Cost function for the \gls{tls} with }
 	\label{fig:tls-cost}
@@ -587,66 +587,162 @@ To summarize, the \gls{rcqp} algorithm can be seen in~\algoref{alg:rcqp}.
 
 \section{Experimental Setup}\label{sec:2-pose-estimation-experimental-setup}
 
-To Test the performance of the algorithms presented in~\secref{sec:2-pose-estimation-method} synthetic source data is generated based on the target data sampled from \gls{cad} model of the object of interest i.e. the Stanford bunny. The mesh is sampled uniformly with \num{1000} data points making up the target data, while the source data is made from a homogeneous transformation matrix applied to a copy of the target data. This will ensure the index \mvar{i} of each point in each point cloud will be true correspondences even when transformation. The homogeneous transformation matrix chosen is
+To Test the performance of the algorithms presented in~\secref{sec:2-pose-estimation-method} synthetic source data is generated based on the target data sampled from \gls{cad} model of the object of interest i.e. the Stanford bunny. The mesh is sampled uniformly with \num{1000} data points and with corresponding normals making up the target data, while the source data is made from a homogeneous transformation matrix applied to a copy of the target data. This will ensure the index \mvar{i} of each point in each point cloud will be true correspondences even when transformation. The homogeneous transformation matrix chosen is
 \begin{equation}
 	\tf[T]{\text{Target}}{\text{Source}} = 
 	\begin{bmatrix}
 		\tf[R]{}{z}(\pi/4) & \vec{t}_x(1) \\
 		\vec{0}_{1\times 3} & 1
-	\end{bmatrix}
+	\end{bmatrix}\inR{4\times 4}
 \end{equation} 
-where 
-
-
+where \mvar{\mat{R}_z(\pi/4)\inR{3\times 3}} is the rotation matrix for a rotation of \mvar{\pi/4=45\deg} about the $z$-axis, \mvar{\vec{t}_x(1)\inR{3}} is a translation along the $x$-axis of \num{1} and \mvar{\vec{0}_{1\times 3}=\rvec{0,0,0}}. The target and synthetic source data can be seen in \figref{fig:synthetic-target-data} and~\figref{fig:synthetic-source-data} respectively.
 
 \begin{figure}[!h]
 	\centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/synthetic_pc_target.png}
-		\caption{The target \gls{pc} generated from simulated contact points.\newline}
-		\label{fig:pe-feature-filtered-pc}
+		\caption{The target \gls{pc} generated from sampling \num{1000} points from the \gls{cad} model.}
+		\label{fig:synthetic-source-data}
 	\end{subfigure}
-	% \hfill
+	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/synthetic_pc_source.png}
-		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10,000} points.}
-		\label{fig:pe-feature-unfiltered-pc}
+		\caption{The synthetic source data based on the target data, but transformed \mvar{\tf[T]{\text{Target}}{\text{Source}}}.}
+		\label{fig:synthetic-target-data}
 	\end{subfigure}
-	\caption{3D plots showing the sampled source and target \gls{pc}s along with a plot showing both of them overlaid.}
-	\label{fig:pe-filture-and-unfiltered-pc}
+	\caption{3D plots showing the synthetic source data and target data.}
+	\label{fig:synthetic-source-and-target-data}
 \end{figure}
 
+On these points clouds \gls{gnc}+\gls{rcqp} are applied over \num{20} experiments with varying outlier percentages \mvar{\alpha=\rvec{10\%,20\%,\dots,90\%}}. \medskip
 
+Once results are found, the method is applied to the sampled data shown in~\figref{fig:pe-pc-source}. This however includes the solving of the \gls{corr-problem} by finding feature correspondences between the point cloud. Due to self-collisions during the sampling process, a statistical outlier filter was applied with the number of neighbors \mvar{n_{nb}} being \num{1,000} and the standard deviation ratio \mvar{\sigma} being \num{0.5}.\medskip
 
+Using \gls{fpfh} it was unfortunately found that the source data did not contain enough information to find a satisfactory number of feature matches with the target data for \gls{gnc}+\gls{rcqp} to function. This was found by sampling target data with a varying number of data points uniformly distributed while computing the number of feature matches with the sampled source data. These results can be seen in~\figref{fig:number-of-feature-matches-with-different-numbers-of-target-data-points}, where the number of target data points sampled are \mvar{\gamma = \rvec{100,200,\dots,900,1000,2000,\dots,50000}} and the largest number of feature matches show to be two, which is far from sufficient. Filtering the sampled source data did not increase the number of feature matches as shown in the figure.
 
 \begin{figure}[!h]
-	\centering
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/M.pdf}
-		\caption{The source \gls{pc} generated from simulated contact points.\newline}
-		\label{fig:pe-feature-filtered-pc}
-	\end{subfigure}
-	% \hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/M_unfiltered.pdf}
-		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10,000} points.}
-		\label{fig:pe-feature-unfiltered-pc}
-	\end{subfigure}
-	\caption{3D plots showing the sampled source and target \gls{pc}s along with a plot showing both of them overlaid.}
-	\label{fig:pe-filture-and-unfiltered-pc}
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{chapters/2-pose-estimation/fig/number-of-feature-matches-with-different-numbers-of-target-data-points.pdf}
+	\end{center}
+	\caption{Number of feature matches between target data containing \mvar{\gamma} data points and the sampled source data, both filtered and unfiltered.}
+	\label{fig:number-of-feature-matches-with-different-numbers-of-target-data-points}
+\end{figure}
+% Using these two, heatmaps were produced, where~\figref{fig:pe-feature-filtered-pc} shows the heatmap for the filtered source data while~\figref{fig:pe-feature-unfiltered-pc} shows the heatmap for the unfiltered source data. \medskip
+% \begin{figure}[!h]
+% 	\centering
+% 	\begin{subfigure}[b]{0.48\textwidth}
+% 		\centering
+% 		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/M.pdf}
+% 		\caption{The source \gls{pc} generated from simulated contact points.\newline}
+% 		\label{fig:pe-feature-filtered-pc}
+% 	\end{subfigure}
+% 	% \hfill
+% 	\begin{subfigure}[b]{0.48\textwidth}
+% 		\centering
+% 		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/M_unfiltered.pdf}
+% 		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10,000} points.}
+% 		\label{fig:pe-feature-unfiltered-pc}
+% 	\end{subfigure}
+% 	\caption{3D plots showing the sampled source and target \gls{pc}s along with a plot showing both of them overlaid.}
+% 	\label{fig:pe-filture-and-unfiltered-pc}
+% \end{figure}
+% Here the greatest number of feature matches for the filtered source data was \num{11,450}, while \num{11,178} for the unfiltered. Since down-sampling the \gls{pc}s simply reduced the number of matches, the sample \gls{pc} used as source data is the filtered non-down sampled data i.e. the data shown in~\figref{fig:pe-pc-source}.
+\section{Results}\label{sec:2-pose-estimation-results}
+
+\subsection{Pose Estimation Performance Data}
+
+Using the synthetic data source data, the number of iterations for each outlier percentage can be seen in~\figref{fig:GNC-TLS-iterations-e},~\figref{fig:GNC-TLS-time-e} shows the execution times for each outlier percentage,~\figref{fig:GNC-TLS-theta-e} shows the estimated orientation error as the angle \mvar{\theta_e} being the angle in \gls{eaa} format. Finally in~\figref{fig:GNC-TLS-t-e} the translational error is shown in. \medskip 
+% \begin{figure}[!h]
+% 	\centering
+% 	\begin{subfigure}[b]{0.48\textwidth}
+% 		\centering
+% 		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-iterations-e.pdf}
+% 		\caption{The source \gls{pc} generated from simulated contact points.\newline}
+% 		\label{fig:pe-feature-filtered-pc2}
+% 	\end{subfigure}
+% 	% \hfill
+% 	\begin{subfigure}[b]{0.48\textwidth}
+% 		\centering
+% 		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-time-e.pdf}
+% 		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10,000} points.}
+% 		\label{fig:pe-feature-unfiltered-pc2}
+% 	\end{subfigure}
+% 	\caption{3D plots showing the sampled source and target \gls{pc}s along with a plot showing both of them overlaid.}
+% 	\label{fig:pe-filture-and-unfiltered-pc2}
+% \end{figure}
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-iterations-e.pdf}
+	\end{center}
+	\caption{Cost function for the \gls{tls} with }
+	\label{fig:GNC-TLS-iterations-e}
+\end{figure}
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-time-e.pdf}
+	\end{center}
+	\caption{Cost function for the \gls{tls} with }
+	\label{fig:GNC-TLS-time-e}
+\end{figure}
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-theta-e.pdf}
+	\end{center}
+	\caption{Cost function for the \gls{tls} with }
+	\label{fig:GNC-TLS-theta-e}
+\end{figure}
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-t-e.pdf}
+	\end{center}
+	\caption{Cost function for the \gls{tls} with }
+	\label{fig:GNC-TLS-t-e}
+\end{figure}
+
+\newpage
+\subsection{Weight Convergence Data}\label{sec:weight-convergence-data}
+
+In~\figref{fig:GNC-TLS-w-history-conv} the weight history is shown for a single run with \SI{10}{\percent} outliers, meaning how each weight entry changes value for each outer loop iteration. It can here be seen that the weight tends to converge either to \num{0} or \num{1} as one would come to expect.\medskip
+
+\figref{fig:GNC-TLS-w-run-conv} show the number of non-zero entries for \num{20} experiments with \SI{10}{\percent} outliers.
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-history-conv.pdf}
+	\end{center}
+	\caption{Cost function for the \gls{tls} with }
+	\label{fig:GNC-TLS-w-history-conv}
+\end{figure}
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=\textwidth]{chapters/2-pose-estimation/fig/GNC-TLS-w-run-10-conv.pdf}
+	\end{center}
+	\caption{Cost function for the \gls{tls} with }
+	\label{fig:GNC-TLS-w-run-conv}
 \end{figure}
 
 
-% In order to sample dat
-% Here we cite the related work by \texttt{\textbackslash cite\{source-label\}} like this \cite{recent-progress-in-technologies-for-tactile-sensors}
+\section{Discussion \& Conclusion}\label{sec:2-pose-estimation-discussion}
 
-\section{Results}\label{sec:2-pose-estimation-results}
+% The results found showed the legitimacy of the \gls{gnc}+\gls{rcqp} method for pose estimation in the case of synthetic data. The methods could not be applied successfully to the sampled data due to lacking features.
+
+% the problems include that it was not possible to find a functional number of feature correspondences. This is suggested based on the sparsity of the point cloud and techniques for intelligent probing is necessary.
+
+% It was possible in the synthetic case, to successfully solve the pose estimation problem satisfactory for outlier percentage of \SI{10}{\percent} regarding the orientation estimation, while the position estimation performed satisfactorily. At \SI{20}{\percent} outliers the angle error reaches \SI{-7.66}{\degree} and thus does not fulfill the success criteria, which holds for greater outlier ratios as well. 
+
+% The weight convergence results show an expected convergence towards \num{0} and \num{1}, yet the values at which the weight converges are yet to be explained. The expected result would here be that the number of non-zero weights should converge to \num{900} for a \SI{10}{\percent} outlier case. The remaining graphs can be seen in~\appref{app:pose-estimation-weight-convergence}.
 
 
-\section{Discussion}\label{sec:2-pose-estimation-discussion}
+The obtained results demonstrate the effectiveness of the \gls{gnc}+\gls{rcqp} method for pose estimation when applied to synthetic data. However, when dealing with sampled data, the methods faced challenges due to the lack of discernible features. One of the main difficulties encountered was the inability to identify a sufficient number of feature correspondences. This limitation can be attributed to the sparsity of the point cloud, indicating the need for intelligent probing techniques to enhance feature detection. \medskip
 
-\section{Conclusion}\label{sec:2-pose-estimation-conclusion}
+In the case of synthetic data, the pose estimation problem was successfully solved with satisfactory results for orientation estimation, even in the presence of a \SI{10}{\percent} outlier percentage. However, as the outlier percentage increased to \SI{20}{\percent}, the angle error reached \SI{-7.66}{\degree}, failing to meet the desired success criteria. This trend persisted for higher outlier ratios as well. \medskip
+
+The weight convergence analysis revealed an expected trend of convergence towards 0 and 1. However, the specific values at which the weights converged require further investigation and explanation. For example, in the case of a \SI{10}{\percent} outlier scenario, the expected outcome would be the convergence of the number of non-zero weights to \num{900}. Detailed graphs illustrating the weight convergence results can be found in~\appref{app:pose-estimation-weight-convergence}.\medskip
+
+In summary, the \gls{gnc}+\gls{rcqp} method exhibited promising performance in pose estimation for synthetic data. However, challenges arose when working with sampled data, emphasizing the need for improved feature detection techniques. The angle error increased with higher outlier percentages, suggesting the importance of robustness in handling outliers. Further analysis is required to understand the convergence values of the weights and refine the pose estimation algorithm accordingly.
