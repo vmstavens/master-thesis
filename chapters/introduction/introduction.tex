@@ -8,22 +8,22 @@ As one would expect, this creates a high demand for manufacturers to reliably an
 % argue for why automation is better
 To accommodate the need for ever-greater volumes of products, consistent, reliable and flexible labor is essential in assembly, transport and manipulation processes in the production pipeline. Due to these types of manual labor being largely done by unskilled workers, automation alternatives are being adopted which provide benefits~\cite[Chapter 4]{technology-and-inequalities}. This different approach to manufacturing has been labeled the fourth industrial revolution or i4.0 for short.
 % benefits for the employer
-The beneficiaries are the employer and employee, with the employer having the benefits: Avoid paying monthly salaries to unskilled laborers doing manual tasks, here the automation alternative only requires electrical energy and potential supervision by a few qualified individuals. Potential risks are also involved when hiring humans as the workforce can be inconsistent due to human error~\cite{analysis-and-control-of-human-error} or left out due to illness etc. Considerations about workers' rights such as working conditions and wages also need not be considered. Workers furthermore cause production limitations in the form of stand-still hours, such as bathroom and lunch breaks along with after-work hours and holidays.
+The beneficiaries are the employer and employee, with the employer having the benefits: Avoid paying monthly salaries to unskilled laborers doing manual tasks, here the automation alternative only requires electrical energy and potential supervision by a few qualified individuals. Potential risks are also involved when hiring humans as the workforce can be inconsistent due to human error~\cite{analysis-and-control-of-human-error} or left out due to illness etc. Considerations regarding workers' rights such as working conditions and wages also need not be considered. Workers furthermore cause production limitations in the form of stand-still hours, such as bathroom and lunch breaks along with after-work hours and holidays.
 % benefits for the employee 
-This replacement of manual labor also potentially benefits the employee, as boring and physically wearing work is automated, enabling the employees to take on different and less wearing and potentially dangerous roles. While the issue of labor unemployment becomes apparent solutions that provide support to already hired workers have been developed, such as \gls{cobot}~\cite{cobots-and-the-benefits-of-their-implementation-in-intelligent-manufacturing} which would negate this problem. \medskip
+This replacement of manual labor also potentially benefits the employee, as boring and physically wearing work is automated, enabling the employees to take on different and less wearing and potentially dangerous roles. While the issue of labor unemployment becomes apparent solutions that provide support to already hired workers have been developed, such as \gls{cobot}~\cite{cobots-and-the-benefits-of-their-implementation-in-intelligent-manufacturing} which could mitigate this problem. \medskip
 
 % categories of problems in robotics for factories
 When implementing automation of production lines using robotics, certain categories of problems are revealed. These include assembly, alteration and \gls{pnp}, the last being the one of interest in this project. 
 
 \section{Problem Description}\label{sec:intro-problem-description}
 % applications
-Pick-and-place \gls{manipulator}s are used in a wide variety of different fields such as 
+\gls{pnp} \gls{manipulator}s are used in a wide variety of different fields such as 
 sorting of waste~\cite{robotic-pick-and-toss-facilitates-urban-waste-sorting}
 handling of food~\cite{automation-of-mobile-pick-and-place-robotic-system-for-small-food-industry, development-of-a-food-handling-soft-robot-hand-considering-a-high-speed-pick-and-place-task} and factory bin picking~\cite{real-time-industrial-bin-picking-with-a-hybrid-deep-learning-engineering-approach, a-bin-picking-benchmark-for-systematic-evaluation-of-robotic-pick-and-place-systems, generic-development-of-bin-pick-and-place-system-based-on-robot-operating-system}. The solutions in these industries are examples of subcategories under the \gls{pnp} problem, namely sorting and bin picking. Since both of these are subcategories of the \gls{pnp} problem, they fundamentally follow the same sequential four phases from start to end. 
 % All of these problems fundamentally contain the same structure as shared among all pick-and-place problems.
 These phases are pre-grasping, grasping, transport, and placement~\cite{a-bin-picking-benchmark-for-systematic-evaluation-of-robotic-pick-and-place-systems} for traditional implementations of the \gls{pnp} pipeline.
 % pre-grasp
-The pre-grasp phase involves localizing the object(s), potentially estimating their pose and executing the trajectory to move the \gls{ee} grasp, collision-free to said object(s). Here different potential grasps can be considered to determine the best pose for the \gls{ee}.
+The pre-grasp phase involves localizing the object(s) and potentially estimating their pose and executing a collision-free trajectory to move the \gls{ee} grasp to the object. Here different potential grasps can be considered to determine the best pose for the \gls{ee}.
 % grasping
 In the grasping phase, the \gls{ee} gasps the object in such a manner that the object's entire weight is supported by the \gls{ee}, and ends when the object no longer is in contact with the environment, which often is the container holding the object.
 % transport
@@ -31,21 +31,21 @@ The transportation phase involves the motion of the \gls{manipulator} to move fr
 % placement
 Finally, the goal of the placing phase is to place the object within the placing area or fixture in a desired end pose. Here the constraints on the end pose might differ significantly based on the application, as the pose of greens in a crate might need less precision than if the manipulator hands a bolt to another robotics system in the pipeline. \medskip
 
-While these phases make up a traditional \gls{pnp} system, certain assumptions are made regarding the objects of interest for this pipeline to function. Specifically, the localization and \gls{pe} of the pre-grasp phase are assumed possible due to either ensured object poses or estimated poses through \gls{cv} sensory system. Due to \gls{cv} being a mature research field a wide range of solution proposals to these problems have been generated~\cite{6d-pose-estimation-of-objects:-recent-technologies-and-challenges}. These include classic vision~\cite{3d-object-pose-estimation-using-stereo-vision-for-object-manipulation-system, stereo-vision-based-automation-for-a-bin-picking-solution}, \gls{dl} based~\cite{uncalibrated-stereo-vision-with-deep-learning-for-6-dof-pose-estimation-for-a-robot-arm-system} and combinations of these~\cite{stereo-vision-based-single-shot-6d-object-pose-estimation-for-bin-picking-by-a-robot-manipulator}. However, while these may be sufficient for certain tasks they fundamentally suffer from the weaknesses introduced by vision techniques. These are a great number of outliers caused by: occlusions, reflecting, transparent or homogeneous surfaces, and repetitive structures when solving the \gls{corr-problem}. Within factory settings, the common ones are transparent and reflective objects, due to metallic, plastic and glass products often being the materials used. While \gls{dl} solutions have been developed for both reflective~\cite{data-driven-object-pose-estimation-in-a-practical-bin-picking-application} and transparent~\cite{6dof-pose-estimation-of-transparent-object-from-a-single-rgb-d-image} objects, these are use case specific and show limited results in a wider range of applications. \medskip
+While these phases make up a traditional \gls{pnp} system, certain assumptions are made regarding the objects of interest for this pipeline to function. Specifically, the localization and \gls{pe} of the pre-grasp phase are assumed possible due to either ensured object poses or estimated poses through \gls{cv} sensory system. Due to \gls{cv} being a mature research field, a wide range of solution proposals to these problems have been generated~\cite{6d-pose-estimation-of-objects:-recent-technologies-and-challenges}. These include classic vision~\cite{3d-object-pose-estimation-using-stereo-vision-for-object-manipulation-system, stereo-vision-based-automation-for-a-bin-picking-solution}, \gls{dl} based~\cite{uncalibrated-stereo-vision-with-deep-learning-for-6-dof-pose-estimation-for-a-robot-arm-system} and combinations of these~\cite{stereo-vision-based-single-shot-6d-object-pose-estimation-for-bin-picking-by-a-robot-manipulator}. However, while they may be sufficient for certain tasks they fundamentally suffer from the weaknesses introduced by vision techniques. These often come in the form of a great number of outliers caused by: occlusions, reflecting, transparent or homogeneous surfaces, and repetitive structures when solving the \gls{corr-problem}. Within factory settings, the common ones are transparent and reflective objects, due to metal, plastic and glass often being the materials used. While \gls{dl} solutions have been developed for both reflective~\cite{data-driven-object-pose-estimation-in-a-practical-bin-picking-application} and transparent~\cite{6dof-pose-estimation-of-transparent-object-from-a-single-rgb-d-image} objects, these are use case specific and show limited results in a wider range of applications. \medskip
 
-This project suggests a different \gls{pnp} pipeline for cases where the object's starting pose is unknown. In this \gls{pnp} pipeline the \gls{pe} is moved from the pre-grasping phase to a new phase between the grasping and transportation phase, called the \gls{pe} phase. The specific goal of this project is to develop a solution to this phase using tactile sensors in the \gls{ee} to determine the object's pose. By using tactile sensing rather than visual the problems presented above will be eliminated. This will be done using a humanoid gripper as the \gls{ee} with tactile sensors in each finger, more specifically a \gls{sdh}~\cite{shadow-dex-hand} with \num{24} joints and \num{20} \gls{dof}. \medskip
+This project suggests a different \gls{pnp} pipeline for cases where the object's starting pose is unknown. In this \gls{pnp} pipeline the \gls{pe} is moved from the pre-grasping phase to a new phase between the grasping and transportation phase, called the \gls{pe} phase. The specific goal of this project is to develop a solution to this phase using tactile sensors in the \gls{ee} to determine the object's pose. By using tactile sensing rather than visual the problems presented above will be eliminated. This will be done using an anthropomorphic gripper as the \gls{ee} with tactile sensors in each finger, more specifically a \gls{sdh}~\cite{shadow-dex-hand} with \num{24} joints and \num{20} \gls{dof}. \medskip
 % pre-grasping, grasping, transport, and placement
 
-The alternative pipeline this project will enable can be seen in the upper row of \figref{fig:pnp-pipeline} compared to the traditional pipeline in the lower row.\medskip 
+The alternative pipeline this project will enable can be seen in the top row of \figref{fig:pnp-pipeline} compared to the traditional pipeline in the bottom row.\medskip 
 
 % pre-grasping phase
-In \figref{fig:pre-grasp-phase} the pre-grasping phase can be seen for both pipelines. Here the traditional pipeline in cases of multiple objects often will employ custom fingertips or grippers entirely to facilitate form closure grasps, due to the grippers not having the flexibility to perform reliable force closure. On the contrary force closure can be performed with a humanoid gripper on a wide range of objects with no need for changing gripper equipment. \medskip
+In \figref{fig:pre-grasp-phase} the pre-grasping phase can be seen for both pipelines. Here the traditional pipeline in cases of multiple objects often will employ custom fingertips or grippers entirely to facilitate form closure grasps, due to the grippers not having the flexibility or dexterity to perform reliable force closure. On the contrary force closure can be performed with an anthropomorphic gripper on a wide range of objects with no need for changing gripper equipment. It is here assumed that the system has a rough estimate of the object's position in the scene for the motion toward the object to be consistent.\medskip
 
 % grasping phase
-In \figref{fig:grasping-phase} the grasping phase can be seen which introduces a greater level of complexity when using the suggested pipeline due to the humanoid gripper being a more complex physical system to represent and control. This is compared to the simplicity of executing potential binary commands in the traditional pipeline e.g.open and close. \medskip
+In \figref{fig:grasping-phase} the grasping phase can be seen which introduces a greater level of complexity when using the suggested pipeline due to the anthropomorphic gripper being a more complex physical system to represent and control. This is compared to the simplicity of executing potential binary commands in the traditional pipeline e.g.open and close. \medskip
 
 % transportation phase
-In \figref{fig:transportation-phase} the transportation phase can be seen, which introduces one of the benefits of using the suggested pipeline. Here tactile sensors in a humanoid gripper can pose and estimate the object and manipulations can be performed to change the object's pose such that easier placement can be performed in the following phase. This form of object manipulation is not feasible for the simple pneumatic grippers used in a traditional pipeline. \medskip
+In \figref{fig:transportation-phase} the transportation phase can be seen, which introduces one of the benefits of using the suggested pipeline. Here tactile sensors in an anthropomorphic gripper can \gls{pe} the object and manipulations can be performed to change the object's pose such that consistent placing can be done in the following phase. This form of object manipulation is not feasible for the simple pneumatic grippers used in a traditional pipeline. \medskip
 
 % placement
 In \figref{fig:placement-phase} the placement phase can be seen, which demonstrates the result of the previous phase, as the traditional pipeline now has to change the grip on the object to properly place it in the socket, while the humanoid gripper simply can insert the part, as it is already oriented properly. \medskip
@@ -57,52 +57,51 @@ In \figref{fig:placement-phase} the placement phase can be seen, which demonstra
 	\begin{subfigure}[b]{0.24\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/introduction/fig/pipeline-1.pdf}
-		\caption{Pre-grasp phase.}
+		\caption{Pre-grasp phase.\newline}
 		\label{fig:pre-grasp-phase}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.24\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/introduction/fig/pipeline-2.pdf}
-		\caption{Grasping phase.}
+		\caption{Grasping phase.\newline}
 		\label{fig:grasping-phase}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.24\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/introduction/fig/pipeline-3.pdf}
-		\caption{Transportation phase.}
+		\caption{Transportation phase. Including the suggested \gls{pe} phase.}
 		\label{fig:transportation-phase}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.24\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/introduction/fig/pipeline-4.pdf}
-		\caption{Placement phase.}
+		\caption{Placement phase.\newline}
 		\label{fig:placement-phase}
 	\end{subfigure}
 		\caption{A comparison between the traditional and suggested \gls{pnp} pipeline.}
 		\label{fig:pnp-pipeline}
 \end{figure}
 
-
-To solve this \gls{pe} problem, three sub-problems are identified and labeled problems \num{1}, \num{2} and \num{3}.
+To build this pipeline, three sub-problems are identified and labeled problems \ref{prob:1}, \ref{prob:2} and \ref{prob:3}.
 % problem 1
 \begin{problem} \label{prob:1}
-	\normalfont involves modeling the contact between the gripper's tactile sensors and the object, also referred to as tactile perception. 
+	\normalfont involves modeling the contact between the gripper's tactile sensors and the object, also referred to as \gls{tp}, such that useful data can be extracted for pose estimation.
 \end{problem}
 
 % problem 2
 \begin{problem} \label{prob:2}
-	\normalfont is to convert the collected data from problem 1 to estimated pose candidates.
+	\normalfont is to convert the collected data from problem \ref{prob:1} to estimated pose candidates.
 \end{problem}
 
 % problem 3
 \begin{problem} \label{prob:3}
-	\normalfont involves in-hand manipulation. Since the initial grasp of the object might not be oriented in a manner where the recognizable features make context with the tactile sensors, manipulating the object within the \gls{ee}'s grasp will enable further information gathering. Thus the final problem is to control the \gls{ee} in such a manner that the tactile sensors make context with the object in intelligently decided areas for a better pose estimate.
+	\normalfont involves in-hand manipulation. Since the initial grasp of the object might not be oriented in a manner where the recognizable features make context with the tactile sensors, manipulating the object within the \gls{ee}'s grasp will enable further information gathering. Thus the final problem is to control the \gls{ee} in such a manner that the tactile sensors make contact with the object through manipulation.
 \end{problem}
 
-To test if the developed system successfully solves the \gls{pe} problem, it is hypothesized that the intelligent probing method provides a statistically significant faster average \gls{pe} convergence, along with a statistically significant greater success rate when determining the correct pose. A correct pose is here defined as a pose with an angle error less than \SI{5}{\degree} and a positional error less than \SI{1}{\centi\meter}. This hypothesis will be referred to as $\text{H}_1$, while the null hypothesis $\text{H}_0$ being that there is no statistically significant difference between intelligent and random probing's \gls{pe} performance as described above.
+% To test if the developed system successfully solves each of the three presented problems, it is hypothesized that the intelligent probing method provides a statistically significant faster average \gls{pe} convergence, along with a statistically significant greater success rate when determining the correct pose. A correct pose is here defined as a pose with an angle error less than \SI{5}{\degree} and a positional error less than \SI{1}{\centi\meter}. This hypothesis will be referred to as $\text{H}_1$, while the null hypothesis $\text{H}_0$ being that there is no statistically significant difference between intelligent and random probing's \gls{pe} performance as described above.
 
 % more accurate estimates of the pose and does so in a shorter time span than simply sensing the object's surface in random locations $\text{H}_1$. 
 % This is compared to the null hypothesis, that there is no statistically significant difference in the methods' \gls{pe} performance $\text{H}_0$.
@@ -118,27 +117,27 @@ To test if the developed system successfully solves the \gls{pe} problem, it is 
 % and end effector pose est
 \section{Thesis Overview}\label{sec:intro-thesis-overview}
 
-This project is composed of \num{9} chapters, each listed below with an associated description. \medskip
+This project is composed of nine chapters, each listed below with an associated description. \medskip
 
 % To present the work done in this project, the system modeling is done in~\chapref{ch:modeling} and \gls{sota} is presented in~\chapref{ch:state-of-the-art} for each of the problems presented above. Here the solutions best suited for this project's gripper are chosen. Each solution is described in detail, how they are applied, their performance tested and finally evaluated and concluded upon in their respective chapters i.e. chapter~\chapref{ch:1-tactile-perception},~\chapref{ch:2-pose-estimation} and~\chapref{ch:3-in-hand-manipulation}. In~\chapref{ch:4-system-integration} the three methods are combined in the final integration and finally, the project is discussed and concluded upon in~\chapref{ch:discussion} and~\chapref{ch:conclusion} respectively.
 
-\textbf{Chapter 1:} The introduction presents the historical context of the project along with a problem description and thesis overview. The problem description contains the decomposition of the project into sub-problems which will be addressed in the following chapters. \medskip
+\textbf{\chapref{ch:intro}}: The introduction presents the historical context of the project along with a problem description and thesis overview. The problem description contains the decomposition of the project into sub-problems which will be addressed in the following chapters. \medskip
 
-\textbf{Chapter 2:} The system setup presents an overview of the practical details of the project in the form of the system setup along with the code developed to execute the project. \medskip
+\textbf{\chapref{ch:system-setup}}: The system setup presents an overview of the practical details of the project in the form of the system setup along with the code developed and provided to execute the project. \medskip
 
-\textbf{Chapter 3:} The literature review addresses the three problems identified in \chapref{ch:intro} by providing a thorough literature review on older as well as newer methods for solving each of the identified problems. To end each section, groups are compared and a method is chosen among the ones presented. \medskip
+\textbf{\chapref{ch:state-of-the-art}} The literature review i.e. \gls{sota}, addresses the three problems identified in \chapref{ch:intro} by providing a thorough literature review on older as well as newer methods for solving each of the identified problems. To end each section, groups are compared and a method is chosen among the ones presented. \medskip
 
-\textbf{Chapter 4:} The modeling chapter presents the physical modeling of the system and defines important mathematical notations and quantities as used in the following chapters. \medskip
+\textbf{\chapref{ch:modeling}} The modeling chapter presents the physical modeling of the system and defines important mathematical notations and quantities as used in the following chapters. \medskip
 
-\textbf{Chapter 5:} The \gls{tp} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve the first problem. This chapter expands on the method chosen and its functionality, followed by an evaluation of said method through experiments and their results. Finally, the functionality of the method is concluded. \medskip
+\textbf{\chapref{ch:1-tactile-perception}}: The \gls{tp} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve problem~\ref{prob:1}. This chapter expands on the method chosen and its functionality, followed by an evaluation of said method through experiments and their results. Finally, the extent to which the method is successful in addressing problem~\ref*{prob:1} is concluded. \medskip
 
-\textbf{Chapter 6:} The \gls{pe} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve the second problem. This chapter follows the same structure as \chapref{ch:1-tactile-perception}. \medskip
+\textbf{\chapref{ch:2-pose-estimation}} The \gls{pe} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve problem~\ref{prob:2}. This chapter follows the same structure as \chapref{ch:1-tactile-perception}. \medskip
 
-\textbf{Chapter 7:} The \gls{ihm} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve the third problem. This chapter follows the same structure as \chapref{ch:1-tactile-perception} and \chapref{ch:2-pose-estimation}. \medskip
+\textbf{\chapref{ch:3-in-hand-manipulation}} The \gls{ihm} chapter addresses the method chosen in \chapref{ch:state-of-the-art} to solve problem~\ref{prob:3}. This chapter follows the same structure as \chapref{ch:1-tactile-perception} and \chapref{ch:2-pose-estimation}. \medskip
 
-\textbf{Chapter 8:} The discussion chapter goes over the combined system and addresses problems, improvements, shortcomings and potential for future development.
+\textbf{\chapref{ch:discussion}} The discussion chapter goes over the combined system and addresses problems, improvements, shortcomings and potential for future development.\medskip
 
-\textbf{Chapter 9:} The conclusion chapter addresses the success of the project.
+\textbf{\chapref{ch:conclusion}} The conclusion chapter addresses the success of the project.
 
 % % The developments in robotics as a field have over the past years provided automation solutions to execute repetitive manual tasks with high efficiency and reliability \fakecite. One of the most common tasks is pick and place tasks which involve picking up an object from one position and placing it in another. This is can be parted into the following subparts: Object localization, pose estimation, grasping and placing. In the solutions currently present for industrial use \gls{cv} is used for object localization and \gls{pe} due to the low cost of cameras and the field's maturity. However, while these solutions may be sufficient for certain tasks they fundamentally suffer from the weaknesses introduced by vision techniques. These include a great number of outliers caused by occlusions, reflecting, transparent or homogeneous surfaces, and repetitive structures when solving the \gls{corr-problem}. These problems as of the writing of this project have yet to be completely solved. Promising results have been found with the rise of \gls{dl} which in the present time has proven its versatility and provides proof of concept solutions for narrow cases in pose estimation of transparent \cite{6dof-pose-estimation-of-transparent-object-from-a-single-rgb-d-image} and reflective \medskip
 

@@ -478,112 +478,28 @@ To summarize, the \gls{rcqp} algorithm can be seen in~\algoref{alg:rcqp}.
 	\end{algorithmic}
 \end{algorithm}
 
-% While the problem remains non-convex, convex relaxation is applied to enable the solving of the problem. While no proof has been provided, this relaxation empirically proves to be tight in all the evaluated cases from~\cite{convex-global-3d-registration-with-lagrangian-duality}, enabling the recovery of a globally optimal solution for the marginalized problem.
+Using the optimal \tf[R]{\star}{} the optimal translation can be found using~\algoref{alg:t-star}.
 
-% % 1. Introduction
-% The tight dual relaxation method is a powerful approach for solving non-convex optimization problems. It leverages Lagrangian duality theory to obtain a globally optimal solution. This chapter provides an extensive explanation of the method presented in the paper, focusing on the mathematical formulations and key concepts involved. The sizes of vectors and matrices are explicitly mentioned to enhance clarity and understanding.
-
-% % 2. Lagrangian Duality Basics
-% Before delving into the tight dual relaxation method, it is essential to understand some fundamental concepts from Lagrangian duality theory. In Lagrangian duality, we consider an optimization problem with a primal objective function, subject to constraints. The Lagrangian function is formed by introducing dual variables associated with each constraint. The dual problem seeks to maximize the Lagrangian function over the feasible region defined by the dual variables. Duality theory establishes a relationship between the primal and dual problems, providing bounds on the optimal solutions.
-
-% % 3. Problem Formulation
-% Let's consider a non-convex optimization problem denoted as \mvar{P}. The objective is to find an optimal solution to this problem. The problem involves minimizing a cost function, subject to a set of constraints. The problem can be expressed as follows:
-
-% \begin{align*}
-% 	&\text{minimize } f(\vec{x}) \\
-% 	& \text{subject to }         \\ 
-% 	&\qquad \qquad g_i(\vec{x}) \leq 0, \quad i = 1, 2, \ldots, m \\
-% 	&\qquad \qquad h_j(\vec{x}) = 0, \quad j = 1, 2, \ldots, p \\
-% \end{align*}
-
-
-% Here, \vec{x} represents the optimization variables, \mvar{f(\vec{x})} is the cost function, \mvar{g_i(\vec{x})} are the inequality constraints, and \mvar{h_j(\vec{x})} are the equality constraints.
-
-% % 4. Lagrangian Dual Formulation
-% To apply Lagrangian duality, we introduce dual variables \mvar{\lambda_i} for the inequality constraints and \mvar{\nu_j} for the equality constraints. The Lagrangian function for problem \mvar{P} is defined as:
-
-% \begin{equation}
-% 	L(\vec{x}, \lambda, \nu) = f(\vec{x}) + \sum_{i=1}^{m} \lambda_i g_i(\vec{x}) + \sum_{j=1}^{p} \nu_j h_j(\vec{x})
-% \end{equation}
-
-
-% Here, \mvar{\lambda = (\lambda_1, \lambda_2, \ldots, \lambda_m)} and \mvar{\nu = (\nu_1, \nu_2, \ldots, \nu_p)} are the vectors of dual variables.
-
-% % 5. Lagrangian Dual Problem
-% The Lagrangian dual problem seeks to maximize the Lagrangian function over the feasible region defined by the dual variables. The dual problem is formulated as follows:
-
-% \begin{align*}
-% 	 & \text{maximize } \theta(\lambda, \nu) = \inf_{x} L(x, \lambda, \nu) \\
-% 	 & \text{subject to } \\
-% 	 & \qquad \qquad \lambda \geq 0\\
-% \end{align*}
-
-
-% The function \mvar{\theta(\lambda, \nu)} represents the optimal value of the Lagrangian function.
-
-% % 6. Tight Dual Relaxation Approach
-% The tight dual relaxation approach aims to solve non-convex optimization problems by leveraging Lagrangian duality. The key idea is to formulate a dual problem that provides tight bounds on the optimal solution. In the tight dual relaxation, we carefully select the set of constraints to maximize the tightness of the relaxation.
-
-% % 7. Primal Problem Formulation
-% In the context of the paper, we consider a specific non-convex optimization problem denoted as \mvar{\tilde{P}}. The objective is to find an optimal 3x3
-
-%  rotation matrix \mat{R} that satisfies orthonormality and determinant constraints. The primal problem \mvar{\tilde{P}} can be formulated as a Quadratically Constrained Quadratic Program (QCPQ):
-
-% \begin{align*}
-% 	& \text{minimize } \text{tr}(R^\top R - I)^2 \\
-% 	& \text{subject to } \\
-% 	& \quad\quad R^\top R = I \\
-% 	& \quad\quad \text{det}(R) = 1
-% \end{align*}
-
-
-% Here, \mat{I} represents the identity matrix.
-
-% % 8. Dual Problem Derivation
-% To derive the dual problem for \mvar{\tilde{P}}, we construct the Lagrangian function \mvar{L(\mat{R}, \Lambda)}, where \mat{R} is the rotation matrix and \mvar{\Lambda} represents the dual variables associated with the constraints. The Lagrangian function is defined as:
-
-% \begin{equation}
-% 	L(R, \Lambda) = \text{tr}(\mat{R}^\top \mat{R} - \mat{I})^2 + \text{tr}(\Lambda^\top (R^\top \mat{R} - I)) + \lambda(\text{det}(\mat{R}) - 1)
-% \end{equation}
-
-
-% Here, \mvar{\Lambda} represents a symmetric matrix of dual variables and \mvar{\lambda} is a scalar dual variable.
-
-% % 9. Penalized Matrix
-% The tight dual relaxation approach involves constructing a penalized matrix to incorporate the penalization terms corresponding to the different kinds of constraints. The penalized matrix is denoted as \mvar{\mathcal{M}} and defined as:
-
-% \begin{equation}
-% 	\mathcal{M} = 2(R^\top R - I) + \Lambda + \lambda(I - R^\top R)
-% \end{equation}
-
-
-% Here, \mvar{\mathcal{M}} is a 3x3 matrix, \mvar{R^\top R} is a 3x3 matrix representing the orthonormality constraints, and \mvar{I} is the identity matrix.
-
-% % 10. Lagrangian Relaxation
-% The Lagrangian relaxation involves expressing the dual problem as an unconstrained problem by eliminating the equality constraints. The dual problem can be reformulated as follows:
-
-% \begin{equation}
-% 	\text{maximize } \mathcal{D}(\Lambda, \lambda) = \inf_{R} L(R, \Lambda, \lambda)
-% \end{equation}
-
-% Here, \mvar{\mathcal{D}(\Lambda, \lambda)} represents the optimal value of the Lagrangian function after relaxation.
-
-% % 11. Dual Bound Function
-% The tight dual relaxation provides a dual bound function \mvar{d(\lambda)} that estimates the optimal value of the primal problem. The dual bound function is defined as:
-
-% \begin{equation}
-% 	d(\lambda) = \max_{\Lambda} \mathcal{D}(\Lambda, \lambda)
-% \end{equation}
-
-
-% Here, \mvar{d(\lambda)} represents the dual bound.
-
-% % 12. Conclusion
-% The tight dual relaxation method is a powerful technique for solving non-convex optimization problems. By carefully selecting the set of constraints and formulating the dual problem, this method provides tight bounds on the optimal solution. The Lagrangian relaxation and dual bound function play crucial roles in the process. Understanding and applying the tight dual relaxation approach can lead to efficient and effective solutions to challenging optimization problems.
-
-% % Note: This chapter provides a general explanation of the method based on the information available. For a more detailed and accurate understanding, it is recommended to refer to the original paper.
-
-
+\begin{algorithm}
+	\floatname{algorithm}{Algorithm}
+	\algrenewcommand\algorithmicrequire{\textbf{Input: }}
+	\algrenewcommand\algorithmicensure{\textbf{Output: }}
+	\caption{Algorithm for determining \tf[t]{\star}{} from \mvar{\tilde{\vec{r}}^\T \tilde{\mat{Q}} \tilde{\vec{r}}}}
+	\label{alg:t-star}
+	\begin{algorithmic}[1]
+		\Require matching paris from (\mvar{\mat{X},\mat{Y}})
+		\Ensure Globally optimal \tf[T]{\star}{}
+		\State initialize \mvar{\tilde{\mat{M}} \gets } zeros(\num{13})
+		\For{ \mvar{(\vec{x}_i, P_i) \in \{ \vec{x}_i \leftrightarrow P_i \}^m_{i=1} } }
+			\State \mvar{\tilde{\mat{M}}_i \leftarrow} buildTerm(\mvar{\vec{x}_i,P_i}) 
+			\State \mvar{\tilde{\mat{M}} \gets \tilde{\mat{M}} + \tilde{\mat{M}}_i}
+		\EndFor
+		\State marginalize \mvar{\tilde{\mat{Q}} = \tilde{\mat{M}} / \tilde{\mat{M}}_{\vec{t},\vec{t}} } using Schur complement.
+		\State compute \tf[R]{\star}{} from~\algoref{alg:rcqp}
+		\State \mvar{\vec{t}^\star \gets -\tilde{\mat{M}}_{\vec{t},\vec{t}}^{-1} \tilde{\mat{M}}_{\vec{t}, !\vec{t}} \tilde{\vec{r}} } where \mvar{ \tilde{\vec{r}} = \rvec{\text{vec}(\mat{R})^\T 1}^\T}
+		\State \textbf{return} \tf[T]{\star}{}(\tf[R]{\star}{},\mvar{\vec{t}^\star})
+	\end{algorithmic}
+\end{algorithm}
 
 \section{Experimental Setup}\label{sec:2-pose-estimation-experimental-setup}
 
@@ -620,7 +536,7 @@ On these points clouds \gls{gnc}+\gls{rcqp} are applied over \num{20} experiment
 
 Once results are found, the method is applied to the sampled data shown in~\figref{fig:pe-pc-source}. This however includes the solving of the \gls{corr-problem} by finding feature correspondences between the point cloud. Due to self-collisions during the sampling process, a statistical outlier filter was applied with the number of neighbors \mvar{n_{nb}} being \num{1,000} and the standard deviation ratio \mvar{\sigma} being \num{0.5}.\medskip
 
-Using \gls{fpfh} it was unfortunately found that the source data did not contain enough information to find a satisfactory number of feature matches with the target data for \gls{gnc}+\gls{rcqp} to function. This was found by sampling target data with a varying number of data points uniformly distributed while computing the number of feature matches with the sampled source data. These results can be seen in~\figref{fig:number-of-feature-matches-with-different-numbers-of-target-data-points}, where the number of target data points sampled are \mvar{\gamma = \rvec{100,200,\dots,900,1000,2000,\dots,50000}} and the largest number of feature matches show to be two, which is far from sufficient. Filtering the sampled source data did not increase the number of feature matches as shown in the figure.
+Using \gls{fpfh} it was unfortunately found that the source data did not contain enough information to find a satisfactory number of feature matches with the target data for \gls{gnc}+\gls{rcqp} to function. This was found by sampling target data with a varying number of data points uniformly distributed while computing the number of feature matches with the sampled source data. These results can be seen in~\figref{fig:number-of-feature-matches-with-different-numbers-of-target-data-points}, where the number of target data points sampled are \mvar{\gamma = \rvec{100,200,\dots,900,1000,2000,\dots,50000}} and the largest number of feature matches show to be two, which is far from sufficient. Filtering the sampled source data did not increase the number of feature matches as shown in the~\figref{fig:number-of-feature-matches-with-different-numbers-of-target-data-points}.
 
 \begin{figure}[!h]
 	\begin{center}

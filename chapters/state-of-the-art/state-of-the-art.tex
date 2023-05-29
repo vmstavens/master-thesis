@@ -2,9 +2,12 @@
 
 \section{Problem 1 - Tactile Perception}\label{sec:lit-rev-problem-1}
 
-Based on the contact model categories described in \chapref{ch:modeling}, the most representative was chosen to be \gls{sf} models. 
+% Based on the contact model categories described in \chapref{ch:modeling}, the most representative was chosen to be \gls{sf} models. 
 % since these can provide descriptions of the contact surface shape, and thus enable the solving of the \gls{iep} by deriving surface features for pose estimation. Furthermore, these represent friction forces and moments that is needed to manipulate objects in hand and ensure force closure. 
-Within the category of \gls{sf} models, a method fit for this project's use case is to be chosen to solve problem~\ref{prob:1}. \gls{sf} models can furthermore be divided up into three different categories: \gls{aebm}, \gls{efm}, \gls{fem}~\cite{a-modified-elastic-foundation-contact-model-for-application-in-3d-models-of-the-prosthetic-knee} and \gls{ml} models. The different categories can be seen organized in \figref{fig:sf-categories} \medskip
+% Within the category of \gls{sf} models, a method fit for this project's use case is to be chosen to solve problem~\ref{prob:1}. 
+Of the contact models found during the literature review for solving problem~\ref{prob:1}
+% \gls{sf} models can furthermore be divided up into 
+four different categories were identified: \gls{aebm}, \gls{efm}, \gls{fem}~\cite{a-modified-elastic-foundation-contact-model-for-application-in-3d-models-of-the-prosthetic-knee} and \gls{ml} models. The different categories can be seen organized in \figref{fig:sf-categories} \medskip
 %
 \begin{figure}[h]
 	\begin{small}
@@ -61,7 +64,7 @@ Although the Boussinesq-Cerruti approach can produce precise tactile data and ca
 
 \section{Problem 2 - Pose Estimation}\label{sec:lit-rev-problem-2}
 
-\gls{pe}, which involves determining the position and orientation of an object in 3D space, has been the subject of many research studies. The literature has identified two main categories of methods for solving this problem: those based on \gls{dl}, and those based on point cloud registration. \medskip
+\gls{pe}, which involves determining the position and orientation of an object in 3D space, has been the subject of many research studies. The literature has identified two main categories of methods for solving this problem: those based on \gls{dl}, and those based on \gls{pcr}. \medskip
 
 These can along with their subcategories be seen in~\figref{fig:pe-categories} as inspired by~\cite{a-comprehensive-survey-on-point-cloud-registration}.
 
@@ -70,7 +73,7 @@ These can along with their subcategories be seen in~\figref{fig:pe-categories} a
 		\begin{center}
 			\includegraphics[width=0.8\textwidth]{chapters/state-of-the-art/fig/pe-categories-v3.pdf}
 		\end{center}
-		\caption{Tree of methods for solving the point cloud registration problem. The categorization is inspired by~\cite{a-comprehensive-survey-on-point-cloud-registration}.}
+		\caption{Tree of \gls{pe} methods. The categorization is inspired by~\cite{a-comprehensive-survey-on-point-cloud-registration}.}
 		\label{fig:pe-categories}
 	\end{small}
 \end{figure}
@@ -123,39 +126,27 @@ Among the categories presented above, the ones of particular interest are optimi
 
 \section{Problem 3 - In-Hand Manipulation}\label{sec:lit-rev-problem-3}
 
-Motion planning is a critical aspect of robot applications as it involves finding a path without collisions between two configurations. However, when it comes to dexterous manipulation, where the object may not always be fully constrained, a more advanced approach called kinodynamic motion planning becomes necessary. Kinodynamic motion planning presents significant challenges, particularly in high-dimensional spaces, and is known to be PSPACE-hard~\cite*{planning-algorithms}, indicating its computational complexity.
+Motion planning is a critical aspect of robot applications as it involves finding a path without collisions between two configurations. Planning dexterous manipulation paths can be a difficult endeavor due to the high dimension and computational complexity. During this literature review, the three main solution categories found were: kinodynamics, \gls{mpc} and \gls{rl}-based solutions, as seen in~\figref{fig:dm-categories}. \medskip
 
-To address these challenges, researchers have proposed probabilistic complete sampling-based kinodynamic motion planners like SST and SST*~\cite{asymptotically-optimal-sampling-based-kinodynamic-planning}. These planners utilize sampling-based techniques and probabilistic methods to generate collision-free paths in complex environments. Despite their effectiveness, the complexity of the motion planning problem has led to the integration of motion planning algorithms with model predictive control. By combining these two techniques, it becomes possible to avoid solving a boundary value problem~\cite{mpc-mpnet-model-predictive-motion-planning-networks-for-fast-near-optimal-planning-under-kinodynamic-constraints}, reducing the computational burden associated with kinodynamic motion planning.
+\begin{figure}[h]
+	\begin{small}
+		\begin{center}
+			\includegraphics[width=0.8\textwidth]{chapters/state-of-the-art/fig/categories-dex-man.pdf}
+		\end{center}
+		\caption{Tree of methods for solving the in-hand manipulation problem.}
+		\label{fig:dm-categories}
+	\end{small}
+\end{figure}
 
-Furthermore, to further enhance performance, researchers have explored the combination of kinodynamic motion planning algorithms with reinforcement learning. This integration leverages the capabilities of reinforcement learning algorithms to learn from experience and improve the efficiency and quality of the generated motion plans~\cite{sampling-based-exploration-for-reinforcement-learning-of-dexterous-manipulation}. By incorporating the knowledge acquired through reinforcement learning, the kinodynamic motion planning process can adapt and optimize its solutions over time, resulting in more refined and effective paths for dexterous manipulation tasks.
+% kinodynamic
+For kinodynamic motion planning to address the dexterous manipulation challenges, researchers have proposed probabilistic complete sampling-based kinodynamic motion planners like SST and SST*~\cite{asymptotically-optimal-sampling-based-kinodynamic-planning}. These planners utilize sampling-based techniques and probabilistic methods to generate collision-free paths in complex environments. Due to kinodynamics both searching in configuration space and its derivative, the problem becomes PSPACE-hard~\cite*{planning-algorithms}, indicating its great computational complexity. \medskip
 
-\gls{il} has additionally seen a rice in popularity as a \gls{rl} based dexterous manipulation method. One such example~\cite{dexmv:-imitation-learning-for-dexterous-manipulation-from-human-videos} applies 
+% mpc
+Despite their effectiveness, the complexity of the motion planning problem has led to the integration of motion planning algorithms with \gls{mpc}. By combining these two techniques, it becomes possible to avoid solving a boundary value problem~\cite{mpc-mpnet-model-predictive-motion-planning-networks-for-fast-near-optimal-planning-under-kinodynamic-constraints}, reducing the computational burden associated with kinodynamic motion planning. \medskip
 
+% rl
+Furthermore, to enhance performance, researchers have explored the combination of kinodynamic motion planning algorithms with \gls{rl}. This integration leverages the capabilities of \gls{rl} algorithms to learn from experience and improve the efficiency and quality of the generated motion plans~\cite{sampling-based-exploration-for-reinforcement-learning-of-dexterous-manipulation}. This however can become expensive due to the great search space, which has pushed the research into the applications of \gls{il} based \gls{rl}. One such example~\cite{dexmv:-imitation-learning-for-dexterous-manipulation-from-human-videos} which presents a novel framework for integrating expert demonstrations of dexterous manipulation into a wide range of \gls{rl} such as \gls{soil}, \gls{gail} and \gls{dapg}. \medskip
 
-Overall, the field of motion planning has witnessed the development of various approaches to address the challenges posed by kinodynamic motion planning in high-dimensional spaces. From probabilistic complete sampling-based planners to the integration of model predictive control and reinforcement learning, these advancements aim to enhance the efficiency, reliability, and adaptability of motion planning algorithms in order to support complex robot applications.
+Overall, the field of motion planning has witnessed the development of various approaches to address the challenges posed by kinodynamic motion planning in high-dimensional spaces. From probabilistic complete sampling-based planners to the integration of model predictive control and \gls{rl}, these advancements aim to enhance the efficiency, reliability, and adaptability of motion planning algorithms to support complex robot applications. \medskip
 
-
-% In-hand manipulation is an important aspect of robotic manipulation that allows robots to grasp and manipulate objects in a more dexterous manner. A key component of in-hand manipulation is the gripper, which must be capable of grasping and manipulating objects with a high degree of precision and adaptability. In recent years, there has been significant research on the development of dexterous grippers for in-hand manipulation. In this literature review, we will survey some of the methods and techniques for performing in-hand manipulation using dexterous grippers.
-
-% One approach to achieving dexterous manipulation is the use of soft robotic grippers. Soft grippers can deform around objects, providing a more adaptive and gentle grasp. In [1], Polygerinos et al. presented a soft robotic gripper that uses a pneumatically actuated elastomer to wrap around and grip objects. The gripper was shown to be capable of grasping a variety of objects and manipulating them in various ways, such as rotating a pencil or turning a key.
-
-% Another approach to dexterous manipulation is the use of multi-fingered robotic hands. Multi-fingered hands have the advantage of being able to grasp objects from different angles and with different forces. In [2], Chalon et al. presented a robotic hand with three fingers that was able to grasp and manipulate objects with a high degree of dexterity. The hand was shown to be capable of performing tasks such as flipping a pancake and grasping small objects.
-
-% One challenge with multi-fingered hands is the complexity of their control. To address this issue, some researchers have explored the use of modular fingers that can be easily attached and detached from a robotic hand. In [3], Fend et al. presented a modular robotic hand that uses a simple locking mechanism to attach and detach fingers. The hand was shown to be capable of grasping and manipulating objects of different sizes and shapes.
-
-% Another approach to dexterous manipulation is the use of underactuated hands, which have fewer actuators than degrees of freedom. Underactuated hands can achieve a more natural and adaptive grasp by using passive compliance in their fingers. In [4], Prattichizzo et al. presented a underactuated robotic hand with three fingers that was able to grasp and manipulate objects with a high degree of dexterity. The hand was shown to be capable of performing tasks such as grasping and manipulating a pen or pencil.
-
-% In addition to the development of dexterous grippers, researchers have also explored various methods for planning and control of in-hand manipulation tasks. For example, in [5], Liu et al. proposed a method for planning in-hand manipulation tasks using a learned neural network model. The method was shown to be capable of generating effective in-hand manipulation plans for a variety of tasks.
-
-% In conclusion, there have been significant advances in the development of dexterous grippers for in-hand manipulation in recent years. Soft grippers, multi-fingered hands, modular fingers, and underactuated hands are all promising approaches for achieving dexterous manipulation. Furthermore, researchers have explored various methods for planning and control of in-hand manipulation tasks, such as neural network models. Future research in this area could focus on further improving the adaptability and versatility of dexterous grippers, as well as developing more efficient and effective planning and control methods for in-hand manipulation tasks.
-
-% [1] Polygerinos, Panagiotis, et al. "Soft robotic glove for combined assistance and at-home rehabilitation." Robotics and Autonomous Systems 73 (2015): 135-143.
-
-% [2] Chalon, Maxime, et al. "A Three-Fingered Robot Hand Capable of Dexterous In-Hand Manipulation." IEEE Robotics and Automation Letters 3.2 (2018):
-
-% https://github.com/PKU-MARL/DexterousHands
-% https://github.com/NVIDIA-Omniverse/IsaacGymEnvs/blob/main/docs/rl_examples.md
-% https://github.com/vikashplus/Adroit
-% https://digital.lib.washington.edu/researchworks/handle/1773/38104
-% https://github.com/google-research/robopianist
-% https://github.com/wanxinjin/Task-Driven-Hybrid-Reduction
+Due to the high flexibility and the results showed in~\cite{dexmv:-imitation-learning-for-dexterous-manipulation-from-human-videos}, which demonstrate applicable performance on a similar platform as the one chosen in this project, this method is chosen. Specifically the~\gls{dapg} \gls{rl} method, due to it showing the best overall results even in unseen cases.

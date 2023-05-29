@@ -1,8 +1,11 @@
 \chapter{Tactile Perception}\label{ch:1-tactile-perception}
 
+% problem statement
+% involves modeling the contact between the gripper’s tactile sensors and the object, also referred to as Tactile Perception (TP), such that useful data can be extracted for pose estimation.
+
 To solve problem~\ref{prob:2} and~\ref{prob:3}, the tactile perception solution must provide estimates of contact positions, contact normals and skew forces. \medskip
 
-This chapter presents an analysis of the performance of different techniques to solve these problems, including a \gls{dl} model for simulating realistic tactile skew forces, \gls{rls} for estimating contact normals and the contact positions from the grasping \mat{G}. Contact normals are essential for accurately estimating the pose of an object in contact, while skew forces are critical for predicting the behavior of an object when it is grasped and manipulated by the \gls{sdh}. \medskip
+The goal of this chapter is to analyze the performance of different techniques to solve these problems, including a \gls{dl} model for simulating realistic tactile skew forces, \gls{rls} for estimating contact normals and the contact positions from the grasping \mat{G}. Contact normals are essential for accurately estimating the pose of an object in contact, while skew forces are critical for predicting the behavior of an object when it is grasped and manipulated by the \gls{sdh}. \medskip
 
 Firstly, the \gls{rls} methodology is presented for normal estimation \mvar{\vec{n}_{c,i}=\rvec{n_{i,x},n_{i,y},n_{i,z}}^\T\inR{3}}, where \mvar{i\in\{0,1,\dots,n_c \} } and \mvar{n_c} is the number of contact points, followed by the experimental setup and result representation.\medskip
 

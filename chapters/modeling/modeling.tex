@@ -93,19 +93,17 @@ Based on the model categories described above, the most representative for this 
         \label{fig:force-closure-model}
     \end{minipage}%
 \end{center}
-When modeling the kinematics of an anthropomorphic gripper with frame \mvar{\robframe{H}\inR{4\times 4}} in world frame \mvar{\robframe{W}\inR{4\times 4}} interacting with an object with frame \mvar{\robframe{O}\inR{4\times 4}} the relevant parameters must be addressed. In this system the object with position \mvar{\vec{p}\inR{3}} and pose \mvar{\vec{u}\inR{6}}, with the orientation either being represented as a four-dimensional quaternion or a three-dimensional Euler angle, makes contact with the gripper in points \mvar{\vec{c}_i\inR{3}}. These contact points have frames \mvar{\robframe{C}_i\inR{4 \times 4}} with axes \mvar{\rlist{\vec{n}_i,\vec{t}_i,\vec{o}_i}\subset \R^{3}}, where \mvar{\vec{n}_i\inR{3}} points perpendicular to the contact plain towards the object, while the remaining are contained within the contact plane. For each of these parameters \mvar{i=1,2,\ldots,n_c}, where \mvar{n_c} is the number of contact points. The twist of \robframe{O} described in \robframe{W} is denoted \mvar{\vec{\nu} = \rvec{\vec{v}^\T \vsep \vec{\omega}^\T}^\T\inR{6}} while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is \mvar{\vec{w} = \rvec{\vec{f}^\T \vsep \vec{m}^\T}^\T\inR{6}}. The gripper's state is described in terms of its joints, of which it has \mvar{n_q}, named \mvar{\vec{q} = \rvec{q_1  \vsep q_2  \vsep \dots  \vsep q_{n_q}}^\T\in\R^{n_q}} each of which is revolute and can exert a torque \mvar{\vec{\tau} = \rvec{\tau_1  \vsep\tau_2  \vsep\dots  \vsep\tau_{n_q} \vsep}^\T\in\R^{n_q}}. These parameters can be seen illustrated in \figref{fig:sys-schematic} showing the system model.
+When modeling the kinematics of an anthropomorphic gripper with frame \mvar{\robframe{H}\inR{4\times 4}} in world frame \mvar{\robframe{W}\inR{4\times 4}} interacting with an object with frame \mvar{\robframe{O}\inR{4\times 4}} the relevant parameters must be addressed. In this system the object with position \mvar{\vec{p}\inR{3}} and pose \mvar{\vec{u}\inR{6}}, with the orientation either being represented as a four-dimensional quaternion or a three-dimensional Euler angle, makes contact with the gripper in points \mvar{\vec{c}_i\inR{3}}. These contact points have frames \mvar{\robframe{C}_i\inR{4 \times 4}} with axes \mvar{\rlist{\vec{n}_i,\vec{t}_i,\vec{o}_i}\subset \R^{3}}, where \mvar{\vec{n}_i\inR{3}} points perpendicular to the contact plain towards the object, while the remaining are contained within the contact plane. For each of these parameters \mvar{i=1,2,\ldots,n_c}, where \mvar{n_c} is the number of contact points. The twist of \robframe{O} described in \robframe{W} is denoted \mvar{\vec{\nu} = \rvec{\vec{v}^\T \vsep \vec{\omega}^\T}^\T\inR{6}} while the non-contact wrench i.e. the wrench caused by external forces such as collisions with the environment and gravity, is \mvar{\vec{w} = \rvec{\vec{f}^\T \vsep \vec{m}^\T}^\T\inR{6}}. The gripper's state is described in terms of its joints, of which it has \mvar{n_q}, named \mvar{\vec{q} = \rvec{q_1  \vsep q_2  \vsep \dots  \vsep q_{n_q}}^\T\in\R^{n_q}} each of which is revolute and can exert a torque \mvar{\vec{\tau} = \rvec{\tau_1  \vsep\tau_2  \vsep\dots  \vsep\tau_{n_q} \vsep}^\T\in\R^{n_q}}. These parameters can be seen illustrated in \figref{fig:sys-schematic} showing the system model. While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.
 %
 \begin{figure}[h]
 	\begin{small}
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{chapters/modeling/fig/sys-schematic-reversed-crop.pdf}
 		\end{center}
-		\caption{The model of the world representation for this project.}
+		\caption{The model of the system representation for this project.}
 		\label{fig:sys-schematic}
 	\end{small}
 \end{figure}
-%
-While only a single finger here is illustrated the naming conventions and representations simply scale to all the \gls{ee}'s \gls{dof}s.\medskip
 
 In this system, the twists and wrenches of a contact point \mvar{\vec{c}_i} on the object and hand, given in contact frame \mvar{\robframe{C}_i} is referred to as \mvar{\vec{\nu}_{i,\xi}\inR{6}} and \mvar{\vec{w}_{i,\xi}\inR{6}}, with \mvar{\xi = \rlist{\text{obj}, \text{hnd}}}. Given multiple contact points, complete vectors of twist and wrench can be expressed by appending each contact point's twist and wrench vector. These contain all twists and wrenches of the grasp, one for the object and one for the hand. These vectors are referred to as 
 %
@@ -143,11 +141,11 @@ While the grasp matrix describes the transformation from \robframe{W} to object 
 	\label{eq:hand-jacobian-matrix}
 \end{equation}
 %
-for all contact points. Here \mvar{\mat{J}_i \inR{6 \times n_q} \mfor i = 1,2,\ldots,n_c} are the individual contact point's hand Jacobians and thus \mvar{\mat{J}\inR{6 \cdot n_c \times n_q}} is the complete. Using the complete hand Jacobian, the contact twists and wrenches on the hand can be related to the joint velocities and torques as
+for all contact points. Here \mvar{\mat{J}_i \inR{6 \times n_q} \mfor i = 1,2,\ldots,n_c} are the individual contact points' hand Jacobians and thus \mvar{\mat{J}\inR{6 \cdot n_c \times n_q}} is the complete. Using the complete hand Jacobian, the contact twists and wrenches on the hand can be related to the joint velocities and torques as
 % 
 \begin{equation}
 	\vec{\nu}_{c,\text{hnd}} = \mat{J} \dot{\vec{q}} \mspa \mand \mspa \vec{\tau} = \mat{J}^\T \vec{w}_{c,\text{hnd}}.
 	\label{eq:hand-jacobian-velocity}
 \end{equation}
 
-The modeling described above will enable the use of methods for solving the presented problems. These methods will be determined in \chapref{ch:state-of-the-art}.
+The modeling described above will enable the use of methods for solving the presented problems. These methods will be described in \chapref{ch:1-tactile-perception}.

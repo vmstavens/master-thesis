@@ -99,7 +99,7 @@ To execute the relocation task, the object is placed on a table and a goal is de
 		\centering
 		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/mug.pdf}
 		\caption{The mug prop from YCB~\cite{ycb} chosen for training.\newline}
-		\label{fig:fig:manipulation-mug}
+		\label{fig:manipulation-mug}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
@@ -113,20 +113,106 @@ To execute the relocation task, the object is placed on a table and a goal is de
 \end{figure}
 
 \section{Results}\label{3-in-hand-manipulation-results}
-The improvement in the surrogate objective function after the policy update
+The results gathered from the training procedure are presented here by the 
+
+The running score or cumulative reward obtained by the reinforcement learning agent during training as seen in~\figref{fig:running-score-over-epochs}, The evaluation score or performance of the reinforcement learning agent on a separate set of test episodes or environments as seen in figure~\figref{fig:evaluation-score-over-epochs} and finally the expected return used in policy i.e. the improvement or increase in the surrogate objective function during the policy update as seen in figure~\figref{fig:surrogate-improvements-over-epochs}.
 
 \begin{figure}[!h]
 	\begin{center}
-		\includegraphics[width=0.3\textwidth]{chapters/3-in-hand-manipulation/fig/stochastic-policy-over-epochs.pdf}
+		\includegraphics[width=0.8\textwidth]{chapters/3-in-hand-manipulation/fig/evaluation-score-over-epochs.pdf}
 	\end{center}
 	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
-	\label{fig:stochastic-policy-over-epochs}
+	\label{fig:evaluation-score-over-epochs}
 \end{figure}
 
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{chapters/3-in-hand-manipulation/fig/running-score-over-epochs.pdf}
+	\end{center}
+	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\label{fig:running-score-over-epochs}
+\end{figure}
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{chapters/3-in-hand-manipulation/fig/surrogate-improvements-over-epochs.pdf}
+	\end{center}
+	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\label{fig:surrogate-improvements-over-epochs}
+\end{figure}
+
+Once trained, the best policy was saved and the reward was sampled over \num{100} iterations, both for the model trained and the one provided by the authors resulting in~\figref{fig:probability-of-getting-a-reward}. 
+
+\begin{figure}[!h]
+	\begin{center}
+		\includegraphics[width=0.8\textwidth]{chapters/3-in-hand-manipulation/fig/probability-of-getting-a-reward.pdf}
+	\end{center}
+	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\label{fig:probability-of-getting-a-reward}
+\end{figure}
+
+To compare the resulting algorithm to the one provided by the authors, it is of interest to test if the reward distributions resulting from experiments come from the same distribution. To determine the normality of each algorithm's performance, normal plots are computed as shown in~\figref{fig:sampled-data-points-vs-normally-distributed-points-authors}. From these plots, normality is assumed.
+
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/sampled-data-points-vs-normally-distributed-points-authors.pdf}
+		\caption{test}
+		\label{fig:sampled-data-points-vs-normally-distributed-points-authors}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/sampled-data-points-vs-normally-distributed-points-trained.pdf}
+		\caption{test}
+		\label{fig:sampled-data-points-vs-normally-distributed-points-trained}
+	\end{subfigure}
+	\caption{The mug prop used for training and the experimental setup.}
+	\label{fig:sampled-data-points-vs-normally-distributed-points-trained-authors}
+\end{figure}
+
+when testing for homoscedasticity the Bartlett test is applied, resulting in the p-value \mvar{p_{bart}\approx 0.0044}. Due to the common threshold for rejecting homoscedasticity being \num{0.05}, which is considered sufficiently close to \num{0.0044}, both parametric and non-parametric \gls{anova} i.e. One-Way \gls{anova} and Kruskal-Wallis tests are applied. \medskip
+
+The One-Way \gls{anova} resulted in a p-value of \mvar{p_{\text{ANOVA}}\approx 1.13\cdot 10^{-8}}, while Kruskal-Wallis resulted in \mvar{p_{\text{KW}}\approx 6.85\cdot 10^{-8}}.
+
+A demonstration can be seen illustrated in~\figref{fig:ai-frames}
+
+\begin{figure}[!h]
+	\centering
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/frame_10.png}
+		\caption{Finger in contact with a flat surface.}
+		\label{fig:ai-frame-1}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/frame_21.png}
+		\caption{Finger in contact with an edge.}
+		\label{fig:ai-frame-2}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/frame_44.png}
+		\caption{Finger in contact with a smooth surface.}
+		\label{fig:ai-frame-3}
+	\end{subfigure}
+		\caption{The four surfaces used to test the performance of the \gls{dl} model's ability to represent surfaces.}
+		\label{fig:ai-frames}
+\end{figure}
+
+\newpage
 \section{Discussion \& Conclusion}
 
-% In this section, we presented the problem formulation for Kinodynamic Motion Planning (KMP) and proposed MPC-MPNet, an end-to-end learning-based
+% This chapter has shown that the \gls{dapg} successfully learn from demonstration and can perform the dexterous manipulation task of relocation. The results from the trained algorithm appear normally distributed but do not strictly fulfill homoscedasticity. Further investigation showed a statistically significant difference between the two underlying distributions, indicating a better performance from the agent trained by the authors.
 
-%  approach to solving the KMP problem. MPC-MPNet incorporates an observation encoder, a neural generator, a neural discriminator, and Model Predictive Control (MPC) to generate collision-free trajectories. Our approach leverages the strengths of deep neural networks and MPC to efficiently and effectively navigate complex environments. Experimental evaluation demonstrates the effectiveness and efficiency of MPC-MPNet in solving KMP problems.
+The findings of this chapter provide strong evidence that the \gls{dapg} algorithm successfully learns from demonstrations and demonstrates its capability to perform the dexterous manipulation task of relocation. The trained algorithm exhibits promising results, with outcomes that follow a distribution resembling a normal distribution.\medskip
 
-%  https://github.com/yzqin/dexmv-sim
+However, upon closer analysis, it becomes apparent that the distribution of the algorithm's performance does not strictly adhere to the assumption of homoscedasticity. Homoscedasticity assumes that the variances of the performance values are equal across the distribution. In this case, the observed departure from homoscedasticity suggests the presence of variability or heterogeneity in the algorithm's performance across different relocation tasks. \medskip
+
+To gain further insights, additional investigation was conducted to compare the underlying distributions. The results of this investigation revealed a statistically significant difference between the distributions associated with the agent trained by the authors and the alternative distributions. This significant difference implies that the agent trained by the authors outperforms the alternatives in terms of its ability to successfully accomplish the relocation task.\medskip
+
+In summary, the chapter highlights the successful learning capabilities of the \gls{dapg} algorithm from demonstrations, specifically in the context of the dexterous manipulation task of relocation. The outcomes generated by the trained algorithm exhibit a distribution that resembles a normal distribution, although it deviates from strict homoscedasticity. By conducting further analysis and comparing underlying distributions, it was determined that the agent trained by the authors performs significantly better than the alternative approaches. These findings underscore the effectiveness and superior performance of the agent trained using the \gls{dapg} algorithm in tackling the challenging relocation task.
