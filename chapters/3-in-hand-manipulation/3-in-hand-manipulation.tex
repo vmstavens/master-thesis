@@ -1,18 +1,35 @@
 \chapter{In-Hand Manipulation}\label{ch:3-in-hand-manipulation}
 
-The goal of this chapter is to analyze the performance of the reinforcement learning-based manipulation algorithm \gls{dapg}, which employs \gls{il} to constrain the algorithm's search space when solving the relocation task. The relocation task requires the robot hand to pick up an object and move it to a target location.\medskip 
+The goal of this chapter is to analyze the performance of the \gls{rl}-based manipulation algorithm \gls{dapg}, which employs \gls{il} to constrain the algorithm's search space when solving the relocation task. The relocation task requires the robot hand to pick up an object and move it to a target location.\medskip 
 
-The analysis will focus on the relevant metrics from the training process as well as the final models performance. \medskip
-
-\gls{dapg} was chosen as the algorithm from~\cite{dexmv:-imitation-learning-for-dexterous-manipulation-from-human-videos}, due to it showing the best performance when solving the relocation task. \medskip
+The analysis will focus on the relevant metrics from the training process as well as the final model's performance. \gls{dapg} was chosen as the algorithm from~\cite{dexmv:-imitation-learning-for-dexterous-manipulation-from-human-videos}, due to it showing the best performance when solving the relocation task. \medskip
 
 Firstly, the \gls{dapg} method is presented and described, followed by the setup for collecting the data used for training. The results are then presented and finally, the findings are discussed and concluded.\medskip
 
-The simulation is done using a \gls{ah}~\cite{learning-complex-dexterous-manipulation-with-deep-reinforcement-learning-and-demonstrations} in the dynamic simulator MuJoCo~\cite{todorov2012mujoco}. The hand is thus equipped with \num{30} controllable parameters, \num{24} for the hand's joints and \num{6} for the hand's position \mvar{\vec{p}_{hnd}=\rvec{p_x,p_y,p_z}} and orientation \mvar{\vec{o}=\rvec{\phi,\theta,\psi}} in \gls{rpy} format. These make up the agent's actions \mvar{a}, while the states {s} also include the position of the prop when performing the relocation task.
+The simulation is done using a \gls{ah}~\cite{learning-complex-dexterous-manipulation-with-deep-reinforcement-learning-and-demonstrations} in the dynamic simulator MuJoCo~\cite{todorov2012mujoco}. The hand is thus equipped with \num{30} controllable parameters, \num{24} for the hand's joints and \num{6} for the hand's position \mvar{\vec{p}_{hnd}=\rvec{p_x,p_y,p_z}} and orientation \mvar{\vec{u}=\rvec{\phi,\theta,\psi}} in \gls{rpy} format. These make up the agent's actions \mvar{a}, while the states {s} also include the position of the prop when performing the relocation task.
 
 \section{Method}\label{sec:3-in-hand-manipulation-method}
 
 \subsection{Demo Augmented Policy Gradient}\label{dapg}
+
+The goal is to determine a stochastic policy on the form \mvar{\pi: s\times a \rightarrow \R_+}, which optimizes the expected sum of rewards
+%
+\begin{equation}
+	\eta(\pi)=\mathbb{E}_{\pi,\mathcal{M}} \left[ \sum^\infty_{t=0} \gamma^t r_t \right]
+\end{equation}
+where \mvar{\mathcal{M}=\{ \mathcal{S},\mathcal{A},\mathcal{R},\mathcal{T},\rho_0,\gamma \}} is a \gls{mdp} consisting of states \mvar{\mathcal{S}\inR{n}}, actions \mvar{\mathcal{A}\inR{m}}, rewards \mvar{\mathcal{R}}, transition dynamics \mvar{\mathcal{T}}, \mvar{\rho_0} the probability distribution over initial states and \mvar{\gamma\in[0,1]} being the discount factor.\medskip
+
+Additionally, the value, \mvar{Q} and advantage functions are needed i.e.
+\begin{equation}
+	V^\pi(s)=\mathbb{E}_{\pi,\mathbb{M}}\left[ \sum^\infty_{t=0} \gamma^t r_t | s_0 = s \right]
+\end{equation}
+\begin{equation}
+	Q^\pi(s,a)=\mathbb{E}_{\mathbb{M}}\left[ \mathbb{R}(s,a) \right] + \mathbb{E}_{s'\sim \mathbb{T}(s,a)\left[ V^\pi (s') \right]}
+\end{equation}
+\begin{equation}
+	A^\pi(s,a) = Q^\pi (s,a) - V^\pi (s)
+\end{equation}
+To optimize wrt. \mvar{\pi_\theta} the optimization is done wrt. parameters \mvar{\theta}.
 
 The \gls{dapg} is an approach that expands on the \gls{npg} by introducing a demonstration term to weigh the gradient by \mvar{\lambda_0} and \mvar{\lambda_1}, which are hyperparameters to determine the advantage of state-action pair in demonstrations. \medskip
 
@@ -121,7 +138,7 @@ The running score or cumulative reward obtained by the reinforcement learning ag
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{chapters/3-in-hand-manipulation/fig/evaluation-score-over-epochs.pdf}
 	\end{center}
-	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\caption{The evaluation score of the \gls{dapg} agent on a separate set of test episodes or environments.}
 	\label{fig:evaluation-score-over-epochs}
 \end{figure}
 
@@ -129,7 +146,7 @@ The running score or cumulative reward obtained by the reinforcement learning ag
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{chapters/3-in-hand-manipulation/fig/running-score-over-epochs.pdf}
 	\end{center}
-	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\caption{The running score shows the cumulative reward obtained by the \gls{dapg} agent during training.}
 	\label{fig:running-score-over-epochs}
 \end{figure}
 
@@ -137,7 +154,7 @@ The running score or cumulative reward obtained by the reinforcement learning ag
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{chapters/3-in-hand-manipulation/fig/surrogate-improvements-over-epochs.pdf}
 	\end{center}
-	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\caption{The increase in the surrogate objective function during the policy update.}
 	\label{fig:surrogate-improvements-over-epochs}
 \end{figure}
 
@@ -147,7 +164,7 @@ Once trained, the best policy was saved and the reward was sampled over \num{100
 	\begin{center}
 		\includegraphics[width=0.8\textwidth]{chapters/3-in-hand-manipulation/fig/probability-of-getting-a-reward.pdf}
 	\end{center}
-	\caption{The \gls{tsv}s from the hand root (marked with red) to the finger middle (marked with blue) and tip (marked with green) on the anthropomorphic robot hand.}
+	\caption{Histograms showing the probability distributions of getting certain rewards over 100 iterations for both the authors' and the trained \gls{dapg} algorithms.}
 	\label{fig:probability-of-getting-a-reward}
 \end{figure}
 
@@ -158,17 +175,17 @@ To compare the resulting algorithm to the one provided by the authors, it is of 
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/sampled-data-points-vs-normally-distributed-points-authors.pdf}
-		\caption{test}
+		\caption{Normal plot, showing the extent to which the authors \gls{dapg} algorithm gets rewards that are normally distributed. }
 		\label{fig:sampled-data-points-vs-normally-distributed-points-authors}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/sampled-data-points-vs-normally-distributed-points-trained.pdf}
-		\caption{test}
+		\caption{Normal plot, showing the extent to which the trained \gls{dapg} algorithm gets rewards that are normally distributed.}
 		\label{fig:sampled-data-points-vs-normally-distributed-points-trained}
 	\end{subfigure}
-	\caption{The mug prop used for training and the experimental setup.}
+	\caption{Normal plots showing the extent to which the performance of the \gls{dapg} algorithms tested in this chapter is normally distributed.}
 	\label{fig:sampled-data-points-vs-normally-distributed-points-trained-authors}
 \end{figure}
 
@@ -183,28 +200,29 @@ A demonstration can be seen illustrated in~\figref{fig:ai-frames}
 	\begin{subfigure}[b]{0.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/frame_10.png}
-		\caption{Finger in contact with a flat surface.}
+		\caption{The pre-grasping phase, where the \gls{ah} is moving towards the mug.}
 		\label{fig:ai-frame-1}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/frame_21.png}
-		\caption{Finger in contact with an edge.}
+		\caption{The grasping phase, where a force closure grasp is made to hold the mug.}
 		\label{fig:ai-frame-2}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.32\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/3-in-hand-manipulation/fig/frame_44.png}
-		\caption{Finger in contact with a smooth surface.}
+		\caption{The placing phase, where the mug is placed onto the silhouette.}
 		\label{fig:ai-frame-3}
 	\end{subfigure}
-		\caption{The four surfaces used to test the performance of the \gls{dl} model's ability to represent surfaces.}
+		\caption{The \gls{pnp} phases executed by the trained \gls{dapg} in MuJoCo}
 		\label{fig:ai-frames}
 \end{figure}
 
 \newpage
+
 \section{Discussion \& Conclusion}
 
 % This chapter has shown that the \gls{dapg} successfully learn from demonstration and can perform the dexterous manipulation task of relocation. The results from the trained algorithm appear normally distributed but do not strictly fulfill homoscedasticity. Further investigation showed a statistically significant difference between the two underlying distributions, indicating a better performance from the agent trained by the authors.
