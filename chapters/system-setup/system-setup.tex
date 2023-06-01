@@ -14,7 +14,7 @@ The \gls{cad} model of the \gls{sdh} is a highly detailed and accurate represent
 
 The \gls{sdh}'s joints are labeled based on the joint location according to~\appref{app:joint-abbreviations} and placement from the fingertip i.e. the outermost joint on the middle finger is labeled \texttt{MF1} while the innermost is \texttt{MF4}. The wrist joints are labeled \texttt{WR1} and \texttt{WR2}, where \texttt{WR1} is responsible for the hand's yaw and \texttt{WR2} is responsible for the hand's pitch rotation. \medskip
 
-The structure of the right hand can be seen in \figref{fig:robot-hand-skeleton} compared to a right human hand in \figref{fig:human-hand-skeleton}. Here each joint is marked with a color, labeling the \gls{dof} for that particular joint. The red labels refer to joints with one \gls{dof}, blue refers to joints with a \gls{dof} equal to two and purple refers to two joints that are coupled. The coupling between joints is such that, a flexion of joint one imposes a constraint on joint two. If joint one exceeds a certain angle, it enforces joint two to flex accordingly to maintain the established constraint. In the robot hand, both coupled joints are mechanically linked to a single motor. \medskip
+The structure of the right hand can be seen in \figref{fig:robot-hand-skeleton} compared to a human hand in \figref{fig:human-hand-skeleton}. Here each joint is marked with a color, labeling the \gls{dof} for that particular joint. The red labels refer to joints with one \gls{dof}, blue refers to joints with a \gls{dof} equal to two and purple refers to two joints that are coupled. The coupling between joints is such that, a flexion of joint two imposes a constraint on joint one. If joint two exceeds a certain angle, it enforces joint one to flex accordingly to maintain the established constraint. In the robot hand, both coupled joints are mechanically linked to a single motor. \medskip
 
 As seen here the \gls{sdh} provides human-like dexterity due to its similar kinematics, see~\figref{app:human-and-robot-hand-kinematics}, and the comparable \gls{rom} of each joint, see~\tabref{app:range-of-motion-shadow-hand} and~\tabref{app:range-of-motion-human-hand}. \medskip
 
@@ -23,14 +23,14 @@ As seen here the \gls{sdh} provides human-like dexterity due to its similar kine
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[height=\textwidth]{chapters/system-setup/fig/robot-hand-skeleton-coupled.pdf}
-		\caption{\gls{sdh} with joints color coded depending on the degrees of freedom. The total number of controllable joints can here be seen as \num{24}. This figure is based on~\cite{svg-robot-hand}.}
+		\caption{\gls{sdh} with joints color coded depending on the \gls{dof}. The total number of controllable joints can here be seen as \num{24}. This figure is based on~\cite{svg-robot-hand}.}
 		\label{fig:robot-hand-skeleton}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[height=\textwidth]{chapters/system-setup/fig/human-skeleton-hand-coupled.pdf}
-		\caption{\gls{sdh} with joints color coded depending on the degrees of freedom. The total number of controllable joints can here be seen as \num{25}~\cite{design-and-development-of-a-bilateral-therapeutic-hand-device-for-stroke-rehabilitation}. This figure is based on~\cite{svg-skeleton-hand}.}
+		\caption{Human hand with joints color coded depending on the \gls{dof}. The total number of controllable joints can here be seen as \num{25}~\cite{design-and-development-of-a-bilateral-therapeutic-hand-device-for-stroke-rehabilitation}. This figure is based on~\cite{svg-skeleton-hand}.}
 		\label{fig:human-hand-skeleton}
 	\end{subfigure}
 	\caption{The \gls{sdh} and a human hand, red here marks a joint with one \gls{dof}, blue marks a joint with two, and purple marks coupled joints.}
@@ -80,7 +80,7 @@ When communicating with the \gls{sdh}, the primary interface provided is the han
 		\end{array}\right] \inR{m_w \times 24}.
 \end{equation}
 
-\texttt{SrHandCommander} parses the path to the \texttt{move\_group} handled by MoveIt~\cite{reducing-the-barrier-to-entry-of-complex-robotic-software:-a-moveit!-case-study}. After receiving the plan, MoveIt first checks the validity of the start and goal configurations concerning the robot's joint limits, collision constraints, and other constraints like self-collision avoidance. This helps to ensure that the planned path is feasible and safe for the robot to execute. Once validated, the path \mvar{\mat{Q}_{\text{valid}}\inR{m_w\times 24}} is parsed to \gls{ompl}~\cite{the-open-motion-planning-library} where a safe high-resolution path is built using some chosen sample-based single- or multi-query path planning method to build the full high-resolution path \mvar{\mat{Q}_{\text{full}}\inR{m\times 24}}. Some examples of these methods include \gls{prm}, \gls{fmt} and \gls{rrt}-Connect, the last of which is the default used in the provided software and the one chosen for this project. To execute the path the development environment provides \texttt{SrJointPositionController} i.e. a joint space position controller by default, which is the one chosen for this project. \medskip
+\texttt{SrHandCommander} parses the path to the \texttt{move\_group} handled by MoveIt~\cite{reducing-the-barrier-to-entry-of-complex-robotic-software:-a-moveit!-case-study}. After receiving the plan, MoveIt first checks the validity of the start, goal and intermediate configurations concerning the robot's joint limits, collision constraints, and other constraints like self-collision avoidance. This helps to ensure that the planned path is feasible and safe for the robot to execute. Once validated, the path \mvar{\mat{Q}_{\text{valid}}\inR{m_w\times 24}} is parsed to \gls{ompl}~\cite{the-open-motion-planning-library} where a safe high-resolution path is built using some chosen sample-based single- or multi-query path planning method to build the full high-resolution path \mvar{\mat{Q}_{\text{full}}\inR{m\times 24}}. Some examples of these methods include \gls{prm}, \gls{fmt} and \gls{rrt}-Connect, the last of which is the default used in the provided software and the one chosen for this project. To execute the path the development environment provides \texttt{SrJointPositionController} i.e. a joint space position controller by default, which is the one chosen for this project. \medskip
 
 The controller is built using the \texttt{ros\_control}~\cite{ros-control} framework. The \texttt{ros\_control} package provides a hardware-agnostic interface, to enable the same controllers on multiple different robotics platforms, along with the same controller being applicable on real hardware as well as simulated hardware. Finally, the hardware interface communicates with \num{20} \gls{pid} controllers, one for each independent joint to ensure control. The software architecture for communicating with the robotic hand can be seen in \figref{fig:hand-communication-architecture}, which was inspired by figures from~\cite{shadow-robotics-control-description,shadow-robotics-firmware,shadow-robotics-controlling-the-hand}.
 \begin{figure}[!h]
@@ -93,7 +93,9 @@ The controller is built using the \texttt{ros\_control}~\cite{ros-control} frame
 
 When executing an example path,~\figref{fig:coupling-and-planning-graph} shows joint angles during execution on the simulated hand throughout \SI{15}{\second} using the \gls{rrt}-Connect planner. The path here consists of five waypoints for \texttt{FFJ2} and \texttt{FFJ3}, whereas none is set for \texttt{FFJ1}. This is to demonstrate the coupling as \texttt{FFJ1} still follows the motion of \texttt{FFj2} even though no motion is commanded. \medskip
 
-\begin{figure}[!h]
+\newpage
+
+\begin{figure}[h]
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{chapters/system-setup/fig/q-angles.pdf}
 		\end{center}
@@ -101,7 +103,7 @@ When executing an example path,~\figref{fig:coupling-and-planning-graph} shows j
 		\label{fig:coupling-and-planning-graph}
 \end{figure}
 
-The MuJoCo~\cite{todorov2012mujoco} simulation runs a \gls{ah}~\cite{learning-complex-dexterous-manipulation-with-deep-reinforcement-learning-and-demonstrations}, which is a \gls{sdh} equipped with \num{30} controllable parameters, \num{24} for the hand's joints and \num{6} for the hand's position \mvar{\vec{p}_{hnd}=\rvec{p_x,p_y,p_z}} and orientation \mvar{\vec{o}=\rvec{\phi,\theta,\psi}} in \gls{rpy} format. The system stack is for MuJoCo similar and is therefore not repeated. \medskip
+The MuJoCo~\cite{todorov2012mujoco} simulation runs a \gls{ah}~\cite{learning-complex-dexterous-manipulation-with-deep-reinforcement-learning-and-demonstrations}, which is a \gls{sdh} equipped with \num{30} controllable parameters, \num{24} for the hand's joints and \num{6} for the hand's position \mvar{\vec{p}_{hnd}=\rvec{p_x,p_y,p_z}} and orientation \mvar{\vec{u}=\rvec{\phi,\theta,\psi}} in \gls{rpy} format. The system stack for MuJoCo is similar to that of Gazebo and is therefore not repeated. \medskip
 
 % These make up the agent's actions \mvar{a}, while the states {s} also include the position of the prop when performing the relocation task.
 
@@ -109,11 +111,11 @@ The MuJoCo~\cite{todorov2012mujoco} simulation runs a \gls{ah}~\cite{learning-co
 
 To execute this project, software was developed to communicate with and extract data from the simulated \gls{sdh}. The software is structured into two \gls{ros} packages: \texttt{shadow\_hand} and \texttt{sr\_tactile\_perception}, with an additional utility package \texttt{ros\_utils}. \medskip
 
-The \texttt{shadow\_hand} package is a software wrapper structured semantically in a similar way as the hand itself, as a \texttt{ShadowHand} object contains five fingers, each labeled as one of \texttt{TH},\texttt{FF},\texttt{MF},\texttt{RF} or \texttt{LF} and a \texttt{ShadowWrist}~\ref{app:joint-abbreviations}. Each finger is equipped with a reader that samples the tactile data provided by the simulator's physics engine at \SI{100}{\hertz}. This wrapper is written as an easy-to-use interface to the hand which provides reliable bookkeeping of sensor data. The structure can be seen illustrated in~\figref{fig:shadow-hand}. \medskip
+The \texttt{shadow\_hand} package is a software wrapper structured semantically in a similar way as the hand itself, as a \texttt{ShadowHand} object contains five \texttt{ShadowFinger}, each labeled as one of \texttt{TH}, \texttt{FF}, \texttt{MF}, \texttt{RF} or \texttt{LF} and a \texttt{ShadowWrist}~\ref{app:joint-abbreviations}. Each finger is equipped with a reader that samples the tactile data provided by the simulator's physics engine at \SI{100}{\hertz}. This wrapper is written as an easy-to-use interface to the hand which provides reliable bookkeeping of sensor data. The structure can be seen illustrated in~\figref{fig:shadow-hand}. \medskip
 
-The \texttt{sr\_tactile\_perception} package is an interface for logging processing and visualizing the tactile data using the \texttt{shadow\_hand}. Additionally, this package is responsible for managing and executing experiments. This can be seen as the top diagram in~\figref{fig:tactile-perception-package}. \medskip
+The \texttt{sr\_tactile\_perception} package is an interface for logging, processing and visualizing the tactile data using the \texttt{shadow\_hand}. Additionally, this package is responsible for managing and executing experiments. This can be seen as the top diagram in~\figref{fig:tactile-perception-package}. \medskip
 
-Both of these packages are contained within a \texttt{in\_hand\_pose\_estimation} meta package which additionally contain custom tools for easy launching and execution of experiments with live plotting of tactile data. Additionally, each of these tools provides a high degree of easy-to-access flexibility in terms of model and configuration loading.
+Both of these packages are contained within a \texttt{in\_hand\_pose\_estimation} meta package which additionally contain custom tools for easy launching and execution of experiments with live plotting of tactile data. Additionally, each of these tools provides a high degree of easy-to-access flexibility in terms of model and configuration loading.\medskip
 
 The last package is \texttt{ros\_utils} which contains important utilities used in the project such as type transformations, logging, data conversion, live plotting, encoding, decoding etc. This package contains both Python and C++ tools and can be found in~\cite{ros-utils-repo}.\medskip
 
@@ -151,6 +153,6 @@ The software developed in this project can be found in~\cite{in-hand-pose-estima
 		\caption{\texttt{sr\_tactile\_perception} package with functionalities and \texttt{ros\_utils} with common nice-to-have utilities.}
 		\label{fig:tactile-perception-package}
 	\end{subfigure}
-	\caption{\gls{ros} packages developed for executing this project.}
+	\caption{Developed \gls{ros} packages for executing this project.}
 	\label{fig:shadow-hand-tactile-perception-package}
 \end{figure}

@@ -5,7 +5,7 @@
 
 To solve problem~\ref{prob:2} and~\ref{prob:3}, the \gls{tp} solution to problem~\ref{prob:1} must provide estimates of contact positions, contact normals and skew forces, which is the goal of this chapter. \medskip
 
-To estimate these, different techniques are considered and their performance analyzed, including a \gls{dl} model for simulating realistic tactile skew forces, \gls{rls} for estimating contact normals and the contact positions from the grasping \mat{G}. Contact normals are essential for accurately estimating the pose of an object in contact, while skew forces are critical for predicting the behavior of an object when it is grasped and manipulated by the \gls{sdh}. \medskip
+To estimate these, different techniques are considered and their performance analyzed, including a \gls{dl} model for simulating realistic tactile skew forces, \gls{rls} for estimating contact normals and the contact positions from the grasping matrix \mat{G}. Contact normals are essential for accurately estimating the pose of an object in contact, while skew forces are critical for predicting the behavior of an object when it is grasped and manipulated by the \gls{sdh}. \medskip
 
 The \gls{rls} methodology is presented for normal estimation \mvar{\vec{n}_{c,i}=\rvec{n_{i,x},n_{i,y},n_{i,z}}^\T\inR{3}}, where \mvar{i\in\{0,1,\dots,n_c \} } and \mvar{n_c} is the number of contact points, followed by the experimental setup and results being presented.\medskip
 
@@ -44,7 +44,7 @@ where \mvar{\hat{\vec{v}}} is the estimated linear velocity computed from~\ref{e
 	\end{bmatrix} \quad , \quad \bm{\omega} = \rvec{\omega_x, \omega_y, \omega_z}^\T,
 \end{equation}
 
-\mvar{\rot[R]{base}{tcp}\inR{3\times 3}} is the rotation matrix from the hand's base to its \gls{tcp}, and \mvar{\vec{r}\inR{3}} is the position of the contact point in the robot's base frame. \medskip
+\mvar{\rot[R]{base}{tcp}\inR{3\times 3}} is the rotation matrix from the hand's base to its \gls{tcp}, and \mvar{\vec{r}\inR{3}} is the position of the contact point in the hand's base frame. \medskip
 
 To compute the normal estimate, an initial guess is needed which is computed by
 %
@@ -120,7 +120,7 @@ The products of \gls{mlp} \num{3} and \num{4} are summed and parsed as the model
 
 % The model presented in~\secref{sec:1-tactile-perception-method-network-architecture} was trained using a custom dataset collected by the authors, which led to weights provided in the paper's code that were used rather than retraining the model. The dataset \mat{D} contains \mvar{N_{dp} = \num{300 000}} tactile sensor readings, consisting of the complete BioTac sensor data as well as the applied reference forces and contact points. Meaning \mat{D} is structured as
 
-The model described in~\secref{sec:1-tactile-perception-method-network-architecture} was trained using a custom dataset collected by the authors. Instead of retraining the model, the provided weights in the paper's code were utilized. The dataset, denoted as \mat{D}, comprises \mvar{N_{dp} = 300,000} readings from tactile sensors. It includes complete BioTac sensor data, as well as the corresponding reference forces and contact points. The structure of dataset \mat{D} can be represented as follows
+The model described in~\secref{sec:1-tactile-perception-method-network-architecture} was trained using a custom dataset collected by the authors. Instead of retraining the model, the provided weights in the paper's code were utilized. The dataset, denoted as \mat{D}, comprises \mvar{N_{dp} = 300\ 000} readings from tactile sensors. It includes complete BioTac sensor data, as well as the corresponding reference forces and contact points. The structure of dataset \mat{D} can be represented as follows
 %
 \begin{equation} \label{eq:dl-data-matrix}
 	\mat{D} =
@@ -283,7 +283,7 @@ After executing the \gls{dl} model on all cases, the resulting simulated electro
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pressure-distribution.pdf}
-		\caption{3D plot of electrode activations when the \gls{sdh}'s index finger makes contact with a flat surface.}
+		\caption{3D plot of normalized electrode activations when the \gls{sdh}'s index finger makes contact with a flat surface.}
 		\label{fig:simulated-electrode-distribution}
 	\end{subfigure}
 	\hfill
@@ -297,28 +297,32 @@ After executing the \gls{dl} model on all cases, the resulting simulated electro
 		\label{fig:flat-contact-experimental-and-electrode-map}
 \end{figure}
 
+\newpage
+
 \figref{fig:flat-contact-graph} illustrates the inputs and outputs of the \gls{dl} model when the \gls{sdh}'s index finger makes contact with a flat surface. As seen here the output of the model is independent of the input. In an attempt to isolate a potential cause for this behavior, data from the custom data set on which the model had been trained, is applied and similar results were found as seen in~\figref{fig:train-contact-graph}. The missing elements from this graph are value responses from the network of \texttt{inf}, which is a reference to the highest representable value by the system and is therefore not included. \medskip
 
 Due to this independence of input, the electrodes, and by extension the \gls{dl} model is not judged to be able to accurately simulate skew forces for a BioTac sensor in contact. The contact data from the remaining experiments can be found in~\appref{app:tactile-perception-simulated-electrode-activations}, which show a similar pattern.
+
+\newpage
 
 \begin{figure}[!h]
 	\begin{center}
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/flat-contact-graph.pdf}
 	\end{center}
-	\caption{The simulated tactile electrode activations when the index finger is in contact with a flat surface.}
+	\caption{The normalized simulated tactile electrode activations when the index finger is in contact with a flat surface.}
 	\label{fig:flat-contact-graph}
 \end{figure}
 \begin{figure}[!h]
 	\begin{center}
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/train-contact-graph.pdf}
 	\end{center}
-	\caption{The simulated tactile electrode activations when training data was used as inputs for the \gls{dl} model.}
+	\caption{The normalized simulated tactile electrode activations when training data was used as inputs for the \gls{dl} model.}
 	\label{fig:train-contact-graph}
 \end{figure}
 
 \subsubsection{Contact Positions}
 
-The contact positions were determined by utilizing the grasping matrix \mat{G} and the transformation matrices for each taxel, as provided by~\cite{ruppel-philipp-biotac-gazebo-plugin}. The points in the world frame \robframe{W} were generated using Gazebo's physics engine, and the transformations were applied accordingly. To assess the engine's capability to represent contact points, a 3D mesh of the Stanford bunny~\cite{stanford-bunny} was used. The contact points were recorded during the sampling process, as depicted in~\figref{fig:contact-position-gazebo}. In~\figref{fig:pc-source}, the contact points obtained by moving the fingers across the 3D mesh are shown.~\figref{fig:pc-target} displays the 3D mesh sampled to consist of \num{10 000} points, and~\figref{fig:pc-source-and-target} illustrates both the contact points and the sampled 3D mesh.
+The contact positions were determined by utilizing the grasping matrix \mat{G} and the transformation matrices for each taxel, as provided by~\cite{ruppel-philipp-biotac-gazebo-plugin}. The points in the world frame \robframe{W} were generated using Gazebo's physics engine, and the transformations were applied accordingly. To assess the engine's capability to represent contact points, a 3D mesh of the Stanford bunny~\cite{stanford-bunny} was used. The contact points were recorded during the sampling process, as depicted in~\figref{fig:contact-position-gazebo}. In~\figref{fig:pc-source}, the contact points obtained by moving the fingers across the 3D mesh are shown.~\figref{fig:pc-target} displays the 3D mesh sampled to consist of \num{10 000} points, and~\figref{fig:pc-source-and-target} illustrates both the contact points and the sampled 3D mesh. The process of sampling the data shown in~\figref{fig:pc-source} can be found in the supplementary material \texttt{sampling-of-tactile-data.gif}.
 
 % The contact positions were found by applying the grasping matrix \mat{G} and the matrices to transformation to each taxels provided by~\cite{ruppel-philipp-biotac-gazebo-plugin}. The points in \robframe{W} were generated from Gazebo's physics engine, on which the transformations were performed. To test the engine's ability to represent contact points, a 3D mesh of the Stanford bunny~\cite{stanford-bunny} was sampled using the \gls{sdh}, with the contact points being recorded as shown in~\figref{fig:contact-position-gazebo}. Here~\figref{fig:pc-source} shows the contact points sampled from moving the fingers across the 3D mesh,~\figref{fig:pc-target} is the 3D meshed sampled to \num{10 000} points and~\figref{fig:pc-source-and-target}.
 
@@ -330,14 +334,14 @@ The contact positions were determined by utilizing the grasping matrix \mat{G} a
 		\caption{The source \gls{pc} generated from simulated contact points.}
 		\label{fig:pc-source}
 	\end{subfigure}
-	% \hfill
+	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pc_target.png}
 		\caption{The target \gls{pc} generated by sampling the model mesh with \num{10 000} points.}
 		\label{fig:pc-target}
 	\end{subfigure}
-	% \hfill
+	\hfill
 	\begin{subfigure}[b]{0.3\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{chapters/1-tactile-perception/fig/matplotlib/pc_source_target.png}
@@ -347,6 +351,8 @@ The contact positions were determined by utilizing the grasping matrix \mat{G} a
 	\caption{3D plots showing the sampled source and target \gls{pc}s along with a plot showing both of them overlaid.}
 	\label{fig:contact-position-gazebo}
 \end{figure}
+
+% \newpage
 
 \subsection{Physics Engine Comparison}\label{sec:1-tactile-perception-results-gazebo-comparison}
 
@@ -426,7 +432,7 @@ The contact points have been successfully estimated using simulated contact poin
 
 % Firstly, the \gls{rls} methodology is presented for normal estimation \mvar{\vec{n}_{c,i}=\rvec{n_{i,x},n_{i,y},n_{i,z}}^\T\inR{3}}, where \mvar{i\in\{0,1,\dots,n_c \} } and \mvar{n_c} is the number of contact points, followed by the experimental setup and results being presented.\medskip
 
-The contact normals were estimated using estimated linear velocities from simulated contact points and the \gls{rls} method. This technique was tested and verified on a flat surface where the results show little error and thus were deemed satisfactory. Due to time constraints, contact normals were not estimated on other surfaces than flat, which would be necessary for stronger confirmation of the technique's applicability. Instead, Gazebo's physics engine produced acceptable results in these cases and is used as the normal estimation solution. The performance of Gazebo's physics is judged to be satisfactory. Estimating the contact normals provides a significant advantage by enabling the identification of robust surface features. This, in turn, has the potential to minimize the search space for the pose estimation algorithm discussed in~\chapref{ch:2-pose-estimation}. This chapter has demonstrated that corners, being more complex surface features, result in the highest angle error, as anticipated.\medskip
+The contact normals were estimated using estimated linear velocities from simulated contact points and the \gls{rls} method. This technique was tested and verified on a flat surface where the results show little error and thus were deemed satisfactory. Due to time constraints, contact normals were not estimated on other surfaces than flat, which would be necessary for stronger confirmation of the technique's applicability. Instead, Gazebo's physics engine produced acceptable results in these cases and is used as the normal estimation solution. The performance of Gazebo's physics is judged to be satisfactory. Estimating the contact normals provides a significant advantage by enabling the identification of robust surface features. This, in turn, has the potential to minimize the search space for the \gls{pe} algorithm discussed in~\chapref{ch:2-pose-estimation}. This chapter has demonstrated that corners, being more complex surface features, result in the highest angle error, as one would expect.\medskip
 
 % To estimate these, different techniques are considered and their performance analyzed, including a \gls{dl} model for simulating realistic tactile skew forces, \gls{rls} for estimating contact normals and the contact positions from the grasping \mat{G}. Contact normals are essential for accurately estimating the pose of an object in contact, while skew forces are critical for predicting the behavior of an object when it is grasped and manipulated by the \gls{sdh}. \medskip
 
