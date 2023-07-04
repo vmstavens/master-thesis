@@ -200,7 +200,7 @@ Condition 1 indicates that as the argument \mvar{z} approaches \num{0}, the deri
 
 Condition 2 states that as \mvar{z} approaches \mvar{\infty}, the derivative of \mvar{\phi(z)} tends towards \num{0}. This implies that as the argument becomes larger, the function \mvar{\phi(z)} approaches a plateau or a constant value. Consequently, large values of \mvar{z} have a diminishing effect on the robust cost function, making it less sensitive to extreme observations. \medskip
 
-Condition 3 states that the second derivative of \mvar{\phi(z)} is negative, indicating that the function \mvar{\phi(z)} is concave. This concavity is crucial as it ensures that the robust cost function \mvar{\rho(\cdot)} is monotonically increasing. In other words, as the argument \mvar{z} increases, the robust cost increases as well. This property is desirable in robust estimation problems, as it helps in downplaying the impact of outliers or influential points on the overall estimation. \medskip
+Condition 3 states that the second derivative of \mvar{\phi(z)} is negative, indicating that the function \mvar{\phi(z)} is concave. This concavity is crucial as it ensures that the robust cost function \mvar{\rho(\cdot)} is monotonically decreasing. In other words, as the argument \mvar{z} increases, the robust cost increases as well. This property is desirable in robust estimation problems, as it helps in downplaying the impact of outliers or influential points on the overall estimation. \medskip
 
 All of these conditions are met by the \gls{tls}~\cite{graduated-non-convexity-for-robust-spatial-perception:-from-non-minimal-solvers-to-global-outlier-rejection}.\medskip
 
