@@ -3,7 +3,7 @@ message: "If you use this software, please cite it as below."
 authors:
   - family-names: "Melbye Staven"
     given-names: "Victor"
-title: "in-hand-pose-estimation-through-purely-tactile-perception-and-in-hand-manipulation"
+title: "in_hand_pose_estimation_through_purely_tactile_perception_and_in_hand_manipulation"
 version: 1.0.0
 date-released: "2023-15-08"
 url: "https://github.com/vmstavens/master-thesis"
@@ -13,7 +13,7 @@ preferred-citation:
   - family-names: "Melbye Staven"
     given-names: "Victor"
   month: 7
-  title: "in-hand-pose-estimation-through-purely-tactile-perception-and-in-hand-manipulation"
+  title: "in_hand_pose_estimation_through_purely_tactile_perception_and_in_hand_manipulation"
   issue: 1
   volume: 1
   year: 2023
