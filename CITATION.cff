@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Melbye Staven"
+    given-names: "Victor"
+title: "in-hand-pose-estimation-through-purely-tactile-perception-and-in-hand-manipulation"
+version: 1.0.0
+date-released: "2023-15-08"
+url: "https://github.com/vmstavens/master-thesis"
