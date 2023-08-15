@@ -1,1 +1,1 @@
-# master-thesis
+# In-Hand Pose Estimation Through Purely Tactile Perception and In-Hand Manipulation
