@@ -7,3 +7,13 @@ title: "in-hand-pose-estimation-through-purely-tactile-perception-and-in-hand-ma
 version: 1.0.0
 date-released: "2023-15-08"
 url: "https://github.com/vmstavens/master-thesis"
+preferred-citation:
+  type: report
+  authors:
+  - family-names: "Melbye Staven"
+    given-names: "Victor"
+  month: 7
+  title: "in-hand-pose-estimation-through-purely-tactile-perception-and-in-hand-manipulation"
+  issue: 1
+  volume: 1
+  year: 2023
